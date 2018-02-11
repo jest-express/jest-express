@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "outDir": "lib",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "es2015",
+    "declaration": true,
+    "lib": ["dom", "es6"],
+    "moduleResolution": "node",
+    "pretty": true,
+    "removeComments": true,
+    "strict": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "./typings/*.d.ts",
+    "./src/**/*"
+  ]
+}

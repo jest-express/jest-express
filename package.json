@@ -1,0 +1,87 @@
+{
+  "name": "jest-express",
+  "version": "0.0.0-development",
+  "description": "jest mock",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "clean": "rimraf lib coverage",
+    "commit": "git-cz",
+    "commitmsg": "opt --in commit-msg --exec \"commitlint -e $GIT_PARAMS\"",
+    "contributors:add": "all-contributors add",
+    "contributors:generate": "all-contributors generate",
+    "coverage:report": "coveralls",
+    "precommit": "lint-staged && opt --in pre-commit --exec \"yarn verify\"",
+    "semantic-release": "semantic-release",
+    "setup": "npm i -g npmvet david nsp depcheck types-checker commitizen semantic-release-cli all-contributors-cli",
+    "test": "jest --coverage",
+    "test:ci": "jest --ci",
+    "test:coverage:ci": "jest --ci --coverage --testResultsProcessor=\"jest-junit\"",
+    "test:coverage:codecov": "codecov",
+    "test:watch": "jest --watch",
+    "ts:build": "tsc",
+    "ts:watch": "tsc -w",
+    "tslint": "tslint --config tslint.json \"src/**/*.ts\"",
+    "tslint:ci": "tslint --config tslint.json --format junit --out reports/tslint/tslint-results.xml \"src/**/*.ts\"",
+    "tslint:fix": "tslint --config tslint.json --fix \"src/**/*.ts\"",
+    "verify": "yarn verify:npmvet && yarn verify:david && yarn verify:nsp && yarn verify:tscheck && yarn tslint && yarn test",
+    "verify:offline": "yarn verify:npmvet && yarn tslint && yarn test",
+    "verify:circleci": "circleci config validate",
+    "verify:ci": "yarn verify:npmvet && yarn verify:nsp && yarn test:ci",
+    "verify:check": "depcheck",
+    "verify:david": "david",
+    "verify:npmvet": "npmvet --renderer ci --strict",
+    "verify:nsp": "nsp check --output summary",
+    "verify:tscheck": "types-checker"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jameswlane/jest-express.git"
+  },
+  "keywords": [
+    "jest",
+    "mock",
+    "express"
+  ],
+  "author": "James W. Lane <james.w.lane@mac.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jameswlane/jest-express/issues"
+  },
+  "homepage": "https://github.com/jameswlane/jest-express#readme",
+  "devDependencies": {
+    "@commitlint/cli": "6.1.0",
+    "@commitlint/config-conventional": "6.1.0",
+    "@types/chance": "0.7.36",
+    "@types/faker": "4.1.2",
+    "@types/jest": "22.1.2",
+    "@types/node": "9.4.5",
+    "all-contributors-cli": "4.10.1",
+    "chance": "1.0.13",
+    "codecov": "3.0.0",
+    "commitizen": "2.9.6",
+    "cz-conventional-changelog": "2.1.0",
+    "faker": "4.1.0",
+    "jest": "22.2.2",
+    "jest-junit": "3.6.0",
+    "lint-staged": "6.1.0",
+    "opt-cli": "1.6.0",
+    "rimraf": "2.6.2",
+    "semantic-release": "12.4.1",
+    "ts-jest": "22.0.4",
+    "tslint": "5.9.1",
+    "tslint-config-airbnb": "5.6.0",
+    "typescript": "2.7.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "jest-junit": {
+    "output": "./ts-test-results.xml"
+  }
+}

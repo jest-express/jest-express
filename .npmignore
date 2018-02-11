@@ -1,0 +1,6 @@
+src
+.nvmrc
+.travis.yml
+jest.config.js
+tsconfig.json
+tslint.json
