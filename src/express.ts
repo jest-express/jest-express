@@ -2,7 +2,7 @@ import { Request } from './request';
 import { Response } from './response';
 
 declare const jest: any;
-
+// https://expressjs.com/en/4x/api.html#app
 export class Express {
   // Properties
   public locals: any;
@@ -44,11 +44,16 @@ export class Express {
     // Methods
     this.all = jest.fn();
     this.delete = jest.fn();
+    // TODO app.disable(name)
     this.disable = jest.fn();
+    // TODO app.disabled()
     this.disabled = jest.fn();
+    // TODO app.enable(name)
     this.enable = jest.fn();
+    // TODO app.enabled()
     this.enabled = jest.fn();
     this.engine = jest.fn();
+    // TODO app.listen(port, [hostname], [backlog], [callback])
     this.listen = jest.fn();
     this.head = jest.fn();
     this.post = jest.fn();
@@ -58,8 +63,11 @@ export class Express {
     this.trace = jest.fn();
     this.patch = jest.fn();
     this.param = jest.fn();
+    // TODO app.path()
     this.path = jest.fn();
+    // TODO app.render(view, [locals], callback)
     this.render = jest.fn();
+    // TODO app.use([path,] callback [, callback...])
     this.use = jest.fn();
     this.request = new Request();
     this.response = new Response();
@@ -72,7 +80,7 @@ export class Express {
       }
       return path(this.request, this.response);
     });
-
+    // TODO app.route(path)
     this.route = jest.fn(() => {
       return {
         get: this.get,
