@@ -14,6 +14,116 @@ describe('Express Application', () => {
     app.resetMocked();
   });
 
+  describe('Test disable', () => {
+    test('disable should have no calls by default', () => {
+      expect(app.disable).not.toHaveBeenCalled();
+    });
+
+    test('disable should be called and match called with', () => {
+      const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const value = chance.string();
+      app.set(key, value);
+
+      app.disable(key);
+
+      expect(app.disable).toHaveBeenCalled();
+      expect(app.get(key)).toEqual(false);
+    });
+
+    test('disable should have no call after reset', () => {
+      const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const value = chance.string();
+      app.set(key, value);
+      app.disable(key);
+
+      app.resetMocked();
+
+      expect(app.disable).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Test disabled', () => {
+    test('disabled should have no calls by default', () => {
+      expect(app.disabled).not.toHaveBeenCalled();
+    });
+
+    test('disabled should be called and match called with', () => {
+      const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const value = chance.string();
+      app.set(key, value);
+
+      app.disable(key);
+
+      expect(app.disabled(key)).toEqual(true);
+    });
+
+    test('disabled should have no call after reset', () => {
+      const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const value = chance.string();
+      app.set(key, value);
+      app.disable(key);
+
+      app.resetMocked();
+
+      expect(app.disabled).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Test enable', () => {
+    test('enable should have no calls by default', () => {
+      expect(app.enable).not.toHaveBeenCalled();
+    });
+
+    test('enable should be called and match called with', () => {
+      const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const value = chance.string();
+      app.set(key, value);
+
+      app.enable(key);
+
+      expect(app.enable).toHaveBeenCalled();
+      expect(app.get(key)).toEqual(true);
+    });
+
+    test('enable should have no call after reset', () => {
+      const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const value = chance.string();
+      app.set(key, value);
+      app.enable(key);
+
+      app.resetMocked();
+
+      expect(app.disable).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Test enabled', () => {
+    test('enabled should have no calls by default', () => {
+      expect(app.enabled).not.toHaveBeenCalled();
+    });
+
+    test('enabled should be called and match called with', () => {
+      const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const value = chance.string();
+      app.set(key, value);
+
+      app.enable(key);
+
+      expect(app.enabled(key)).toEqual(true);
+    });
+
+    test('enabled should have no call after reset', () => {
+      const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const value = chance.string();
+      app.set(key, value);
+      app.enable(key);
+
+      app.resetMocked();
+
+      expect(app.enabled).not.toHaveBeenCalled();
+    });
+  });
+
   describe('Test locals', () => {
     test('locals should be empty by default', () => {
       expect(app.locals).toEqual({});

@@ -44,14 +44,18 @@ export class Express {
     // Methods
     this.all = jest.fn();
     this.delete = jest.fn();
-    // TODO app.disable(name)
-    this.disable = jest.fn();
-    // TODO app.disabled()
-    this.disabled = jest.fn();
-    // TODO app.enable(name)
-    this.enable = jest.fn();
-    // TODO app.enabled()
-    this.enabled = jest.fn();
+    this.disable = jest.fn((key: any) => {
+      this.setting[key] = false;
+    });
+    this.disabled = jest.fn((key: any) => {
+      return this.setting[key] === false;
+    });
+    this.enable = jest.fn((key: any) => {
+      this.setting[key] = true;
+    });
+    this.enabled = jest.fn((key: any) => {
+      return this.setting[key] === true;
+    });
     this.engine = jest.fn();
     // TODO app.listen(port, [hostname], [backlog], [callback])
     this.listen = jest.fn();
