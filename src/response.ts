@@ -1,5 +1,5 @@
 declare const jest: any;
-
+// https://expressjs.com/en/4x/api.html#res
 export class Response {
   // Properties
   public headersSent: boolean;

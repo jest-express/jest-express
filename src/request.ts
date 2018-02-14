@@ -1,5 +1,5 @@
 declare const jest: any;
-
+// https://expressjs.com/en/4x/api.html#req
 export class Request {
   // Properties
   public baseUrl: string;

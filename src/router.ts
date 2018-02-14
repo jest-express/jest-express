@@ -2,7 +2,7 @@ import { Request } from './request';
 import { Response } from './response';
 
 declare const jest: any;
-
+// https://expressjs.com/en/4x/api.html#router
 export class Router {
   public request: any;
   public response: any;
