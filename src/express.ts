@@ -1,12 +1,20 @@
 import { Request } from './request';
 import { Response } from './response';
+import { Router } from './router';
 
 declare const jest: any;
+
 // https://expressjs.com/en/4x/api.html#app
 export class Express {
   // Properties
   public locals: any;
   public mountpath: string;
+  // Application Methods
+  public json: any;
+  public static: any;
+  // tslint:disable-next-line:variable-name
+  public Router: any;
+  public urlencoded: any;
   // Methods
   public all: any;
   public delete: any;
@@ -41,6 +49,11 @@ export class Express {
     this.locals = {};
     this.mountpath = '';
     this.setting = {};
+    // Application Methods
+    this.json = jest.fn();
+    this.static = jest.fn();
+    this.Router = jest.fn(() => new Router());
+    this.urlencoded = jest.fn();
     // Methods
     this.all = jest.fn();
     this.delete = jest.fn();
@@ -109,6 +122,11 @@ export class Express {
     // Properties
     this.locals = {};
     this.mountpath = '';
+    // Application Methods
+    this.json.mockReset();
+    this.static.mockReset();
+    this.Router.mockReset();
+    this.urlencoded.mockReset();
     // Methods
     this.all.mockReset();
     this.delete.mockReset();
