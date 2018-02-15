@@ -1,6 +1,6 @@
 import * as Chance from 'chance';
 
-import { Express, Request, Response, Router } from '../../src';
+import { Express, Request, Response } from '../../src';
 
 const chance = new Chance();
 let app: any;
@@ -172,109 +172,6 @@ describe('Express Application', () => {
       app.resetMocked();
 
       expect(app.mountpath).toEqual('');
-    });
-  });
-
-  describe('Test json', () => {
-    test('json should have no calls by default', () => {
-      expect(app.json).not.toHaveBeenCalled();
-    });
-
-    test('json should be called and match called with', () => {
-      const options = {};
-
-      app.json(options);
-
-      expect(app.json).toHaveBeenCalled();
-      expect(app.json).toHaveBeenCalledWith(options);
-    });
-
-    test('json should have no call after reset', () => {
-      const options = {};
-
-      app.json(options);
-
-      app.resetMocked();
-
-      expect(app.json).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('Test static', () => {
-    test('static should have no calls by default', () => {
-      expect(app.static).not.toHaveBeenCalled();
-    });
-
-    test('static should be called and match called with', () => {
-      const root = chance.string();
-      const options = {};
-
-      app.static(root, options);
-
-      expect(app.static).toHaveBeenCalled();
-      expect(app.static).toHaveBeenCalledWith(root, options);
-    });
-
-    test('static should have no call after reset', () => {
-      const root = chance.string();
-      const options = {};
-
-      app.static(root, options);
-
-      app.resetMocked();
-
-      expect(app.static).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('Test Router', () => {
-    test('Router should have no calls by default', () => {
-      expect(app.Router).not.toHaveBeenCalled();
-    });
-
-    test('Router should be called and match called with', () => {
-      const options = {};
-
-      const newRouter = app.Router(options);
-
-      expect(app.Router).toHaveBeenCalled();
-      expect(app.Router).toHaveBeenCalledWith(options);
-      expect(newRouter).toBeInstanceOf(Router);
-    });
-
-    test('Router should have no call after reset', () => {
-      const options = {};
-
-      app.Router(options);
-
-      app.resetMocked();
-
-      expect(app.Router).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('Test urlencoded', () => {
-    test('urlencoded should have no calls by default', () => {
-      expect(app.urlencoded).not.toHaveBeenCalled();
-    });
-
-    test('urlencoded should be called and match called with', () => {
-      const options = {};
-
-      app.urlencoded(options);
-
-      expect(app.urlencoded).toHaveBeenCalled();
-      expect(app.urlencoded).toHaveBeenCalledWith(options);
-    });
-
-    test('urlencoded should have no call after reset', () => {
-      const options = {};
-
-      app.urlencoded(options);
-
-      app.resetMocked();
-
-      expect(app.urlencoded).not.toHaveBeenCalled();
     });
   });
 
