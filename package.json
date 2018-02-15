@@ -2,7 +2,7 @@
   "name": "jest-express",
   "version": "0.0.0-development",
   "description": "jest mock",
-  "main": "./lib/index.js",
+  "main": "index.js",
   "types": "./lib/index.d.ts",
   "directories": {
     "test": "test"
