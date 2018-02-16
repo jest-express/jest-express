@@ -16,7 +16,7 @@ let application: Application;
 
 describe('Exporter', () => {
   test('Default export is a instance of express', () => {
-    expect(src).toBeInstanceOf(Express);
+    expect(src()).toBeInstanceOf(Express);
   });
 
   test('Router is a instance of Router class', () => {

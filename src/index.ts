@@ -20,4 +20,9 @@ export {
   urlencoded,
 };
 export { staticLoad as static };
-export default new Express();
+
+function createApplication() {
+  return new Express();
+}
+
+export default createApplication;
