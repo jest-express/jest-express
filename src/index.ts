@@ -1,11 +1,22 @@
-import { Express } from './express'
-import { Application } from './application'
+import { Application } from './application';
+import { Express } from './express';
 
-export { Request } from './request'
-export { Response } from './response'
-export { Router } from './router'
+const { 
+  json,
+  query,
+  resetMocked,
+  staticLoad,
+  urlencoded,
+} = new Application();
 
-const { json, query, urlencoded, staticLoad, resetMocked } = new Application();
-export { json, query, urlencoded, resetMocked };
+export { Request } from './request';
+export { Response } from './response';
+export { Router } from './router';
+export {
+  json,
+  query,
+  resetMocked,
+  urlencoded,
+};
 export { staticLoad as static };
-export default new Express()
+export default new Express();
