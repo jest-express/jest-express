@@ -1,7 +1,7 @@
 import { Application } from './application';
 import { Express } from './express';
 
-const { 
+const {
   json,
   query,
   resetMocked,
