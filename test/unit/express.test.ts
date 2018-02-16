@@ -1,6 +1,7 @@
 import * as Chance from 'chance';
 
-import { Express, Request, Response } from '../../src';
+import { Express } from '../../src/express';
+import { Request, Response } from '../../src';
 
 const chance = new Chance();
 let app: any;

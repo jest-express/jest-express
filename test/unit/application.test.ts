@@ -1,7 +1,6 @@
 import * as Chance from 'chance';
 
-import { Application } from '../../src';
-import { Router } from "../../src/router";
+import { Application } from '../../src/application';
 
 const chance = new Chance();
 let app: any;
