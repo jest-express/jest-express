@@ -1,6 +1,6 @@
 import * as Chance from 'chance';
 
-import { Request } from '../../src';
+import { Request } from '../../src/request';
 
 const chance = new Chance();
 let request: any;

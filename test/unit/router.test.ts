@@ -1,6 +1,8 @@
 import * as Chance from 'chance';
 
-import { Router, Response, Request } from '../../src';
+import { Request } from '../../src/request';
+import { Response } from '../../src/response';
+import { Router } from '../../src/router';
 
 const chance = new Chance();
 let router: any;

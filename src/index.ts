@@ -1,28 +1,35 @@
 import { Application } from './application';
 import { Express } from './express';
+import { Request } from './request';
+import { Response } from './response';
+import { Router } from './router';
 
-const {
-  json,
-  query,
-  resetMocked,
-  staticLoad,
-  urlencoded,
-} = new Application();
+/**
+ * Expose `createApplication()`.
+ */
+exports = module.exports = createApplication;
 
-export { Express } from './express';
-export { Request } from './request';
-export { Response } from './response';
-export { Router } from './router';
-export {
-  json,
-  query,
-  resetMocked,
-  urlencoded,
-};
-export { staticLoad as static };
-
+/**
+ * Create an express application.
+ */
 function createApplication() {
   return new Express();
 }
 
-export default createApplication;
+/**
+ * Expose constructors.
+ */
+exports.Express = Express;
+exports.Response = Response;
+exports.Request = Request;
+exports.Router = Router;
+
+/**
+ * Expose middleware
+ */
+const application = new Application();
+exports.json = application.json;
+exports.query = application.query;
+exports.static = application.staticLoad;
+exports.urlencoded = application.urlencoded;
+exports.resetMocked = application.resetMocked;
