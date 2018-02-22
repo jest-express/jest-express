@@ -53,7 +53,7 @@
   },
   "homepage": "https://github.com/jameswlane/jest-express#readme",
   "devDependencies": {
-    "@commitlint/cli": "6.1.0",
+    "@commitlint/cli": "6.1.2",
     "@commitlint/config-conventional": "6.1.0",
     "@types/chance": "0.7.36",
     "@types/faker": "4.1.2",
