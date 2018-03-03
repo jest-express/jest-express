@@ -19,6 +19,5 @@ module.exports = {
     "<rootDir>/test/**/*.(test|spec).(ts|tsx|js)"
   ],
   coveragePathIgnorePatterns: ["<rootDir>/test/helpers/", "<rootDir>/node_modules/"],
-  "clearMocks": true,
-  "mapCoverage": true
+  "clearMocks": true
 };
