@@ -158,6 +158,9 @@ jobs:
     steps:
       - *attach_workspace
       - run:
+          name: Avoid hosts unknown for github
+          command: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run:
           name: Semantic Release
           command: yarn semantic-release
 
