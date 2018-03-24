@@ -73,7 +73,7 @@
     "semantic-release": "15.1.4",
     "ts-jest": "22.4.2",
     "tslint": "5.9.1",
-    "tslint-config-airbnb": "5.7.0",
+    "tslint-config-airbnb": "5.8.0",
     "typescript": "2.7.2"
   },
   "config": {
