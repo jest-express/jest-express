@@ -906,9 +906,9 @@ chalk@^2.0.0, chalk@^2.0.1, chalk@^2.3.0:
     escape-string-regexp "^1.0.5"
     supports-color "^4.0.0"
 
-chance@1.0.13:
-  version "1.0.13"
-  resolved "https://registry.yarnpkg.com/chance/-/chance-1.0.13.tgz#666bec2db42b3084456a3e4f4c28a82db5ccb7e6"
+chance@1.0.14:
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/chance/-/chance-1.0.14.tgz#99a52f02336dd7fb02ad85a6aedef0c4145c936e"
 
 chardet@^0.4.0:
   version "0.4.2"
