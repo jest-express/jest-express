@@ -1,15 +1,9 @@
 import * as Chance from 'chance';
-
 import { next } from '../../src/next';
 
 const chance = new Chance();
-let next: any;
 
 describe('Express Next', () => {
-  beforeEach(() => {
-    next = next;
-  });
-
   afterEach(() => {
     next.mockReset();
   });
