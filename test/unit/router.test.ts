@@ -1,5 +1,6 @@
 import * as Chance from 'chance';
 
+import { next, NextFunction } from '../../src/next';
 import { Request } from '../../src/request';
 import { Response } from '../../src/response';
 import { Router } from '../../src/router';
@@ -23,11 +24,13 @@ describe('Express Router', () => {
   });
 
   test('get', () => {
-    router.get('/', (request: any, response: any) => {
+    router.get('/', (request: Request, response: Response, next: NextFunction) => {
       expect(router.get).toHaveBeenCalled();
       expect(router.get).toHaveBeenCalledWith('/', expect.anything());
       expect(request).toBeInstanceOf(Request);
       expect(response).toBeInstanceOf(Response);
+      expect(response).toBeInstanceOf(Response);
+      expect(next).toEqual(next);
     });
   });
 
