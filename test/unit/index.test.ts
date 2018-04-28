@@ -4,6 +4,7 @@ import { Request as RealRequest } from '../../src/request';
 import { Response as RealResponse } from '../../src/response';
 import { Router as RealRouter } from '../../src/router';
 import { Express as RealExpress } from '../../src/express';
+import { next as RealNext } from '../../src/next';
 
 let application: Application;
 
@@ -13,7 +14,7 @@ describe('Exporter', () => {
   });
 
   test('Router is a instance of Router class', () => {
-    expect(express.Router).toEqual(RealRouter);
+    expect(express.Router()).toBeInstanceOf(RealRouter);
   });
 
   test('Response is a instance of Response class', () => {
@@ -26,6 +27,10 @@ describe('Exporter', () => {
 
   test('Request is a instance of Request class', () => {
     expect(express.Request).toEqual(RealRequest);
+  });
+
+  test('Next is a instance of Next function', () => {
+    expect(express.Next).toEqual(RealNext);
   });
 
   test('resetMocked is a instance of Application resetMocked function', () => {

@@ -1,5 +1,6 @@
 import { Application } from './application';
 import { Express } from './express';
+import { next } from './next';
 import { Request } from './request';
 import { Response } from './response';
 import { Router } from './router';
@@ -22,7 +23,8 @@ function createApplication() {
 exports.Express = Express;
 exports.Response = Response;
 exports.Request = Request;
-exports.Router = Router;
+exports.Next = next;
+exports.Router = () => new Router();
 
 /**
  * Expose middleware
