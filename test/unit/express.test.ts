@@ -1,6 +1,7 @@
 import * as Chance from 'chance';
 
 import { Express } from '../../src/express';
+import { next, NextFunction } from '../../src/next';
 import { Request } from '../../src/request';
 import { Response } from '../../src/response';
 
@@ -149,6 +150,32 @@ describe('Express Application', () => {
       app.resetMocked();
 
       expect(app.locals).toEqual({});
+    });
+  });
+
+  describe('Test error', () => {
+    test('error should be empty by default', () => {
+      expect(app.error).toEqual({});
+    });
+
+    test('error should allow you to update it', () => {
+      const userValue = chance.string();
+      const authenticatedValue = chance.bool();
+      app.setError('user', userValue);
+      expect(app.error).toHaveProperty('user', userValue);
+
+      app.setError('authenticated', authenticatedValue);
+      expect(app.error).toHaveProperty('user', userValue);
+      expect(app.error).toHaveProperty('authenticated', authenticatedValue);
+    });
+
+    test('error should be empty after reset', () => {
+      const userValue = chance.string();
+      app.setError('user', userValue);
+
+      app.resetMocked();
+
+      expect(app.error).toEqual({});
     });
   });
 
@@ -517,7 +544,6 @@ describe('Express Application', () => {
     });
   });
 
-
   test('Get', () => {
     app.get('/', (request: any, response: any) => {
       expect(app.get).toHaveBeenCalled();
@@ -551,9 +577,35 @@ describe('Express Application', () => {
     expect(app.set).toHaveBeenCalledWith('title', 'My Site');
   });
 
-  test('Use', () => {
-    app.use('/events');
-    expect(app.use).toHaveBeenCalled();
-    expect(app.use).toHaveBeenCalledWith('/events');
+  describe('Test use', () => {
+    test('Use called with a string', () => {
+      app.use('/events');
+      expect(app.use).toHaveBeenCalled();
+      expect(app.use).toHaveBeenCalledWith('/events');
+    });
+
+    test('Use called with a callback with three argument', () => {
+      const callback = (req: Request, res: Response, next: NextFunction) => {
+        expect(req).toBeInstanceOf(Request);
+        expect(res).toBeInstanceOf(Response);
+        expect(next).toEqual(next);
+      };
+      app.use(callback);
+      expect(app.use).toHaveBeenCalled();
+      expect(app.use).toHaveBeenCalledWith(callback);
+    });
+
+    test('Use called with a callback with four argument', () => {
+      const callback = (err: any, req: Request, res: Response, next: NextFunction) => {
+        expect(err).toBeInstanceOf(Object);
+        expect(req).toBeInstanceOf(Request);
+        expect(res).toBeInstanceOf(Response);
+        expect(next).toEqual(next);
+      };
+
+      app.use(callback);
+      expect(app.use).toHaveBeenCalled();
+      expect(app.use).toHaveBeenCalledWith(callback);
+    });
   });
 });

@@ -1,10 +1,13 @@
+import { next, NextFunction } from './next';
 import { Request } from './request';
 import { Response } from './response';
 
 declare const jest: any;
+
 // https://expressjs.com/en/4x/api.html#app
 export class Express {
   // Properties
+  public error: any;
   public locals: any;
   public mountpath: string;
   // Methods
@@ -33,12 +36,17 @@ export class Express {
   // Class
   public request: Request;
   public response: Response;
+  public next: NextFunction;
   // Private
   private setting: any;
 
   constructor() {
+    this.request = new Request();
+    this.response = new Response();
+    this.next = next;
     // Properties
     this.locals = {};
+    this.error = {};
     this.mountpath = '';
     this.setting = {};
     // Methods
@@ -71,10 +79,15 @@ export class Express {
     this.path = jest.fn();
     // TODO app.render(view, [locals], callback)
     this.render = jest.fn();
-    // TODO app.use([path,] callback [, callback...])
-    this.use = jest.fn();
-    this.request = new Request();
-    this.response = new Response();
+    this.use = jest.fn((func: any) => {
+      if (typeof func === 'function' && func.length === 3) {
+        return func(this.request, this.response, this.next);
+      }
+      if (typeof func === 'function' && func.length === 4) {
+        return func(this.error, this.request, this.response, this.next);
+      }
+      return;
+    });
     this.get = jest.fn((path: any, callback: any) => {
       if (typeof path === 'string' && callback === undefined) {
         return this.setting[path];
@@ -105,9 +118,14 @@ export class Express {
     this.locals[key] = value;
   }
 
+  public setError(key: string, value: string) {
+    this.error[key] = value;
+  }
+
   public resetMocked() {
     // Properties
     this.locals = {};
+    this.error = {};
     this.mountpath = '';
     // Methods
     this.all.mockReset();
@@ -135,6 +153,7 @@ export class Express {
     // Class
     this.request.resetMocked();
     this.response.resetMocked();
+    this.next.mockReset();
     // Private
     this.setting = {};
   }
