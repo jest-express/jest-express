@@ -226,7 +226,7 @@
     into-stream "^3.1.0"
     lodash "^4.17.4"
 
-"@types/chance@1.0.1":
+"@types/chance@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/chance/-/chance-1.0.1.tgz#c10703020369602c40dd9428cc6e1437027116df"
 
