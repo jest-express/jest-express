@@ -1054,7 +1054,7 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-codecov@3.0.3:
+codecov@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/codecov/-/codecov-3.0.3.tgz#e6a209f1674f3e3a8ff6d889ab7ac0b4a8895fa2"
   dependencies:
