@@ -10,15 +10,6 @@
   "commit": true,
   "contributors": [
     {
-      "login": "jfmengels",
-      "name": "Jeroen Engels",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/3869412?v=4",
-      "profile": "https://github.com/jfmengels",
-      "contributions": [
-        "bug"
-      ]
-    },
-    {
       "login": "jameswlane",
       "name": "James W. Lane III",
       "avatar_url": "https://avatars2.githubusercontent.com/u/794161?v=4",
@@ -29,6 +20,15 @@
         "infra",
         "test",
         "tool"
+      ]
+    },
+    {
+      "login": "jfmengels",
+      "name": "Jeroen Engels",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/3869412?v=4",
+      "profile": "https://github.com/jfmengels",
+      "contributions": [
+        "bug"
       ]
     }
   ]
