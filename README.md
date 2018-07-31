@@ -1,5 +1,5 @@
 # Jest Express
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
 [![CircleCI](https://circleci.com/gh/jameswlane/jest-express.svg?style=svg)](https://circleci.com/gh/jameswlane/jest-express)
 [![Greenkeeper badge](https://badges.greenkeeper.io/jameswlane/jest-express.svg)](https://greenkeeper.io/)
 [![dependencies Status](https://david-dm.org/jameswlane/jest-express/status.svg)](https://david-dm.org/jameswlane/jest-express)
@@ -973,8 +973,8 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-| [<img src="https://avatars1.githubusercontent.com/u/3869412?v=4" width="100px;"/><br /><sub><b>Jeroen Engels</b></sub>](https://github.com/jfmengels)<br />[🐛](https://github.com/jameswlane/jest-express/issues?q=author%3Ajfmengels "Bug reports") |
-| :---: |
+| [<img src="https://avatars1.githubusercontent.com/u/3869412?v=4" width="100px;"/><br /><sub><b>Jeroen Engels</b></sub>](https://github.com/jfmengels)<br />[🐛](https://github.com/jameswlane/jest-express/issues?q=author%3Ajfmengels "Bug reports") | [<img src="https://avatars2.githubusercontent.com/u/794161?v=4" width="100px;"/><br /><sub><b>James W. Lane III</b></sub>](http://fueledbydreams.com)<br />[💻](https://github.com/jameswlane/jest-express/commits?author=jameswlane "Code") [📖](https://github.com/jameswlane/jest-express/commits?author=jameswlane "Documentation") [🚇](#infra-jameswlane "Infrastructure (Hosting, Build-Tools, etc)") [⚠️](https://github.com/jameswlane/jest-express/commits?author=jameswlane "Tests") [🔧](#tool-jameswlane "Tools") |
+| :---: | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!

@@ -17,6 +17,19 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "jameswlane",
+      "name": "James W. Lane III",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/794161?v=4",
+      "profile": "http://fueledbydreams.com",
+      "contributions": [
+        "code",
+        "doc",
+        "infra",
+        "test",
+        "tool"
+      ]
     }
   ]
 }
