@@ -63,3 +63,6 @@ typings/
 lib
 
 .DS_Store
+
+# Private project config
+.opt-in
