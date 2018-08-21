@@ -337,7 +337,6 @@ describe('Express Request', () => {
       request.setQuery(firstKey, firstValue);
       expect(request.query).toHaveProperty(firstKey, firstValue);
 
-
       const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
       const secondValue = chance.string();
       request.setQuery(secondKey, secondValue);
