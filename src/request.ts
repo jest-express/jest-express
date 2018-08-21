@@ -6,6 +6,7 @@ export class Request {
   public body: string;
   public cookies: any;
   public fresh: boolean;
+  public headers: any;
   public hostname: string;
   public ip: string;
   public ips: string[];
@@ -36,6 +37,7 @@ export class Request {
     this.body = '';
     this.cookies = {};
     this.fresh = false;
+    this.headers = {};
     this.hostname = '';
     this.ip = '';
     this.ips = [];
@@ -68,6 +70,7 @@ export class Request {
     this.body = '';
     this.cookies = {};
     this.fresh = false;
+    this.headers = {};
     this.hostname = '';
     this.ip = '';
     this.ips = [];
@@ -107,6 +110,10 @@ export class Request {
 
   public setFresh(value: boolean) {
     this.fresh = value;
+  }
+
+  public setHeaders(key: string, value: string) {
+    this.headers[key] = value;
   }
 
   public setIp(value: string) {
