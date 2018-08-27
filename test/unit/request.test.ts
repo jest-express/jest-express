@@ -115,6 +115,35 @@ describe('Express Request', () => {
     });
   });
 
+  describe('Test headers', () => {
+    test('headers should be empty by default', () => {
+      expect(request.headers).toEqual({});
+    });
+
+    test('headers should allow you to update it', () => {
+      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const firstValue = chance.string();
+      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const secondValue = chance.string();
+      request.setHeaders(firstKey, firstValue);
+      expect(request.headers).toHaveProperty(firstKey, firstValue);
+
+      request.setHeaders(secondKey, secondValue);
+      expect(request.headers).toHaveProperty(firstKey, firstValue);
+      expect(request.headers).toHaveProperty(secondKey, secondValue);
+    });
+
+    test('params should be empty after reset', () => {
+      const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const value = chance.string();
+      request.setHeaders(key, value);
+
+      request.resetMocked();
+
+      expect(request.headers).toEqual({});
+    });
+  });
+
   describe('Test ip', () => {
     test('ip should be VALUE by default', () => {
       expect(request.ip).toEqual('');
@@ -307,7 +336,6 @@ describe('Express Request', () => {
       const firstValue = chance.string();
       request.setQuery(firstKey, firstValue);
       expect(request.query).toHaveProperty(firstKey, firstValue);
-
 
       const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
       const secondValue = chance.string();
