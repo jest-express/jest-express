@@ -501,13 +501,22 @@ beforeEach(() => {
 
 #### `request.query`
 
-Ways to use this API:
+You can use it by passing key value pair:
 
 Setup:
 ```js
 beforeEach(() => {
   request = new Request();
-  request.setQuery(query);
+  request.setQuery('Accept', 'text/html');
+});
+```
+
+Or by passing an object:
+
+```js
+beforeEach(() => {
+  request = new Request();
+  request.setQuery({ 'Accept': 'text/html', 'Accept-Language': 'en' });
 });
 ```
 
