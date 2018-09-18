@@ -144,8 +144,14 @@ export class Request {
     this.protocol = value;
   }
 
-  public setQuery(key: string, value: string) {
-    this.query[key] = value;
+  public setQuery(key: string | { [key: string]: string }, value: string | void) {
+    if (typeof key === 'string') {
+      this.query[key] = value;
+    } else {
+      for (let k of Object.keys(key)) {
+        this.query[k] = key[k]
+      }
+    }
   }
 
   public setRoute(key: string, value: string) {

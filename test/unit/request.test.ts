@@ -353,6 +353,19 @@ describe('Express Request', () => {
 
       expect(request.query).toEqual({});
     });
+
+    test('query should allow you to update it by passing object', () => {
+      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const firstValue = chance.string();
+      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const secondValue = chance.string();
+      request.setQuery({
+        [firstKey]: firstValue,
+        [secondKey]: secondValue
+      })
+      expect(request.query).toHaveProperty(firstKey, firstValue);
+      expect(request.query).toHaveProperty(secondKey, secondValue);
+    });
   });
 
   describe('Test route', () => {
