@@ -148,8 +148,8 @@ export class Request {
     if (typeof key === 'string') {
       this.query[key] = value;
     } else {
-      for (let k of Object.keys(key)) {
-        this.query[k] = key[k]
+      for (const k of Object.keys(key)) {
+        this.query[k] = key[k];
       }
     }
   }

@@ -46,9 +46,9 @@ export class Response {
     this.get = jest.fn();
     this.header = jest.fn((key: any, value: string | void) => {
       if (typeof value === 'string') {
-        this.set(key, value)
+        this.set(key, value);
       } else {
-        this.set(key)
+        this.set(key);
       }
     });
     this.json = jest.fn();
@@ -62,15 +62,15 @@ export class Response {
     this.sendStatus = jest.fn();
     this.set = jest.fn((key: string | { [key: string]: string }, value: string | void) => {
       if (typeof key === 'string') {
-        this.setHeader(key, value)
+        this.setHeader(key, value);
       } else {
-        for (let k of Object.keys(key)) {
-          this.set(k, key[k])
+        for (const k of Object.keys(key)) {
+          this.set(k, key[k]);
         }
-      } 
+      }
     });
     this.setHeader = jest.fn((key: string, value: string) => {
-      this.headers[key] = value
+      this.headers[key] = value;
     });
     this.status = jest.fn(() => {
       return {
