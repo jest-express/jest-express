@@ -78,6 +78,18 @@
     "tslint-config-airbnb": "5.10.0",
     "typescript": "3.0.1"
   },
+  "greenkeeper": {
+    "ignore": [
+      "@commitlint/cli",
+      "@commitlint/config-conventional",
+      "@types/faker",
+      "@types/chance",
+      "tslint-config-airbnb",
+      "faker",
+      "chance",
+      "codecov"
+    ]
+  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
