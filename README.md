@@ -107,6 +107,8 @@ Mock Express for testing with Jest
     * [end()](#responseend)
     * [format()](#responseformat)
     * [get()](#responseget)
+    * [getHeader()](#responsegetheader)
+    * [header()](#responseheader)
     * [json()](#responsejson)
     * [jsonp()](#responsejsonp)
     * [links()](#responselinks)
@@ -120,6 +122,7 @@ Mock Express for testing with Jest
     * [status()](#responsestatus)
     * [type()](#responsetype)
     * [vary()](#responsevary)
+    * [setHeader()](#responsesetheader)
     * [setHeadersSent()](#responsesetheaderssent)
     * [setLocals()](#responsesetlocals)
     * [resetMocked()](#resetmocked)
@@ -683,6 +686,19 @@ describe('Endpoint', () => {
 });
 ```
 
+#### `response.setHeader`
+
+Ways to use this API:
+
+Setup:
+```js
+beforeEach(() => {
+  response = new Response();
+  response.setHeader(key, value);
+  expect(response.setHeader).toBeCalledWith(key, value);
+});
+```
+
 #### `response.headersSent`
 
 Ways to use this API:
@@ -771,6 +787,23 @@ Ways to use this API:
 expect(response.get).toBeCalledWith(field);
 ```
 
+#### `response.getHeader()`
+
+Ways to use this API:
+
+```js
+response.setHeader('Accept', 'text/html')
+expect(response.getHeader('Accept')).toEqual('text/html');
+```
+
+#### `response.header()`
+
+An alias for `response.set()`
+
+```js
+expect(response.header).toBeCalledWith(field, [value]);
+```
+
 #### `response.json()`
 
 Ways to use this API:
@@ -845,7 +878,7 @@ expect(response.sendStatus).toBeCalledWith(statusCode);
 
 #### `response.set()`
 
-Ways to use this API:
+Sets headers. It is calling `response.setHeader()` internally.
 
 ```js
 expect(response.set).toBeCalledWith(field [, value]);

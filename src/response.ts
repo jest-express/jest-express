@@ -2,6 +2,7 @@ declare const jest: any;
 // https://expressjs.com/en/4x/api.html#res
 export class Response {
   // Properties
+  public headers: any;
   public headersSent: boolean;
   public locals: any;
   // Methods
@@ -13,6 +14,7 @@ export class Response {
   public end: any;
   public format: any;
   public get: any;
+  public header: any;
   public json: any;
   public jsonp: any;
   public links: any;
@@ -23,12 +25,14 @@ export class Response {
   public sendFile: any;
   public sendStatus: any;
   public set: any;
+  public setHeader: any;
   public status: any;
   public type: any;
   public vary: any;
 
   constructor() {
     // Properties
+    this.headers = {};
     this.headersSent = false;
     this.locals = {};
     // Methods
@@ -40,6 +44,13 @@ export class Response {
     this.end = jest.fn();
     this.format = jest.fn();
     this.get = jest.fn();
+    this.header = jest.fn((key: any, value: string | void) => {
+      if (typeof value === 'string') {
+        this.set(key, value)
+      } else {
+        this.set(key)
+      }
+    });
     this.json = jest.fn();
     this.jsonp = jest.fn();
     this.links = jest.fn();
@@ -49,7 +60,18 @@ export class Response {
     this.send = jest.fn();
     this.sendFile = jest.fn();
     this.sendStatus = jest.fn();
-    this.set = jest.fn();
+    this.set = jest.fn((key: string | { [key: string]: string }, value: string | void) => {
+      if (typeof key === 'string') {
+        this.setHeader(key, value)
+      } else {
+        for (let k of Object.keys(key)) {
+          this.set(k, key[k])
+        }
+      } 
+    });
+    this.setHeader = jest.fn((key: string, value: string) => {
+      this.headers[key] = value
+    });
     this.status = jest.fn(() => {
       return {
         end: this.end,
@@ -62,6 +84,10 @@ export class Response {
     return this;
   }
 
+  public getHeader(key: string): string | void {
+    return this.headers[key];
+  }
+
   public setHeadersSent(value: boolean) {
     this.headersSent = value;
   }
@@ -72,6 +98,7 @@ export class Response {
 
   public resetMocked() {
     // Properties
+    this.headers = {};
     this.headersSent = false;
     this.locals = {};
     // Methods
@@ -83,6 +110,7 @@ export class Response {
     this.end.mockReset();
     this.format.mockReset();
     this.get.mockReset();
+    this.header.mockReset();
     this.json.mockReset();
     this.jsonp.mockReset();
     this.links.mockReset();
@@ -93,6 +121,7 @@ export class Response {
     this.sendFile.mockReset();
     this.sendStatus.mockReset();
     this.set.mockReset();
+    this.setHeader.mockReset();
     this.status.mockReset();
     this.type.mockReset();
     this.vary.mockReset();
