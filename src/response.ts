@@ -2,6 +2,7 @@ declare const jest: any;
 // https://expressjs.com/en/4x/api.html#res
 export class Response {
   // Properties
+  public headers: any;
   public headersSent: boolean;
   public locals: any;
   // Methods
@@ -30,6 +31,7 @@ export class Response {
 
   constructor() {
     // Properties
+    this.headers = {};
     this.headersSent = false;
     this.locals = {};
     // Methods
@@ -51,7 +53,9 @@ export class Response {
     this.sendFile = jest.fn();
     this.sendStatus = jest.fn();
     this.set = jest.fn();
-    this.setHeader = jest.fn();
+    this.setHeader = jest.fn((key: string, value: string) => {
+      this.headers[key] = value
+    });
     this.status = jest.fn(() => {
       return {
         end: this.end,
@@ -64,6 +68,10 @@ export class Response {
     return this;
   }
 
+  public getHeader(key: string): string | void {
+    return this.headers[key];
+  }
+
   public setHeadersSent(value: boolean) {
     this.headersSent = value;
   }
@@ -74,6 +82,7 @@ export class Response {
 
   public resetMocked() {
     // Properties
+    this.headers = {};
     this.headersSent = false;
     this.locals = {};
     // Methods

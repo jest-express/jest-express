@@ -106,6 +106,25 @@ describe('Express Response', () => {
     });
   });
 
+  describe('Test getHeader', () => {
+    test('getHeader should return headers set by setHeader', () => {
+      const key = chance.string();
+      const value = chance.string();
+      response.setHeader(key, value);
+
+      expect(response.getHeader(key)).toEqual(value);
+    });
+
+    test('getHeader should return undefined after reset', () => {
+      const key = chance.string();
+      const value = chance.string();
+      response.setHeader(key, value);
+
+      response.resetMocked();
+      expect(response.getHeader(key)).toEqual(undefined);
+    });
+  });
+
   describe('Test attachment', () => {
     test('attachment should have no calls by default', () => {
       expect(response.attachment).not.toHaveBeenCalled();
