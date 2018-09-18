@@ -52,7 +52,15 @@ export class Response {
     this.send = jest.fn();
     this.sendFile = jest.fn();
     this.sendStatus = jest.fn();
-    this.set = jest.fn();
+    this.set = jest.fn((key: string | { [key: string]: string }, value: string | void) => {
+      if (typeof key === 'string') {
+        this.setHeader(key, value)
+      } else {
+        for (let k of Object.keys(key)) {
+          this.set(k, key[k])
+        }
+      } 
+    });
     this.setHeader = jest.fn((key: string, value: string) => {
       this.headers[key] = value
     });
