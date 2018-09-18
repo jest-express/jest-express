@@ -11,7 +11,7 @@ never done that before, that's great! Check this free short video tutorial to
 learn how: https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github
 -->
 
-- `react` version:
+- `jest-express` version:
 - `node` version:
 - `npm` (or `yarn`) version:
 
