@@ -9,7 +9,7 @@ Thanks for being willing to contribute!
 
 1. Fork and clone the repo
 2. `$ npm install` to install dependencies
-3. `$ npm start validate` to validate you've got it working
+3. `$ npm start verify` to validate you've got it working
 4. Create a branch for your PR
 
 ## Add yourself as a contributor
