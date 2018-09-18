@@ -14,6 +14,7 @@ export class Response {
   public end: any;
   public format: any;
   public get: any;
+  public header: any;
   public json: any;
   public jsonp: any;
   public links: any;
@@ -43,6 +44,13 @@ export class Response {
     this.end = jest.fn();
     this.format = jest.fn();
     this.get = jest.fn();
+    this.header = jest.fn((key: any, value: string | void) => {
+      if (typeof value === 'string') {
+        this.set(key, value)
+      } else {
+        this.set(key)
+      }
+    });
     this.json = jest.fn();
     this.jsonp = jest.fn();
     this.links = jest.fn();
@@ -102,6 +110,7 @@ export class Response {
     this.end.mockReset();
     this.format.mockReset();
     this.get.mockReset();
+    this.header.mockReset();
     this.json.mockReset();
     this.jsonp.mockReset();
     this.links.mockReset();

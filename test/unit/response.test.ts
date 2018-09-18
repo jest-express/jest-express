@@ -131,6 +131,22 @@ describe('Express Response', () => {
       expect(response.getHeader(key)).toEqual(value);
     });
 
+    test('getHeader should return headers set by header', () => {
+      const key = chance.string();
+      const value = chance.string();
+      response.header(key, value);
+
+      expect(response.getHeader(key)).toEqual(value);
+    });
+
+    test('getHeader should return headers set by header with object', () => {
+      const key = chance.string();
+      const value = chance.string();
+      response.header({[key]: value});
+
+      expect(response.getHeader(key)).toEqual(value);
+    });
+
     test('getHeader should return undefined after reset', () => {
       const key = chance.string();
       const value = chance.string();
@@ -183,12 +199,67 @@ describe('Express Response', () => {
     test('set should have no call after reset', () => {
       const key = chance.string();
       const value = chance.string();
-      response.setHeader(key, value);
+      response.set(key, value);
 
       response.resetMocked();
+      expect(response.set).not.toHaveBeenCalled();
       expect(response.setHeader).not.toHaveBeenCalled();
     });
   });
+
+  describe('Test header', () => {
+    test('header should have no calls by default', () => {
+      expect(response.header).not.toHaveBeenCalled();
+    });
+
+    test('header should be called and match called with', () => {
+      const key = chance.string();
+      const value = chance.string();
+      response.header(key, value);
+
+      expect(response.header).toHaveBeenCalled();
+      expect(response.header).toHaveBeenCalledWith(key, value);
+    });
+
+    test('header should forward to set method', () => {
+      const key = chance.string();
+      const value = chance.string();
+      response.header(key, value);
+
+      expect(response.set).toHaveBeenCalled();
+      expect(response.set).toHaveBeenCalledWith(key, value);
+    });
+
+
+    test('header should account that internally it calls set recursively', () => {
+      const key = chance.string();
+      const value = chance.string();
+      const key2 = chance.string();
+      const value2 = chance.string();
+      const input = { [key]: value, [key2]: value2 };
+      response.header(input);
+      expect(response.header).toHaveBeenCalled();
+      expect(response.header).toHaveBeenCalledWith(input);
+      expect(response.set).toHaveBeenCalled();
+      expect(response.set).toHaveBeenCalledWith(input);
+      expect(response.set).toHaveBeenCalledWith(key, value);
+      expect(response.set).toHaveBeenCalledWith(key2, value2);
+      expect(response.setHeader).toHaveBeenCalledWith(key, value);
+      expect(response.setHeader).toHaveBeenCalledWith(key2, value2);
+    });
+
+    test('set should have no call after reset', () => {
+      const key = chance.string();
+      const value = chance.string();
+      response.header(key, value);
+
+      response.resetMocked();
+      expect(response.header).not.toHaveBeenCalled();
+      expect(response.set).not.toHaveBeenCalled();
+      expect(response.setHeader).not.toHaveBeenCalled();
+    });
+  });
+
 
   describe('Test attachment', () => {
     test('attachment should have no calls by default', () => {
