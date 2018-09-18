@@ -86,6 +86,11 @@
   "jest-junit": {
     "output": "./ts-test-results.xml"
   },
+  "greenkeeper": {
+    "ignore": [
+      "@types/node"
+    ]
+  },
   "david": {
     "ignore": [
       "@types/node"
