@@ -23,6 +23,7 @@ export class Response {
   public sendFile: any;
   public sendStatus: any;
   public set: any;
+  public setHeader: any;
   public status: any;
   public type: any;
   public vary: any;
@@ -50,6 +51,7 @@ export class Response {
     this.sendFile = jest.fn();
     this.sendStatus = jest.fn();
     this.set = jest.fn();
+    this.setHeader = jest.fn();
     this.status = jest.fn(() => {
       return {
         end: this.end,
@@ -93,6 +95,7 @@ export class Response {
     this.sendFile.mockReset();
     this.sendStatus.mockReset();
     this.set.mockReset();
+    this.setHeader.mockReset();
     this.status.mockReset();
     this.type.mockReset();
     this.vary.mockReset();

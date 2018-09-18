@@ -82,6 +82,30 @@ describe('Express Response', () => {
     });
   });
 
+  describe('Test setHeader', () => {
+    test('setHeader should have no calls by default', () => {
+      expect(response.setHeader).not.toHaveBeenCalled();
+    });
+
+    test('setHeader should be called and match called with', () => {
+      const key = chance.string();
+      const value = chance.string();
+      response.setHeader(key, value);
+
+      expect(response.setHeader).toHaveBeenCalled();
+      expect(response.setHeader).toHaveBeenCalledWith(key, value);
+    });
+
+    test('setHeader should have no call after reset', () => {
+      const key = chance.string();
+      const value = chance.string();
+      response.setHeader(key, value);
+
+      response.resetMocked();
+      expect(response.setHeader).not.toHaveBeenCalled();
+    });
+  });
+
   describe('Test attachment', () => {
     test('attachment should have no calls by default', () => {
       expect(response.attachment).not.toHaveBeenCalled();

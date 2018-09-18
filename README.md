@@ -120,6 +120,7 @@ Mock Express for testing with Jest
     * [status()](#responsestatus)
     * [type()](#responsetype)
     * [vary()](#responsevary)
+    * [setHeader()](#responsesetheader)
     * [setHeadersSent()](#responsesetheaderssent)
     * [setLocals()](#responsesetlocals)
     * [resetMocked()](#resetmocked)
@@ -671,6 +672,18 @@ describe('Endpoint', () => {
 
     expect(response).toBeCalled();
   });
+});
+```
+
+#### `response.setHeader`
+
+Ways to use this API:
+
+Setup:
+```js
+beforeEach(() => {
+  response = new Response();
+  response.setHeader(key, value);
 });
 ```
 
