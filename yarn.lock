@@ -6166,7 +6166,7 @@ trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
 
-ts-jest@23.10.0:
+ts-jest@^23.10.0:
   version "23.10.0"
   resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-23.10.0.tgz#1b1ce1d795791dedf0229b7577b35eaed8565bbd"
   dependencies:
