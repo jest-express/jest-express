@@ -81,6 +81,7 @@ Mock Express for testing with Jest
     * [setBody()](#requestsetbody)
     * [setCookies()](#requestsetcookies)
     * [setFresh()](#requestsetfresh)
+    * [setHostname()](#requestsethostname)
     * [setIp()](#requestsetip)
     * [setIps()](#requestsetips)
     * [setMethod()](#requestsetmethod)
@@ -419,6 +420,18 @@ Setup:
 beforeEach(() => {
   request = new Request();
   request.setFresh(boolean);
+});
+```
+
+#### `request.hostname`
+
+Ways to use this API:
+
+Setup:
+```js
+beforeEach(() => {
+  request = new Request();
+  request.setHostname(string);
 });
 ```
 
