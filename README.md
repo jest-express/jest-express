@@ -355,7 +355,11 @@ let request;
 
 describe('Endpoint', () => {
   beforeEach(() => {
-    request = new Request();
+    request = new Request('/users?sort=desc', {
+      headers: {
+        Accept: 'text/html'
+      }
+    });
   });
 
   afterEach(() => {
