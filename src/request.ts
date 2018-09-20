@@ -1,3 +1,10 @@
+import { parse } from 'url';
+
+interface IRequestOptions {
+  method?: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT' | 'HEAD' | 'OPTIONS' | 'CONNECT';
+  headers?: any;
+}
+
 declare const jest: any;
 // https://expressjs.com/en/4x/api.html#req
 export class Request {
@@ -31,7 +38,10 @@ export class Request {
   public is: any;
   public range: any;
 
-  constructor() {
+  private defaultUrl: string | undefined;
+  private defaultOptions: IRequestOptions | undefined;
+
+  constructor(url?: string, options?: IRequestOptions) {
     // Properties
     this.baseUrl = '';
     this.body = '';
@@ -39,13 +49,13 @@ export class Request {
     this.fresh = false;
     this.headers = {};
     this.hostname = '';
-    this.ip = '';
+    this.ip = '::1';
     this.ips = [];
-    this.method = '';
+    this.method = 'GET';
     this.originalUrl = '';
     this.params = {};
     this.path = '';
-    this.protocol = '';
+    this.protocol = 'http';
     this.query = {};
     this.route = {};
     this.secure = false;
@@ -61,7 +71,41 @@ export class Request {
     this.get = jest.fn();
     this.is = jest.fn();
     this.range = jest.fn();
+
+    if (typeof url === 'string') {
+      this.defaultUrl = url;
+      this.defaultOptions = options;
+      this.setUrl(this.defaultUrl, this.defaultOptions);
+    }
+
     return this;
+  }
+
+  public setUrl(url: string, options?: IRequestOptions) {
+    const parsedUrl = parse(url, true);
+
+    this.path = parsedUrl.pathname || '/';
+    this.hostname = parsedUrl.hostname || '';
+    this.originalUrl = this.path + (parsedUrl.search || '');
+    this.query = parsedUrl.query;
+    this.protocol = parsedUrl.protocol ?
+      parsedUrl.protocol.slice(0, parsedUrl.protocol.length - 1) :
+      'http';
+    this.secure = parsedUrl.protocol === 'https:';
+
+    const hostnameParts = this.hostname.split('.');
+    if (hostnameParts.length > 2) {
+      this.subdomains = hostnameParts.slice(0, hostnameParts.length - 2);
+    }
+
+    if (options) {
+      if (options.headers) {
+        this.headers = Object.assign({}, options.headers);
+      }
+      if (options.method) {
+        this.method = options.method;
+      }
+    }
   }
 
   public resetMocked() {
@@ -72,13 +116,13 @@ export class Request {
     this.fresh = false;
     this.headers = {};
     this.hostname = '';
-    this.ip = '';
+    this.ip = '::1';
     this.ips = [];
-    this.method = '';
+    this.method = 'GET';
     this.originalUrl = '';
     this.params = {};
     this.path = '';
-    this.protocol = '';
+    this.protocol = 'http';
     this.query = {};
     this.route = {};
     this.secure = false;
@@ -86,6 +130,11 @@ export class Request {
     this.stale = false;
     this.subdomains = [];
     this.xhr = false;
+
+    if (typeof this.defaultUrl === 'string') {
+      this.setUrl(this.defaultUrl, this.defaultOptions);
+    }
+
     // Methods
     this.accepts.mockReset();
     this.acceptsCharsets.mockReset();
@@ -104,16 +153,32 @@ export class Request {
     this.body = value;
   }
 
-  public setCookies(key: string, value: string) {
-    this.cookies[key] = value;
+  public setCookies(key: string | { [key: string]: string }, value?: string) {
+    if (typeof key === 'string') {
+      this.cookies[key] = value;
+    } else {
+      for (const k of Object.keys(key)) {
+        this.cookies[k] = key[k];
+      }
+    }
   }
 
   public setFresh(value: boolean) {
     this.fresh = value;
   }
 
-  public setHeaders(key: string, value: string) {
-    this.headers[key] = value;
+  public setHeaders(key: string | { [key: string]: string }, value?: string) {
+    if (typeof key === 'string') {
+      this.headers[key] = value;
+    } else {
+      for (const k of Object.keys(key)) {
+        this.headers[k] = key[k];
+      }
+    }
+  }
+
+  public setHostname(value: string) {
+    this.hostname = value;
   }
 
   public setIp(value: string) {
@@ -132,8 +197,14 @@ export class Request {
     this.originalUrl = value;
   }
 
-  public setParams(key: string, value: string) {
-    this.params[key] = value;
+  public setParams(key: string | { [key: string]: string }, value?: string) {
+    if (typeof key === 'string') {
+      this.params[key] = value;
+    } else {
+      for (const k of Object.keys(key)) {
+        this.params[k] = key[k];
+      }
+    }
   }
 
   public setPath(value: string) {
@@ -144,7 +215,7 @@ export class Request {
     this.protocol = value;
   }
 
-  public setQuery(key: string | { [key: string]: string }, value: string | void) {
+  public setQuery(key: string | { [key: string]: string }, value?: string) {
     if (typeof key === 'string') {
       this.query[key] = value;
     } else {
@@ -154,16 +225,28 @@ export class Request {
     }
   }
 
-  public setRoute(key: string, value: string) {
-    this.route[key] = value;
+  public setRoute(key: string | { [key: string]: string }, value?: string) {
+    if (typeof key === 'string') {
+      this.route[key] = value;
+    } else {
+      for (const k of Object.keys(key)) {
+        this.route[k] = key[k];
+      }
+    }
   }
 
   public setSecure(value: boolean) {
     this.secure = value;
   }
 
-  public setSignedCookies(key: string, value: string) {
-    this.signedCookies[key] = value;
+  public setSignedCookies(key: string | { [key: string]: string }, value?: string) {
+    if (typeof key === 'string') {
+      this.signedCookies[key] = value;
+    } else {
+      for (const k of Object.keys(key)) {
+        this.signedCookies[k] = key[k];
+      }
+    }
   }
 
   public setStale(value: boolean) {

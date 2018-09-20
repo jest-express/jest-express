@@ -81,6 +81,7 @@ Mock Express for testing with Jest
     * [setBody()](#requestsetbody)
     * [setCookies()](#requestsetcookies)
     * [setFresh()](#requestsetfresh)
+    * [setHostname()](#requestsethostname)
     * [setIp()](#requestsetip)
     * [setIps()](#requestsetips)
     * [setMethod()](#requestsetmethod)
@@ -355,7 +356,11 @@ let request;
 
 describe('Endpoint', () => {
   beforeEach(() => {
-    request = new Request();
+    request = new Request('/users?sort=desc', {
+      headers: {
+        Accept: 'text/html'
+      }
+    });
   });
 
   afterEach(() => {
@@ -415,6 +420,18 @@ Setup:
 beforeEach(() => {
   request = new Request();
   request.setFresh(boolean);
+});
+```
+
+#### `request.hostname`
+
+Ways to use this API:
+
+Setup:
+```js
+beforeEach(() => {
+  request = new Request();
+  request.setHostname(string);
 });
 ```
 
@@ -1015,7 +1032,7 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-| [<img src="https://avatars2.githubusercontent.com/u/794161?v=4" width="100px;"/><br /><sub><b>James W. Lane III</b></sub>](http://fueledbydreams.com)<br />[💻](https://github.com/jameswlane/jest-express/commits?author=jameswlane "Code") [📖](https://github.com/jameswlane/jest-express/commits?author=jameswlane "Documentation") [🚇](#infra-jameswlane "Infrastructure (Hosting, Build-Tools, etc)") [⚠️](https://github.com/jameswlane/jest-express/commits?author=jameswlane "Tests") [🔧](#tool-jameswlane "Tools") | [<img src="https://avatars0.githubusercontent.com/u/292365?v=4" width="100px;"/><br /><sub><b>Adam Stankiewicz</b></sub>](http://sheerun.net)<br />[🐛](https://github.com/jameswlane/jest-express/issues?q=author%3Asheerun "Bug reports") [💻](https://github.com/jameswlane/jest-express/commits?author=sheerun "Code") [📖](https://github.com/jameswlane/jest-express/commits?author=sheerun "Documentation") [⚠️](https://github.com/jameswlane/jest-express/commits?author=sheerun "Tests") | [<img src="https://avatars1.githubusercontent.com/u/64050?v=4" width="100px;"/><br /><sub><b>Garen Torikian</b></sub>](https://github.com/gjtorikian)<br />[💻](https://github.com/jameswlane/jest-express/commits?author=gjtorikian "Code") [⚠️](https://github.com/jameswlane/jest-express/commits?author=gjtorikian "Tests") | [<img src="https://avatars3.githubusercontent.com/u/6943514?v=4" width="100px;"/><br /><sub><b>Konstantin Azizov</b></sub>](https://github.com/G07cha)<br />[📖](https://github.com/jameswlane/jest-express/commits?author=G07cha "Documentation") |
+| [<img src="https://avatars2.githubusercontent.com/u/794161?v=4" width="100px;"/><br /><sub><b>James W. Lane III</b></sub>](http://fueledbydreams.com)<br />[💻](https://github.com/jameswlane/jest-express/commits?author=jameswlane "Code") [📖](https://github.com/jameswlane/jest-express/commits?author=jameswlane "Documentation") [🚇](#infra-jameswlane "Infrastructure (Hosting, Build-Tools, etc)") [⚠️](https://github.com/jameswlane/jest-express/commits?author=jameswlane "Tests") [🔧](#tool-jameswlane "Tools") | [<img src="https://avatars0.githubusercontent.com/u/292365?v=4" width="100px;"/><br /><sub><b>Adam Stankiewicz</b></sub>](http://sheerun.net)<br />[🐛](https://github.com/jameswlane/jest-express/issues?q=author%3Asheerun "Bug reports") [💻](https://github.com/jameswlane/jest-express/commits?author=sheerun "Code") [📖](https://github.com/jameswlane/jest-express/commits?author=sheerun "Documentation") [⚠️](https://github.com/jameswlane/jest-express/commits?author=sheerun "Tests") [💡](#example-sheerun "Examples") | [<img src="https://avatars1.githubusercontent.com/u/64050?v=4" width="100px;"/><br /><sub><b>Garen Torikian</b></sub>](https://github.com/gjtorikian)<br />[💻](https://github.com/jameswlane/jest-express/commits?author=gjtorikian "Code") [⚠️](https://github.com/jameswlane/jest-express/commits?author=gjtorikian "Tests") | [<img src="https://avatars3.githubusercontent.com/u/6943514?v=4" width="100px;"/><br /><sub><b>Konstantin Azizov</b></sub>](https://github.com/G07cha)<br />[📖](https://github.com/jameswlane/jest-express/commits?author=G07cha "Documentation") |
 | :---: | :---: | :---: | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 

@@ -14,6 +14,79 @@ describe('Express Request', () => {
     request.resetMocked();
   });
 
+  describe('Test constructor', () => {
+    test('request should parse full url with query', () => {
+      const request = new Request('https://www.example.com:3000/some/path?foo=bar&fiz=fuz');
+      expect(request.originalUrl).toEqual('/some/path?foo=bar&fiz=fuz');
+      expect(request.path).toEqual('/some/path');
+      expect(request.baseUrl).toEqual('');
+      expect(request.method).toEqual('GET');
+      expect(request.hostname).toEqual('www.example.com');
+      expect(request.query).toEqual({ fiz: 'fuz', foo: 'bar' });
+      expect(request.subdomains).toEqual(['www']);
+      expect(request.protocol).toEqual('https');
+      expect(request.secure).toEqual(true);
+    });
+
+    test('request should parse absolute url with query', () => {
+      const request = new Request('/some/path?foo=bar&fiz=fuz');
+      expect(request.originalUrl).toEqual('/some/path?foo=bar&fiz=fuz');
+      expect(request.path).toEqual('/some/path');
+      expect(request.baseUrl).toEqual('');
+      expect(request.method).toEqual('GET');
+      expect(request.hostname).toEqual('');
+      expect(request.query).toEqual({ fiz: 'fuz', foo: 'bar' });
+      expect(request.subdomains).toEqual([]);
+      expect(request.protocol).toEqual('http');
+      expect(request.secure).toEqual(false);
+    });
+
+    test('request should allow to set headers', () => {
+      const request = new Request('/', {
+        headers: {
+          Accept: 'text/html'
+        }
+      });
+      expect(request.headers).toEqual({
+        Accept: 'text/html'
+      });
+    });
+
+    test('request should allow to set method', () => {
+      const request = new Request('/', {
+        method: 'POST'
+      });
+      expect(request.method).toEqual('POST');
+    });
+
+    test('request should reset to initial values upon resetMocked', () => {
+      const request = new Request('https://www.example.com:3000/some/path?foo=bar', {
+        method: 'POST',
+        headers: { Accept: 'text/html' }
+      });
+      request.setMethod('GET')
+      request.setProtocol('http')
+      request.setHeaders({ 'Accept': 'text/xml', 'Accept-Language': 'pl' });
+      request.setBaseUrl('foobar');
+      request.setHostname('fizfuz');
+      request.setQuery({ lol: 'lol' });
+      request.setSubdomains('lol');
+      request.setSecure(false);
+      request.resetMocked()
+      expect(request.originalUrl).toEqual('/some/path?foo=bar');
+      expect(request.path).toEqual('/some/path');
+      expect(request.baseUrl).toEqual('');
+      expect(request.method).toEqual('POST');
+      expect(request.headers).toEqual({ Accept: 'text/html' });
+      expect(request.hostname).toEqual('www.example.com');
+      expect(request.query).toEqual({ foo: 'bar' });
+      expect(request.subdomains).toEqual(['www']);
+      expect(request.protocol).toEqual('https');
+      expect(request.secure).toEqual(true);
+    });
+  });
+
+
   describe('Test baseUrl', () => {
     test('baseUrl should be empty by default', () => {
       expect(request.baseUrl).toEqual('');
@@ -82,6 +155,21 @@ describe('Express Request', () => {
       expect(request.cookies).toHaveProperty(secondKey, secondValue);
     });
 
+    test('cookies should allow you to update it with object', () => {
+      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const firstValue = chance.string();
+      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const secondValue = chance.string();
+
+      request.setCookies({
+        [firstKey]: firstValue,
+        [secondKey]: secondValue
+      });
+
+      expect(request.cookies).toHaveProperty(firstKey, firstValue);
+      expect(request.cookies).toHaveProperty(secondKey, secondValue);
+    });
+
     test('cookies should be empty after reset', () => {
       const key = chance.string();
       const value = chance.string();
@@ -115,6 +203,28 @@ describe('Express Request', () => {
     });
   });
 
+  describe('Test hostname', () => {
+    test('hostname should be empty by default', () => {
+      expect(request.hostname).toEqual('');
+    });
+
+    test('hostname should allow you to update it', () => {
+      request.setHostname('foobar');
+      expect(request.hostname).toEqual('foobar');
+
+      request.setHostname('fizfuz');
+      expect(request.hostname).toEqual('fizfuz');
+    });
+
+    test('hostname should be empty after reset', () => {
+      request.setHostname('foobar');
+
+      request.resetMocked();
+
+      expect(request.hostname).toEqual('');
+    });
+  });
+
   describe('Test headers', () => {
     test('headers should be empty by default', () => {
       expect(request.headers).toEqual({});
@@ -133,6 +243,21 @@ describe('Express Request', () => {
       expect(request.headers).toHaveProperty(secondKey, secondValue);
     });
 
+    test('headers should allow you to update it with object', () => {
+      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const firstValue = chance.string();
+      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const secondValue = chance.string();
+
+      request.setHeaders({
+        [firstKey]: firstValue,
+        [secondKey]: secondValue
+      });
+
+      expect(request.headers).toHaveProperty(firstKey, firstValue);
+      expect(request.headers).toHaveProperty(secondKey, secondValue);
+    });
+
     test('params should be empty after reset', () => {
       const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
       const value = chance.string();
@@ -145,8 +270,8 @@ describe('Express Request', () => {
   });
 
   describe('Test ip', () => {
-    test('ip should be VALUE by default', () => {
-      expect(request.ip).toEqual('');
+    test('ip should be ::1 by default', () => {
+      expect(request.ip).toEqual('::1');
     });
 
     test('ip should allow you to update it', () => {
@@ -159,11 +284,11 @@ describe('Express Request', () => {
       expect(request.ip).toEqual(secondValue);
     });
 
-    test('ip should be VALUE after reset', () => {
-      request.setIp('VALUE');
+    test('ip should be ::1 after reset', () => {
+      request.setIp('1.1.1.1');
       request.resetMocked();
 
-      expect(request.ip).toEqual('');
+      expect(request.ip).toEqual('::1');
     });
   });
 
@@ -198,8 +323,8 @@ describe('Express Request', () => {
   });
 
   describe('Test method', () => {
-    test('method should be VALUE by default', () => {
-      expect(request.method).toEqual('');
+    test('method should be GET by default', () => {
+      expect(request.method).toEqual('GET');
     });
 
     test('method should allow you to update it', () => {
@@ -212,13 +337,13 @@ describe('Express Request', () => {
       expect(request.method).toEqual(secondValue);
     });
 
-    test('method should be VALUE after reset', () => {
+    test('method should be GET after reset', () => {
       const value = chance.pickone(['GET', 'POST', 'PUT', 'DELETE']);
       request.setMethod(value);
 
       request.resetMocked();
 
-      expect(request.method).toEqual('');
+      expect(request.method).toEqual('GET');
     });
   });
 
@@ -265,6 +390,21 @@ describe('Express Request', () => {
       expect(request.params).toHaveProperty(secondKey, secondValue);
     });
 
+    test('params should allow you to update it with object', () => {
+      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const firstValue = chance.string();
+      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const secondValue = chance.string();
+
+      request.setParams({
+        [firstKey]: firstValue,
+        [secondKey]: secondValue
+      });
+
+      expect(request.params).toHaveProperty(firstKey, firstValue);
+      expect(request.params).toHaveProperty(secondKey, secondValue);
+    });
+
     test('params should be empty after reset', () => {
       const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
       const value = chance.string();
@@ -302,8 +442,8 @@ describe('Express Request', () => {
   });
 
   describe('Test protocol', () => {
-    test('protocol should be empty by default', () => {
-      expect(request.protocol).toEqual('');
+    test('protocol should be http by default', () => {
+      expect(request.protocol).toEqual('http');
     });
 
     test('protocol should allow you to update it', () => {
@@ -316,13 +456,13 @@ describe('Express Request', () => {
       expect(request.protocol).toEqual(secondValue);
     });
 
-    test('protocol should be empty after reset', () => {
+    test('protocol should be http after reset', () => {
       const value = chance.string();
       request.setProtocol(value);
 
       request.resetMocked();
 
-      expect(request.protocol).toEqual('');
+      expect(request.protocol).toEqual('http');
     });
   });
 
@@ -384,6 +524,19 @@ describe('Express Request', () => {
       expect(request.route).toHaveProperty('authenticated', authenticatedValue);
     });
 
+    test('route should allow you to update it with object', () => {
+      const userValue = chance.string();
+      const authenticatedValue = chance.bool();
+
+      request.setRoute({
+        'user': userValue,
+        'authenticated': authenticatedValue
+      });
+
+      expect(request.route).toHaveProperty('user', userValue);
+      expect(request.route).toHaveProperty('authenticated', authenticatedValue);
+    });
+
     test('route should be VALUE after reset', () => {
       const userValue = chance.string();
       request.setRoute('user', userValue);
@@ -393,6 +546,9 @@ describe('Express Request', () => {
     });
   });
 
+  describe('Test secure', () => {
+
+  })
   describe('Test secure', () => {
     test('secure should be false by default', () => {
       expect(request.secure).toEqual(false);
@@ -695,6 +851,50 @@ describe('Express Request', () => {
       request.resetMocked();
 
       expect(request.range).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Test signedCookies', () => {
+    test('signedCookies should be empty by default', () => {
+      expect(request.signedCookies).toEqual({});
+    });
+
+    test('signedCookies should allow you to update it', () => {
+      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const firstValue = chance.string();
+      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const secondValue = chance.string();
+      request.setSignedCookies(firstKey, firstValue);
+      expect(request.signedCookies).toHaveProperty(firstKey, firstValue);
+
+      request.setSignedCookies(secondKey, secondValue);
+      expect(request.signedCookies).toHaveProperty(firstKey, firstValue);
+      expect(request.signedCookies).toHaveProperty(secondKey, secondValue);
+    });
+
+    test('signedCookies should allow you to update it with object', () => {
+      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const firstValue = chance.string();
+      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const secondValue = chance.string();
+
+      request.setSignedCookies({
+        [firstKey]: firstValue,
+        [secondKey]: secondValue
+      });
+
+      expect(request.signedCookies).toHaveProperty(firstKey, firstValue);
+      expect(request.signedCookies).toHaveProperty(secondKey, secondValue);
+    });
+
+    test('signedCookies should be empty after reset', () => {
+      const key = chance.string();
+      const value = chance.string();
+      request.setSignedCookies(key, value);
+
+      request.resetMocked();
+
+      expect(request.signedCookies).toEqual({});
     });
   });
 });
