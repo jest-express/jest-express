@@ -3668,11 +3668,12 @@ jest-jasmine2@^23.6.0:
     jest-util "^23.4.0"
     pretty-format "^23.6.0"
 
-jest-junit@5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/jest-junit/-/jest-junit-5.1.0.tgz#e8e497d810a829bf02783125aab74b5df6caa8fe"
-  integrity sha512-3EVf1puv2ox5wybQDfLX3AEn3IKOgDV4E76y4pO2hBu46DEtAFZZAm//X1pzPQpqKji0zqgMIzqzF/K+uGAX9A==
+jest-junit@5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/jest-junit/-/jest-junit-5.2.0.tgz#980401db7aa69999cf117c6d740a8135c22ae379"
+  integrity sha512-Mdg0Qpdh1Xm/FA1B/mcLlmEmlr3XzH5pZg7MvcAwZhjHijPRd1z/UwYwkwNHmCV7o4ZOWCf77nLu7ZkhHHrtJg==
   dependencies:
+    jest-config "^23.6.0"
     jest-validate "^23.0.1"
     mkdirp "^0.5.1"
     strip-ansi "^4.0.0"
