@@ -44,17 +44,17 @@ describe('Express Request', () => {
     test('request should allow to set headers', () => {
       const request = new Request('/', {
         headers: {
-          Accept: 'text/html'
-        }
+          Accept: 'text/html',
+        },
       });
       expect(request.headers).toEqual({
-        Accept: 'text/html'
+        Accept: 'text/html',
       });
     });
 
     test('request should allow to set method', () => {
       const request = new Request('/', {
-        method: 'POST'
+        method: 'POST',
       });
       expect(request.method).toEqual('POST');
     });
@@ -62,17 +62,17 @@ describe('Express Request', () => {
     test('request should reset to initial values upon resetMocked', () => {
       const request = new Request('https://www.example.com:3000/some/path?foo=bar', {
         method: 'POST',
-        headers: { Accept: 'text/html' }
+        headers: { Accept: 'text/html' },
       });
-      request.setMethod('GET')
-      request.setProtocol('http')
-      request.setHeaders({ 'Accept': 'text/xml', 'Accept-Language': 'pl' });
+      request.setMethod('GET');
+      request.setProtocol('http');
+      request.setHeaders({ Accept: 'text/xml', 'Accept-Language': 'pl' });
       request.setBaseUrl('foobar');
       request.setHostname('fizfuz');
       request.setQuery({ lol: 'lol' });
       request.setSubdomains('lol');
       request.setSecure(false);
-      request.resetMocked()
+      request.resetMocked();
       expect(request.originalUrl).toEqual('/some/path?foo=bar');
       expect(request.path).toEqual('/some/path');
       expect(request.baseUrl).toEqual('');
@@ -85,7 +85,6 @@ describe('Express Request', () => {
       expect(request.secure).toEqual(true);
     });
   });
-
 
   describe('Test baseUrl', () => {
     test('baseUrl should be empty by default', () => {
@@ -163,7 +162,7 @@ describe('Express Request', () => {
 
       request.setCookies({
         [firstKey]: firstValue,
-        [secondKey]: secondValue
+        [secondKey]: secondValue,
       });
 
       expect(request.cookies).toHaveProperty(firstKey, firstValue);
@@ -251,7 +250,7 @@ describe('Express Request', () => {
 
       request.setHeaders({
         [firstKey]: firstValue,
-        [secondKey]: secondValue
+        [secondKey]: secondValue,
       });
 
       expect(request.headers).toHaveProperty(firstKey, firstValue);
@@ -398,7 +397,7 @@ describe('Express Request', () => {
 
       request.setParams({
         [firstKey]: firstValue,
-        [secondKey]: secondValue
+        [secondKey]: secondValue,
       });
 
       expect(request.params).toHaveProperty(firstKey, firstValue);
@@ -501,8 +500,8 @@ describe('Express Request', () => {
       const secondValue = chance.string();
       request.setQuery({
         [firstKey]: firstValue,
-        [secondKey]: secondValue
-      })
+        [secondKey]: secondValue,
+      });
       expect(request.query).toHaveProperty(firstKey, firstValue);
       expect(request.query).toHaveProperty(secondKey, secondValue);
     });
@@ -529,8 +528,8 @@ describe('Express Request', () => {
       const authenticatedValue = chance.bool();
 
       request.setRoute({
-        'user': userValue,
-        'authenticated': authenticatedValue
+        user: userValue,
+        authenticated: authenticatedValue,
       });
 
       expect(request.route).toHaveProperty('user', userValue);
@@ -548,7 +547,7 @@ describe('Express Request', () => {
 
   describe('Test secure', () => {
 
-  })
+  });
   describe('Test secure', () => {
     test('secure should be false by default', () => {
       expect(request.secure).toEqual(false);
@@ -880,7 +879,7 @@ describe('Express Request', () => {
 
       request.setSignedCookies({
         [firstKey]: firstValue,
-        [secondKey]: secondValue
+        [secondKey]: secondValue,
       });
 
       expect(request.signedCookies).toHaveProperty(firstKey, firstValue);

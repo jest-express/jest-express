@@ -1,10 +1,10 @@
 import * as express from '../../src';
 import { Application } from '../../src/application';
+import { Express as RealExpress } from '../../src/express';
+import { next as RealNext } from '../../src/next';
 import { Request as RealRequest } from '../../src/request';
 import { Response as RealResponse } from '../../src/response';
 import { Router as RealRouter } from '../../src/router';
-import { Express as RealExpress } from '../../src/express';
-import { next as RealNext } from '../../src/next';
 
 let application: Application;
 

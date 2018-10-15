@@ -126,7 +126,7 @@ describe('Express Response', () => {
     test('getHeader should return headers set by set with object', () => {
       const key = chance.string();
       const value = chance.string();
-      response.set({[key]: value});
+      response.set({ [key]: value });
 
       expect(response.getHeader(key)).toEqual(value);
     });
@@ -142,7 +142,7 @@ describe('Express Response', () => {
     test('getHeader should return headers set by header with object', () => {
       const key = chance.string();
       const value = chance.string();
-      response.header({[key]: value});
+      response.header({ [key]: value });
 
       expect(response.getHeader(key)).toEqual(value);
     });
@@ -230,7 +230,6 @@ describe('Express Response', () => {
       expect(response.set).toHaveBeenCalledWith(key, value);
     });
 
-
     test('header should account that internally it calls set recursively', () => {
       const key = chance.string();
       const value = chance.string();
@@ -259,7 +258,6 @@ describe('Express Response', () => {
       expect(response.setHeader).not.toHaveBeenCalled();
     });
   });
-
 
   describe('Test attachment', () => {
     test('attachment should have no calls by default', () => {
