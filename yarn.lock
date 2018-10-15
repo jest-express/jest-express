@@ -305,7 +305,7 @@
   resolved "https://registry.yarnpkg.com/@types/faker/-/faker-4.1.4.tgz#5e5bcd81a6ecf85fb6150f7eb857e755a09fd91f"
   integrity sha512-6vQk2Ky+s3oehh//1bB/4I4ApYcRN2dLcHm0fuUOcXvnv9fXCfSKkI6K/dRicJkyjcAO23r4lAwbk9j9fOB0Ug==
 
-"@types/jest@23.3.5":
+"@types/jest@^23.3.5":
   version "23.3.5"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.5.tgz#870a1434208b60603745bfd214fc3fc675142364"
   integrity sha512-3LI+vUC3Wju28vbjIjsTKakhMB8HC4l+tMz+Z8WRzVK+kmvezE5jcOvKtBpznWSI5KDLFo+FouUhpTKoekadCA==
