@@ -80,6 +80,11 @@ describe('Express Response', () => {
       response.resetMocked();
       expect(response.append).not.toHaveBeenCalled();
     });
+
+    test('append returns response so is chainable', () => {
+      const value = chance.string();
+      expect(response.append(value)).toBe(response);
+    });
   });
 
   describe('Test setHeader', () => {
@@ -103,6 +108,12 @@ describe('Express Response', () => {
 
       response.resetMocked();
       expect(response.setHeader).not.toHaveBeenCalled();
+    });
+
+    test('setHeader returns response so is chainable', () => {
+      const key = chance.string();
+      const value = chance.string();
+      expect(response.setHeader(key, value)).toBe(response);
     });
   });
 
@@ -279,6 +290,11 @@ describe('Express Response', () => {
       response.resetMocked();
       expect(response.attachment).not.toHaveBeenCalled();
     });
+
+    test('attachment returns response so is chainable', () => {
+      const value = chance.string();
+      expect(response.attachment(value)).toBe(response);
+    });
   });
 
   describe('Test cookie', () => {
@@ -301,6 +317,11 @@ describe('Express Response', () => {
       response.resetMocked();
       expect(response.cookie).not.toHaveBeenCalled();
     });
+
+    test('cookie returns response so is chainable', () => {
+        const value = chance.string();
+        expect(response.cookie(value)).toBe(response);
+    });
   });
 
   describe('Test clearCookie', () => {
@@ -322,6 +343,11 @@ describe('Express Response', () => {
 
       response.resetMocked();
       expect(response.clearCookie).not.toHaveBeenCalled();
+    });
+
+    test('clearCookie returns response so is chainable', () => {
+      const value = chance.string();
+      expect(response.clearCookie(value)).toBe(response);
     });
   });
 
@@ -388,6 +414,11 @@ describe('Express Response', () => {
 
       response.resetMocked();
       expect(response.format).not.toHaveBeenCalled();
+    });
+
+    test('format returns response so is chainable', () => {
+      const value = chance.string();
+      expect(response.format(value)).toBe(response);
     });
   });
 
@@ -477,6 +508,11 @@ describe('Express Response', () => {
       response.resetMocked();
       expect(response.links).not.toHaveBeenCalled();
     });
+
+    test('links returns response so is chainable', () => {
+      const value = chance.string();
+      expect(response.links(value)).toBe(response);
+    });
   });
 
   describe('Test location', () => {
@@ -498,6 +534,11 @@ describe('Express Response', () => {
 
       response.resetMocked();
       expect(response.location).not.toHaveBeenCalled();
+    });
+
+    test('location returns response so is chainable', () => {
+      const value = chance.string();
+      expect(response.location(value)).toBe(response);
     });
   });
 
@@ -631,6 +672,12 @@ describe('Express Response', () => {
       response.resetMocked();
       expect(response.set).not.toHaveBeenCalled();
     });
+
+    test('set returns response so is chainable', () => {
+      const key = chance.string();
+      const value = chance.string();
+      expect(response.set(key, value)).toBe(response);
+    });
   });
 
   describe('Test status', () => {
@@ -681,6 +728,11 @@ describe('Express Response', () => {
       response.resetMocked();
       expect(response.status).not.toHaveBeenCalled();
     });
+
+    test('status returns response so is chainable', () => {
+      const code = chance.natural({ min: 100, max: 999 });
+      expect(response.status(code)).toBe(response);
+    });
   });
 
   describe('Test type', () => {
@@ -703,6 +755,11 @@ describe('Express Response', () => {
       response.resetMocked();
       expect(response.type).not.toHaveBeenCalled();
     });
+
+    test('type returns response so is chainable', () => {
+      const value = chance.string();
+      expect(response.type(value)).toBe(response);
+    });
   });
 
   describe('Test vary', () => {
@@ -724,6 +781,11 @@ describe('Express Response', () => {
 
       response.resetMocked();
       expect(response.vary).not.toHaveBeenCalled();
+    });
+
+    test('vary returns response so is chainable', () => {
+      const value = chance.string();
+      expect(response.vary(value)).toBe(response);
     });
   });
 });
