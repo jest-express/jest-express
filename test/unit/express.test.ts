@@ -559,16 +559,51 @@ describe('Express Application', () => {
     expect(title).toMatch('My Site');
   });
 
-  test('Route', () => {
-    app.route('/events')
-      .get((request: any, response: any) => {
-        expect(app.route).toHaveBeenCalled();
-        expect(app.route).toHaveBeenCalledWith('/events');
-        expect(app.get).toHaveBeenCalled();
-        expect(app.get).toHaveBeenCalledWith(expect.anything());
-        expect(request).toBeInstanceOf(Request);
-        expect(response).toBeInstanceOf(Response);
-      });
+  describe('Route', () => {
+    test('get', () => {
+      app.route('/events')
+        .get((request: any, response: any) => {
+          expect(app.route).toHaveBeenCalled();
+          expect(app.route).toHaveBeenCalledWith('/events');
+          expect(app.get).toHaveBeenCalled();
+          expect(app.get).toHaveBeenCalledWith(expect.anything());
+          expect(request).toBeInstanceOf(Request);
+          expect(response).toBeInstanceOf(Response);
+        });
+    });
+    test('put', () => {
+      app.route('/events')
+        .put((request: any, response: any) => {
+          expect(app.route).toHaveBeenCalled();
+          expect(app.route).toHaveBeenCalledWith('/events');
+          expect(app.put).toHaveBeenCalled();
+          expect(app.put).toHaveBeenCalledWith(expect.anything());
+          expect(request).toBeInstanceOf(Request);
+          expect(response).toBeInstanceOf(Response);
+        });
+    });
+    test('post', () => {
+      app.route('/events')
+        .post((request: any, response: any) => {
+          expect(app.route).toHaveBeenCalled();
+          expect(app.route).toHaveBeenCalledWith('/events');
+          expect(app.post).toHaveBeenCalled();
+          expect(app.post).toHaveBeenCalledWith(expect.anything());
+          expect(request).toBeInstanceOf(Request);
+          expect(response).toBeInstanceOf(Response);
+        });
+    });
+    test('delete', () => {
+      app.route('/events')
+        .delete((request: any, response: any) => {
+          expect(app.route).toHaveBeenCalled();
+          expect(app.route).toHaveBeenCalledWith('/events');
+          expect(app.delete).toHaveBeenCalled();
+          expect(app.delete).toHaveBeenCalledWith(expect.anything());
+          expect(request).toBeInstanceOf(Request);
+          expect(response).toBeInstanceOf(Response);
+        });
+    });
   });
 
   test('Set', () => {
