@@ -100,7 +100,10 @@ export class Express {
     // TODO app.route(path)
     this.route = jest.fn(() => {
       return {
+        delete: this.delete,
         get: this.get,
+        post: this.post,
+        put: this.put,
       };
     });
 
