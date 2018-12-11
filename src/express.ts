@@ -92,6 +92,7 @@ export class Express {
       if (typeof path === 'string' && callbacks.length === 0) {
         return this.setting[path];
       }
+      callbacks = [].concat(...callbacks); // flatten array
       if (typeof path === 'string' && callbacks.every(cb => typeof cb === 'function')) {
         return callbacks.length === 1 ?
             callbacks[0](this.request, this.response)

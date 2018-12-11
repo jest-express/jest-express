@@ -21,6 +21,7 @@ export class Router {
 
   constructor() {
     const handler = (path: any, ...callbacks: any): void => {
+      callbacks = [].concat(...callbacks); // flatten array
       if (typeof path === 'string' && callbacks.every(cb => typeof cb === 'function')) {
         callbacks.forEach(cb => cb(this.request, this.response, this.next));
       } else {
