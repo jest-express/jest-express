@@ -64,7 +64,7 @@ jobs:
       - run:
           name: NPM Vet
           command: |
-            npm i -g npmvet
+            sudo npm i -g npmvet
             npm run verify:npmvet
 
   audit:
