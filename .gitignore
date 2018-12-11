@@ -66,3 +66,5 @@ lib
 
 # Private project config
 .opt-in
+
+yarn.lock
