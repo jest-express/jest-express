@@ -20,9 +20,9 @@ export class Router {
   public delete: any;
 
   constructor() {
-    const handler = (path: any, callback: any): void => {
-      if (typeof path === 'string' && typeof callback === 'function') {
-        callback(this.request, this.response, this.next);
+    const handler = (path: any, ...callbacks: any): void => {
+      if (typeof path === 'string' && callbacks.every(cb => typeof cb === 'function')) {
+        callbacks.forEach(cb => cb(this.request, this.response, this.next));
       } else {
         path(this.request, this.response, this.next);
       }

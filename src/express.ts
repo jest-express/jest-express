@@ -88,12 +88,14 @@ export class Express {
       }
       return;
     });
-    this.get = jest.fn((path: any, callback: any) => {
-      if (typeof path === 'string' && callback === undefined) {
+    this.get = jest.fn((path: any, ...callbacks: any) => {
+      if (typeof path === 'string' && callbacks.length === 0) {
         return this.setting[path];
       }
-      if (typeof path === 'string' && typeof callback === 'function') {
-        return callback(this.request, this.response);
+      if (typeof path === 'string' && callbacks.every(cb => typeof cb === 'function')) {
+        return callbacks.length === 1 ?
+            callbacks[0](this.request, this.response)
+            : callbacks.map(cb => cb(this.request, this.response));
       }
       return path(this.request, this.response);
     });
