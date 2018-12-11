@@ -92,11 +92,12 @@ export class Express {
       if (typeof path === 'string' && callbacks.length === 0) {
         return this.setting[path];
       }
+      // tslint:disable-next-line:no-parameter-reassignment
       callbacks = [].concat(...callbacks); // flatten array
-      if (typeof path === 'string' && callbacks.every(cb => typeof cb === 'function')) {
+      if (typeof path === 'string' && callbacks.every((cb: any) => typeof cb === 'function')) {
         return callbacks.length === 1 ?
-            callbacks[0](this.request, this.response)
-            : callbacks.map(cb => cb(this.request, this.response));
+          callbacks[0](this.request, this.response)
+          : callbacks.map((cb: any) => cb(this.request, this.response));
       }
       return path(this.request, this.response);
     });

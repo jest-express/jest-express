@@ -14,7 +14,7 @@
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
     "coverage:report": "coveralls",
-    "precommit": "lint-staged && opt --in pre-commit --exec \"yarn verify\"",
+    "precommit": "lint-staged && opt --in pre-commit --exec \"npm run verify\"",
     "semantic-release": "semantic-release",
     "setup": "npm i -g npmvet david depcheck types-checker commitizen semantic-release-cli all-contributors-cli",
     "test": "jest --coverage",
@@ -27,10 +27,10 @@
     "tslint": "tslint --config tslint.json \"src/**/*.ts\"",
     "tslint:ci": "tslint --config tslint.json --format junit --out reports/tslint/tslint-results.xml \"src/**/*.ts\"",
     "tslint:fix": "tslint --config tslint.json --fix \"src/**/*.ts\"",
-    "verify": "yarn verify:npmvet && yarn verify:david && yarn verify:audit && yarn verify:tscheck && yarn tslint && yarn test",
-    "verify:offline": "yarn verify:npmvet && yarn tslint && yarn test",
+    "verify": "npm run verify:npmvet && npm run verify:david && npm run verify:audit && npm run verify:tscheck && npm run tslint && npm run test",
+    "verify:offline": "npm run verify:npmvet && npm run tslint && npm run test",
     "verify:circleci": "circleci config validate",
-    "verify:ci": "yarn verify:npmvet && yarn verify:audit && yarn test:ci",
+    "verify:ci": "npm run verify:npmvet && npm run verify:audit && npm run test:ci",
     "verify:check": "depcheck",
     "verify:david": "david",
     "verify:npmvet": "npmvet --renderer ci --strict",
@@ -76,7 +76,7 @@
     "ts-jest": "23.10.5",
     "tslint": "5.11.0",
     "tslint-config-airbnb": "5.11.1",
-    "typescript": "^3.2.2"
+    "typescript": "3.2.2"
   },
   "config": {
     "commitizen": {
