@@ -63,6 +63,16 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "racer01",
+      "name": "László Székely-Tóth",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/14020544?v=4",
+      "profile": "https://github.com/racer01",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ]
 }

@@ -553,6 +553,36 @@ describe('Express Application', () => {
     });
   });
 
+  test('Get with multiple middlewares', () => {
+    const testMiddleware = (request: any, response: any) => {
+      expect(app.get).toHaveBeenCalled();
+      expect(app.get).toHaveBeenCalledWith('/', expect.anything(), expect.anything());
+      expect(request).toBeInstanceOf(Request);
+      expect(response).toBeInstanceOf(Response);
+    }
+    app.get('/', testMiddleware, testMiddleware);
+  });
+
+  test('Get with an array middlewares', () => {
+    const testMiddleware = (request: any, response: any) => {
+      expect(app.get).toHaveBeenCalled();
+      expect(app.get).toHaveBeenCalledWith('/', expect.anything());
+      expect(request).toBeInstanceOf(Request);
+      expect(response).toBeInstanceOf(Response);
+    }
+    app.get('/', [testMiddleware, testMiddleware]);
+  });
+
+  test('Get with mix of arrays and single middlewares', () => {
+    const testMiddleware = (request: any, response: any) => {
+      expect(app.get).toHaveBeenCalled();
+      expect(app.get).toHaveBeenCalledWith('/', expect.anything(), expect.anything());
+      expect(request).toBeInstanceOf(Request);
+      expect(response).toBeInstanceOf(Response);
+    }
+    app.get('/', [testMiddleware, testMiddleware], testMiddleware);
+  });
+
   test('Get Settings', () => {
     app.set('title', 'My Site');
     const title = app.get('title');
