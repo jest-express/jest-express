@@ -82,6 +82,7 @@ Mock Express for testing with Jest
     * [setCookies()](#requestsetcookies)
     * [setFresh()](#requestsetfresh)
     * [setHostname()](#requestsethostname)
+    * [setHeaders()](#requestsetheaders)
     * [setIp()](#requestsetip)
     * [setIps()](#requestsetips)
     * [setMethod()](#requestsetmethod)
@@ -433,6 +434,30 @@ beforeEach(() => {
   request = new Request();
   request.setHostname(string);
 });
+```
+
+#### `request.setHeaders`
+
+Ways to use this API:
+
+Setup:
+
+```js
+beforeEach(() => {
+  request = new Request();
+  request.setHeaders("X-Custom-Header", "foo");
+});
+
+// or
+
+beforeEach(() => {
+  request = new Request();
+  request.setHeaders({  
+    "X-Custom-Header", "foo",
+    "X-Custom-Header-2", "bar"
+  });
+});
+
 ```
 
 #### `request.ip`
