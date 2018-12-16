@@ -801,6 +801,16 @@ describe('Express Request', () => {
 
       expect(request.get).not.toHaveBeenCalled();
     });
+
+    test('should return header value', () => {
+
+      const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const value = chance.string();
+
+      request.setHeaders(key, value);
+
+      expect(request.get(key)).toEqual(value);
+    });
   });
 
   describe('Test is', () => {
