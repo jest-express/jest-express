@@ -68,7 +68,7 @@ export class Request {
     this.acceptsCharsets = jest.fn();
     this.acceptsEncodings = jest.fn();
     this.acceptsLanguages = jest.fn();
-    this.get = jest.fn().mockImplementation((header : string) => this.headers[header]);
+    this.get = jest.fn().mockImplementation((header: string) => this.headers[header]);
     this.is = jest.fn();
     this.range = jest.fn();
 
