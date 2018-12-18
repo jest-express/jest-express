@@ -7,6 +7,7 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/9487b570f339c75e15f6/test_coverage)](https://codeclimate.com/github/jameswlane/jest-express/test_coverage)
 [![codecov](https://codecov.io/gh/jameswlane/jest-express/branch/master/graph/badge.svg)](https://codecov.io/gh/jameswlane/jest-express)
 [![devDependencies Status](https://david-dm.org/jameswlane/jest-express/dev-status.svg)](https://david-dm.org/jameswlane/jest-express?type=dev)
+[![Downloads/week](https://img.shields.io/npm/dw/jest-express.svg)](https://npmjs.org/package/jest-express)
 
 
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/jameswlane/jest-express.svg?columns=all)](https://waffle.io/jameswlane/jest-express)
