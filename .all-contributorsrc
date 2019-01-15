@@ -83,6 +83,15 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "hrkeni",
+      "name": "Harshith Keni",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1170292?v=4",
+      "profile": "http://hrkeni.me",
+      "contributions": [
+        "code"
+      ]
     }
   ]
 }
