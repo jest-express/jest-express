@@ -21,10 +21,9 @@ export class Router {
 
   constructor() {
     const handler = (path: any, ...callbacks: any): void => {
-      // tslint:disable-next-line:no-parameter-reassignment
-      callbacks = [].concat(...callbacks); // flatten array
-      if (typeof path === 'string' && callbacks.every((cb: any) => typeof cb === 'function')) {
-        callbacks.forEach((cb: any) => cb(this.request, this.response, this.next));
+      const flattened = [].concat(...callbacks); // flatten array
+      if (typeof path === 'string' && flattened.every((cb: any) => typeof cb === 'function')) {
+        flattened.forEach((cb: any) => cb(this.request, this.response, this.next));
       } else {
         path(this.request, this.response, this.next);
       }
