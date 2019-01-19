@@ -92,6 +92,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "maxholman",
+      "name": "Max Holman",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/250517?v=4",
+      "profile": "https://www.maxholman.com",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ]
 }
