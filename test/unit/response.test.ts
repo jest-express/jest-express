@@ -606,6 +606,12 @@ describe('Express Response', () => {
       response.resetMocked();
       expect(response.send).not.toHaveBeenCalled();
     });
+
+    test('send returns response so is chainable', () => {
+      const value = chance.string();
+      expect(response.send(value)).toBe(response);
+    });
+
   });
 
   describe('Test sendFile', () => {
