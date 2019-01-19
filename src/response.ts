@@ -58,7 +58,7 @@ export class Response {
     this.location = jest.fn(() => this);
     this.redirect = jest.fn();
     this.render = jest.fn();
-    this.send = jest.fn();
+    this.send = jest.fn(() => this);
     this.sendFile = jest.fn();
     this.sendStatus = jest.fn();
     this.set = jest.fn((key: string | { [key: string]: string }, value: string | void) => {
