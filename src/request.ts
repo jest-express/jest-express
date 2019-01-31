@@ -1,8 +1,10 @@
 import { parse } from 'url';
+import { Express } from './express';
 
 interface IRequestOptions {
   method?: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT' | 'HEAD' | 'OPTIONS' | 'CONNECT';
   headers?: any;
+  app: Express;
 }
 
 declare const jest: any;
@@ -37,11 +39,13 @@ export class Request {
   public get: any;
   public is: any;
   public range: any;
+  // Application
+  public app: Express;
 
   private defaultUrl: string | undefined;
   private defaultOptions: IRequestOptions | undefined;
 
-  constructor(url?: string, options?: IRequestOptions) {
+  constructor(url?: string|null, options?: IRequestOptions) {
     // Properties
     this.baseUrl = '';
     this.body = '';
@@ -71,6 +75,8 @@ export class Request {
     this.get = jest.fn().mockImplementation((header: string) => this.headers[header]);
     this.is = jest.fn();
     this.range = jest.fn();
+    // Application
+    this.app = (options && options.app) ? options.app : new Express();
 
     if (typeof url === 'string') {
       this.defaultUrl = url;

@@ -1,5 +1,6 @@
 import * as Chance from 'chance';
 
+import { Express } from '../../src/express';
 import { Request } from '../../src/request';
 
 const chance = new Chance();
@@ -57,6 +58,12 @@ describe('Express Request', () => {
         method: 'POST',
       });
       expect(request.method).toEqual('POST');
+    });
+
+    test('request should allow to set application', () => {
+      const app = new Express();
+      app.set('title', 'value');
+      expect(new Request(null, { app }).app.get('title')).toEqual('value');
     });
 
     test('request should reset to initial values upon resetMocked', () => {
