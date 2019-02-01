@@ -41,7 +41,7 @@ export class Express {
   private setting: any;
 
   constructor() {
-    this.request = new Request();
+    this.request = new Request(null, { app: this });
     this.response = new Response();
     this.next = next;
     // Properties

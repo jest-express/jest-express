@@ -583,10 +583,17 @@ describe('Express Application', () => {
     app.get('/', [testMiddleware, testMiddleware], testMiddleware);
   });
 
-  test('Get Settings', () => {
-    app.set('title', 'My Site');
-    const title = app.get('title');
-    expect(title).toMatch('My Site');
+  describe('Test set', () => {
+    test('should set and get settings', () => {
+      app.set('title', 'My Site');
+      const title = app.get('title');
+      expect(title).toMatch('My Site');
+    });
+    test('should set on request application object', () => {
+      app.set('title', 'My Site');
+      const title = app.request.app.get('title');
+      expect(title).toMatch('My Site');
+    });
   });
 
   describe('Route', () => {
