@@ -1049,7 +1049,6 @@ $ npm test
 
 ## Contributing
 [Contributing](CONTRIBUTING.md)
-LICENSE
 
 ## License
 [MIT](LICENSE)
