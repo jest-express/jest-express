@@ -102,6 +102,17 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "mnalsup",
+      "name": "Matthew Alsup",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/5252756?v=4",
+      "profile": "https://github.com/mnalsup",
+      "contributions": [
+        "projectManagement",
+        "code"
+      ]
     }
-  ]
+  ],
+  "contributorsPerLine": 7
 }
