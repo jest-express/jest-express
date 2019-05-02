@@ -4,7 +4,7 @@ import { Express } from './express';
 interface IRequestOptions {
   method?: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT' | 'HEAD' | 'OPTIONS' | 'CONNECT';
   headers?: any;
-  app: Express;
+  app?: Express;
 }
 
 declare const jest: any;
@@ -45,7 +45,7 @@ export class Request {
   private defaultUrl: string | undefined;
   private defaultOptions: IRequestOptions | undefined;
 
-  constructor(url?: string|null, options?: IRequestOptions) {
+  constructor(url?: string | null, options?: IRequestOptions) {
     // Properties
     this.baseUrl = '';
     this.body = '';
