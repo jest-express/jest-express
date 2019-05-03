@@ -1,4 +1,5 @@
 import * as Chance from 'chance';
+import { parse } from 'url';
 
 import { Express } from '../../src/express';
 import { Request } from '../../src/request';
@@ -7,910 +8,1048 @@ const chance = new Chance();
 let request: any;
 
 describe('Express Request', () => {
-  beforeEach(() => {
-    request = new Request();
-  });
-
-  afterEach(() => {
-    request.resetMocked();
-  });
-
-  describe('Test constructor', () => {
-    test('request should parse full url with query', () => {
-      const request = new Request('https://www.example.com:3000/some/path?foo=bar&fiz=fuz');
-      expect(request.originalUrl).toEqual('/some/path?foo=bar&fiz=fuz');
-      expect(request.path).toEqual('/some/path');
-      expect(request.baseUrl).toEqual('');
-      expect(request.method).toEqual('GET');
-      expect(request.hostname).toEqual('www.example.com');
-      expect(request.query).toEqual({ fiz: 'fuz', foo: 'bar' });
-      expect(request.subdomains).toEqual(['www']);
-      expect(request.protocol).toEqual('https');
-      expect(request.secure).toEqual(true);
-    });
-
-    test('request should parse absolute url with query', () => {
-      const request = new Request('/some/path?foo=bar&fiz=fuz');
-      expect(request.originalUrl).toEqual('/some/path?foo=bar&fiz=fuz');
-      expect(request.path).toEqual('/some/path');
-      expect(request.baseUrl).toEqual('');
-      expect(request.method).toEqual('GET');
-      expect(request.hostname).toEqual('');
-      expect(request.query).toEqual({ fiz: 'fuz', foo: 'bar' });
-      expect(request.subdomains).toEqual([]);
-      expect(request.protocol).toEqual('http');
-      expect(request.secure).toEqual(false);
-    });
-
-    test('request should allow to set headers', () => {
-      const request = new Request('/', {
-        headers: {
-          Accept: 'text/html',
-        },
-      });
-      expect(request.headers).toEqual({
-        Accept: 'text/html',
-      });
-    });
-
-    test('request should allow to set method', () => {
-      const request = new Request('/', {
-        method: 'POST',
-      });
-      expect(request.method).toEqual('POST');
-    });
-
-    test('request should allow to set application', () => {
-      const app = new Express();
-      app.set('title', 'value');
-      expect(new Request(null, { app }).app.get('title')).toEqual('value');
-    });
-
-    test('request should reset to initial values upon resetMocked', () => {
-      const request = new Request('https://www.example.com:3000/some/path?foo=bar', {
-        method: 'POST',
-        headers: { Accept: 'text/html' },
-      });
-      request.setMethod('GET');
-      request.setProtocol('http');
-      request.setHeaders({ Accept: 'text/xml', 'Accept-Language': 'pl' });
-      request.setBaseUrl('foobar');
-      request.setHostname('fizfuz');
-      request.setQuery({ lol: 'lol' });
-      request.setSubdomains('lol');
-      request.setSecure(false);
-      request.resetMocked();
-      expect(request.originalUrl).toEqual('/some/path?foo=bar');
-      expect(request.path).toEqual('/some/path');
-      expect(request.baseUrl).toEqual('');
-      expect(request.method).toEqual('POST');
-      expect(request.headers).toEqual({ Accept: 'text/html' });
-      expect(request.hostname).toEqual('www.example.com');
-      expect(request.query).toEqual({ foo: 'bar' });
-      expect(request.subdomains).toEqual(['www']);
-      expect(request.protocol).toEqual('https');
-      expect(request.secure).toEqual(true);
-    });
-  });
+    beforeEach(() => {
+        request = new Request();
+    });
+
+    afterEach(() => {
+        request.resetMocked();
+    });
+
+    describe('Test constructor', () => {
+        test('request should parse full url with query', () => {
+            const request = new Request('https://www.example.com:3000/some/path?foo=bar&fiz=fuz');
+            expect(request.originalUrl).toEqual('/some/path?foo=bar&fiz=fuz');
+            expect(request.path).toEqual('/some/path');
+            expect(request.baseUrl).toEqual('');
+            expect(request.method).toEqual('GET');
+            expect(request.hostname).toEqual('www.example.com');
+            expect(request.query).toEqual({ fiz: 'fuz', foo: 'bar' });
+            expect(request.subdomains).toEqual(['www']);
+            expect(request.protocol).toEqual('https');
+            expect(request.secure).toEqual(true);
+        });
+
+        test('request should parse absolute url with query', () => {
+            const request = new Request('/some/path?foo=bar&fiz=fuz');
+            expect(request.originalUrl).toEqual('/some/path?foo=bar&fiz=fuz');
+            expect(request.path).toEqual('/some/path');
+            expect(request.baseUrl).toEqual('');
+            expect(request.method).toEqual('GET');
+            expect(request.hostname).toEqual('');
+            expect(request.query).toEqual({ fiz: 'fuz', foo: 'bar' });
+            expect(request.subdomains).toEqual([]);
+            expect(request.protocol).toEqual('http');
+            expect(request.secure).toEqual(false);
+        });
+
+        test('request should allow to set headers', () => {
+            const request = new Request(
+                '/',
+                {
+                    headers: {
+                        Accept: 'text/html',
+                    },
+                },
+            );
+            expect(request.headers).toEqual({
+                Accept: 'text/html',
+            });
+        });
+
+        test('request should allow to set method', () => {
+            const request = new Request(
+                '/',
+                {
+                    method: 'POST',
+                },
+            );
+            expect(request.method).toEqual('POST');
+        });
+
+        test('request should allow to set application', () => {
+            const app = new Express();
+            app.set('title', 'value');
+            expect(new Request(null, { app }).app.get('title')).toEqual('value');
+        });
+
+        test('request should reset to initial values upon resetMocked', () => {
+            const request = new Request(
+                'https://www.example.com:3000/some/path?foo=bar',
+                {
+                    headers: { Accept: 'text/html' },
+                    method: 'POST',
+                },
+            );
+            request.setMethod('GET');
+            request.setProtocol('http');
+            request.setHeaders({ Accept: 'text/xml', 'Accept-Language': 'pl' });
+            request.setBaseUrl('foobar');
+            request.setHostname('fizfuz');
+            request.setQuery({ lol: 'lol' });
+            request.setSubdomains('lol');
+            request.setSecure(false);
+            request.resetMocked();
+            expect(request.originalUrl).toEqual('/some/path?foo=bar');
+            expect(request.path).toEqual('/some/path');
+            expect(request.baseUrl).toEqual('');
+            expect(request.method).toEqual('POST');
+            expect(request.headers).toEqual({ Accept: 'text/html' });
+            expect(request.hostname).toEqual('www.example.com');
+            expect(request.query).toEqual({ foo: 'bar' });
+            expect(request.subdomains).toEqual(['www']);
+            expect(request.protocol).toEqual('https');
+            expect(request.secure).toEqual(true);
+        });
+    });
+
+    describe('Test setUrl', () => {
+        let actualDomain: string;
+
+        beforeEach(() => {
+            actualDomain = chance.domain();
+        });
 
-  describe('Test baseUrl', () => {
-    test('baseUrl should be empty by default', () => {
-      expect(request.baseUrl).toEqual('');
-    });
+        it('should set the path property with pathname', () => {
+            const actualPath = chance.word();
+            const actualUrl = chance.url({
+                domain: actualDomain,
+                path: actualPath,
+            });
 
-    test('baseUrl should allow you to update it', () => {
-      const url1 = chance.url();
-      request.setBaseUrl(url1);
-      expect(request.baseUrl).toEqual(url1);
+            request.setUrl(actualUrl);
 
-      const url2 = chance.url();
-      request.setBaseUrl(url2);
-      expect(request.baseUrl).toEqual(url2);
-    });
+            expect(request.path).toEqual(`/${actualPath}`);
+        });
 
-    test('baseUrl should be empty after reset', () => {
-      const url = chance.url();
-      request.setBaseUrl(url);
+        it('should set the path property with /', () => {
+            const actualUrl = 'https://';
 
-      request.resetMocked();
+            request.setUrl(actualUrl);
 
-      expect(request.baseUrl).toEqual('');
-    });
-  });
+            expect(request.path).toEqual('/');
+        });
 
-  describe('Test body', () => {
-    test('body should be empty by default', () => {
-      expect(request.body).toEqual('');
-    });
+        it('should set the hostname property with hostname', () => {
+            const actualUrl = `https://${actualDomain}`;
 
-    test('body should allow you to update it', () => {
-      const body1 = chance.string();
-      request.setBody(body1);
-      expect(request.body).toEqual(body1);
+            request.setUrl(actualUrl);
 
-      const body2 = chance.string();
-      request.setBody(body2);
-      expect(request.body).toEqual(body2);
-    });
+            expect(request.hostname).toEqual(actualDomain);
+        });
 
-    test('body should be empty after reset', () => {
-      const body = chance.string();
-      request.setBody(body);
+        it('should set the hostname property with a empty string', () => {
+            const actualUrl = 'http://';
 
-      request.resetMocked();
+            request.setUrl(actualUrl);
 
-      expect(request.body).toEqual('');
-    });
-  });
+            expect(request.hostname).toEqual('');
+        });
 
-  describe('Test cookies', () => {
-    test('cookies should be empty by default', () => {
-      expect(request.cookies).toEqual({});
-    });
+        it('should set the originalUrl property with pathName and search query', () => {
+            const actualPath = chance.word();
+            const actualUrl = chance.url({
+                domain: actualDomain,
+                path: actualPath,
+            });
 
-    test('cookies should allow you to update it', () => {
-      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const firstValue = chance.string();
-      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const secondValue = chance.string();
-      request.setCookies(firstKey, firstValue);
-      expect(request.cookies).toHaveProperty(firstKey, firstValue);
+            request.setUrl(`${actualUrl}?search=stuff`);
 
-      request.setCookies(secondKey, secondValue);
-      expect(request.cookies).toHaveProperty(firstKey, firstValue);
-      expect(request.cookies).toHaveProperty(secondKey, secondValue);
-    });
+            expect(request.originalUrl).toEqual(`/${actualPath}?search=stuff`);
+        });
 
-    test('cookies should allow you to update it with object', () => {
-      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const firstValue = chance.string();
-      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const secondValue = chance.string();
+        it('should set the originalUrl property with pathName', () => {
+            const actualUrl = 'https://';
 
-      request.setCookies({
-        [firstKey]: firstValue,
-        [secondKey]: secondValue,
-      });
+            request.setUrl(actualUrl);
 
-      expect(request.cookies).toHaveProperty(firstKey, firstValue);
-      expect(request.cookies).toHaveProperty(secondKey, secondValue);
-    });
+            expect(request.originalUrl).toEqual('/');
+        });
 
-    test('cookies should be empty after reset', () => {
-      const key = chance.string();
-      const value = chance.string();
-      request.setCookies(key, value);
+        it('should set the query property with the query', () => {
+            const actualPath = chance.word();
+            const actualUrl = chance.url({
+                domain: actualDomain,
+                path: actualPath,
+            });
 
-      request.resetMocked();
+            request.setUrl(`${actualUrl}?search=stuff`);
 
-      expect(request.cookies).toEqual({});
-    });
-  });
+            expect(request.query).toEqual({
+                search:'stuff',
+            });
+        });
 
-  describe('Test fresh', () => {
-    test('fresh should be false by default', () => {
-      expect(request.fresh).toEqual(false);
-    });
+        it('should set the protocol property with the protocol', () => {
+            const actualUrl = `http://${actualDomain}`;
 
-    test('fresh should allow you to update it', () => {
-      request.setFresh(true);
-      expect(request.fresh).toEqual(true);
+            request.setUrl(actualUrl);
 
-      request.setFresh(false);
-      expect(request.fresh).toEqual(false);
-    });
+            expect(request.protocol).toEqual('http');
+            expect(request.secure).toEqual(false);
+        });
 
-    test('fresh should be VALUE after reset', () => {
-      request.setFresh(true);
+        it('should set the secure property to true if the protocol is https', () => {
+            const actualUrl = `https://${actualDomain}`;
 
-      request.resetMocked();
+            request.setUrl(actualUrl);
 
-      expect(request.fresh).toEqual(false);
-    });
-  });
+            expect(request.protocol).toEqual('https');
+            expect(request.secure).toEqual(true);
+        });
 
-  describe('Test hostname', () => {
-    test('hostname should be empty by default', () => {
-      expect(request.hostname).toEqual('');
-    });
+        it('should set the subdomains property to the subdomain', () => {
+            const actualSubDomain = chance.word();
+            const actualUrl = `https://${actualSubDomain}.${actualDomain}`;
 
-    test('hostname should allow you to update it', () => {
-      request.setHostname('foobar');
-      expect(request.hostname).toEqual('foobar');
+            request.setUrl(actualUrl);
 
-      request.setHostname('fizfuz');
-      expect(request.hostname).toEqual('fizfuz');
-    });
+            expect(request.subdomains).toEqual([actualSubDomain]);
+        });
 
-    test('hostname should be empty after reset', () => {
-      request.setHostname('foobar');
+        it('should set the headers property to the passed headers', () => {
+            const actualUrl = `https://${actualDomain}/`;
+            const actualHeaders = {
+                auth: 'LET_ME_IN',
+            };
 
-      request.resetMocked();
+            request.setUrl(actualUrl, {
+                headers: actualHeaders,
+            });
 
-      expect(request.hostname).toEqual('');
-    });
-  });
+            expect(request.headers).toEqual(actualHeaders);
+        });
 
-  describe('Test headers', () => {
-    test('headers should be empty by default', () => {
-      expect(request.headers).toEqual({});
-    });
+        it('should set the method property to the passed method', () => {
+            const actualUrl = `https://${actualDomain}/`;
+            const actualMethod = 'POST';
 
-    test('headers should allow you to update it', () => {
-      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const firstValue = chance.string();
-      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const secondValue = chance.string();
-      request.setHeaders(firstKey, firstValue);
-      expect(request.headers).toHaveProperty(firstKey, firstValue);
+            request.setUrl(actualUrl, {
+                method: actualMethod,
+            });
 
-      request.setHeaders(secondKey, secondValue);
-      expect(request.headers).toHaveProperty(firstKey, firstValue);
-      expect(request.headers).toHaveProperty(secondKey, secondValue);
+            expect(request.method).toEqual(actualMethod);
+        });
     });
 
-    test('headers should allow you to update it with object', () => {
-      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const firstValue = chance.string();
-      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const secondValue = chance.string();
+    describe('Test baseUrl', () => {
+        test('baseUrl should be empty by default', () => {
+            expect(request.baseUrl).toEqual('');
+        });
 
-      request.setHeaders({
-        [firstKey]: firstValue,
-        [secondKey]: secondValue,
-      });
+        test('baseUrl should allow you to update it', () => {
+            const url1 = chance.url();
+            request.setBaseUrl(url1);
+            expect(request.baseUrl).toEqual(url1);
 
-      expect(request.headers).toHaveProperty(firstKey, firstValue);
-      expect(request.headers).toHaveProperty(secondKey, secondValue);
-    });
+            const url2 = chance.url();
+            request.setBaseUrl(url2);
+            expect(request.baseUrl).toEqual(url2);
+        });
 
-    test('params should be empty after reset', () => {
-      const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const value = chance.string();
-      request.setHeaders(key, value);
+        test('baseUrl should be empty after reset', () => {
+            const url = chance.url();
+            request.setBaseUrl(url);
 
-      request.resetMocked();
+            request.resetMocked();
 
-      expect(request.headers).toEqual({});
+            expect(request.baseUrl).toEqual('');
+        });
     });
-  });
 
-  describe('Test ip', () => {
-    test('ip should be ::1 by default', () => {
-      expect(request.ip).toEqual('::1');
-    });
+    describe('Test body', () => {
+        test('body should be empty by default', () => {
+            expect(request.body).toEqual('');
+        });
 
-    test('ip should allow you to update it', () => {
-      const firstValue = chance.ip();
-      request.setIp(firstValue);
-      expect(request.ip).toEqual(firstValue);
+        test('body should allow you to update it', () => {
+            const body1 = chance.string();
+            request.setBody(body1);
+            expect(request.body).toEqual(body1);
 
-      const secondValue = chance.ip();
-      request.setIp(secondValue);
-      expect(request.ip).toEqual(secondValue);
-    });
+            const body2 = chance.string();
+            request.setBody(body2);
+            expect(request.body).toEqual(body2);
+        });
 
-    test('ip should be ::1 after reset', () => {
-      request.setIp('1.1.1.1');
-      request.resetMocked();
+        test('body should be empty after reset', () => {
+            const body = chance.string();
+            request.setBody(body);
 
-      expect(request.ip).toEqual('::1');
-    });
-  });
+            request.resetMocked();
 
-  describe('Test ips', () => {
-    test('ips should be VALUE by default', () => {
-      expect(request.ips).toHaveLength(0);
+            expect(request.body).toEqual('');
+        });
     });
 
-    test('ips should allow you to update it', () => {
-      const firstValue = chance.ip();
-      request.setIps(firstValue);
+    describe('Test cookies', () => {
+        test('cookies should be empty by default', () => {
+            expect(request.cookies).toEqual({});
+        });
 
-      expect(request.ips).toHaveLength(1);
-      expect(request.ips).toContain(firstValue);
+        test('cookies should allow you to update it', () => {
+            const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const firstValue = chance.string();
+            const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const secondValue = chance.string();
+            request.setCookies(firstKey, firstValue);
+            expect(request.cookies).toHaveProperty(firstKey, firstValue);
 
-      const secondValue = chance.ip();
-      request.setIps(secondValue);
+            request.setCookies(secondKey, secondValue);
+            expect(request.cookies).toHaveProperty(firstKey, firstValue);
+            expect(request.cookies).toHaveProperty(secondKey, secondValue);
+        });
 
-      expect(request.ips).toHaveLength(2);
-      expect(request.ips).toContain(firstValue);
-      expect(request.ips).toContain(secondValue);
-    });
+        test('cookies should allow you to update it with object', () => {
+            const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const firstValue = chance.string();
+            const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const secondValue = chance.string();
 
-    test('ips should be VALUE after reset', () => {
-      const firstValue = chance.ip();
-      request.setIps(firstValue);
+            request.setCookies({
+                [firstKey]: firstValue,
+                [secondKey]: secondValue,
+            });
 
-      request.resetMocked();
+            expect(request.cookies).toHaveProperty(firstKey, firstValue);
+            expect(request.cookies).toHaveProperty(secondKey, secondValue);
+        });
 
-      expect(request.ips).toHaveLength(0);
-    });
-  });
+        test('cookies should be empty after reset', () => {
+            const key = chance.string();
+            const value = chance.string();
+            request.setCookies(key, value);
+
+            request.resetMocked();
 
-  describe('Test method', () => {
-    test('method should be GET by default', () => {
-      expect(request.method).toEqual('GET');
+            expect(request.cookies).toEqual({});
+        });
     });
 
-    test('method should allow you to update it', () => {
-      const firstValue = chance.pickone(['GET', 'POST', 'PUT', 'DELETE']);
-      request.setMethod(firstValue);
-      expect(request.method).toEqual(firstValue);
+    describe('Test fresh', () => {
+        test('fresh should be false by default', () => {
+            expect(request.fresh).toEqual(false);
+        });
 
-      const secondValue = chance.pickone(['GET', 'POST', 'PUT', 'DELETE']);
-      request.setMethod(secondValue);
-      expect(request.method).toEqual(secondValue);
-    });
+        test('fresh should allow you to update it', () => {
+            request.setFresh(true);
+            expect(request.fresh).toEqual(true);
 
-    test('method should be GET after reset', () => {
-      const value = chance.pickone(['GET', 'POST', 'PUT', 'DELETE']);
-      request.setMethod(value);
+            request.setFresh(false);
+            expect(request.fresh).toEqual(false);
+        });
 
-      request.resetMocked();
+        test('fresh should be VALUE after reset', () => {
+            request.setFresh(true);
 
-      expect(request.method).toEqual('GET');
-    });
-  });
+            request.resetMocked();
 
-  describe('Test originalUrl', () => {
-    test('originalUrl should be empty by default', () => {
-      expect(request.originalUrl).toEqual('');
+            expect(request.fresh).toEqual(false);
+        });
     });
 
-    test('originalUrl should allow you to update it', () => {
-      const firstValue = chance.url();
-      request.setOriginalUrl(firstValue);
-      expect(request.originalUrl).toEqual(firstValue);
+    describe('Test hostname', () => {
+        test('hostname should be empty by default', () => {
+            expect(request.hostname).toEqual('');
+        });
 
-      const secondValue = chance.url();
-      request.setOriginalUrl(secondValue);
-      expect(request.originalUrl).toEqual(secondValue);
-    });
+        test('hostname should allow you to update it', () => {
+            request.setHostname('foobar');
+            expect(request.hostname).toEqual('foobar');
 
-    test('originalUrl should be empty after reset', () => {
-      const value = chance.url();
-      request.setOriginalUrl(value);
+            request.setHostname('fizfuz');
+            expect(request.hostname).toEqual('fizfuz');
+        });
 
-      request.resetMocked();
+        test('hostname should be empty after reset', () => {
+            request.setHostname('foobar');
 
-      expect(request.originalUrl).toEqual('');
-    });
-  });
+            request.resetMocked();
 
-  describe('Test params', () => {
-    test('params should be empty by default', () => {
-      expect(request.params).toEqual({});
+            expect(request.hostname).toEqual('');
+        });
     });
 
-    test('params should allow you to update it', () => {
-      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const firstValue = chance.string();
-      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const secondValue = chance.string();
-      request.setParams(firstKey, firstValue);
-      expect(request.params).toHaveProperty(firstKey, firstValue);
+    describe('Test headers', () => {
+        test('headers should be empty by default', () => {
+            expect(request.headers).toEqual({});
+        });
 
-      request.setParams(secondKey, secondValue);
-      expect(request.params).toHaveProperty(firstKey, firstValue);
-      expect(request.params).toHaveProperty(secondKey, secondValue);
-    });
+        test('headers should allow you to update it', () => {
+            const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const firstValue = chance.string();
+            const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const secondValue = chance.string();
+            request.setHeaders(firstKey, firstValue);
+            expect(request.headers).toHaveProperty(firstKey, firstValue);
 
-    test('params should allow you to update it with object', () => {
-      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const firstValue = chance.string();
-      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const secondValue = chance.string();
+            request.setHeaders(secondKey, secondValue);
+            expect(request.headers).toHaveProperty(firstKey, firstValue);
+            expect(request.headers).toHaveProperty(secondKey, secondValue);
+        });
 
-      request.setParams({
-        [firstKey]: firstValue,
-        [secondKey]: secondValue,
-      });
+        test('headers should allow you to update it with object', () => {
+            const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const firstValue = chance.string();
+            const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const secondValue = chance.string();
 
-      expect(request.params).toHaveProperty(firstKey, firstValue);
-      expect(request.params).toHaveProperty(secondKey, secondValue);
-    });
+            request.setHeaders({
+                [firstKey]: firstValue,
+                [secondKey]: secondValue,
+            });
 
-    test('params should be empty after reset', () => {
-      const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const value = chance.string();
-      request.setParams(key, value);
+            expect(request.headers).toHaveProperty(firstKey, firstValue);
+            expect(request.headers).toHaveProperty(secondKey, secondValue);
+        });
 
-      request.resetMocked();
+        test('params should be empty after reset', () => {
+            const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const value = chance.string();
+            request.setHeaders(key, value);
 
-      expect(request.params).toEqual({});
-    });
-  });
+            request.resetMocked();
 
-  describe('Test path', () => {
-    test('path should be empty by default', () => {
-      expect(request.path).toEqual('');
+            expect(request.headers).toEqual({});
+        });
     });
 
-    test('path should allow you to update it', () => {
-      const firstValue = chance.string();
-      request.setPath(firstValue);
-      expect(request.path).toEqual(firstValue);
+    describe('Test ip', () => {
+        test('ip should be ::1 by default', () => {
+            expect(request.ip).toEqual('::1');
+        });
 
-      const secondValue = chance.string();
-      request.setPath(secondValue);
-      expect(request.path).toEqual(secondValue);
-    });
+        test('ip should allow you to update it', () => {
+            const firstValue = chance.ip();
+            request.setIp(firstValue);
+            expect(request.ip).toEqual(firstValue);
 
-    test('path should be empty after reset', () => {
-      const value = chance.string();
-      request.setPath(value);
+            const secondValue = chance.ip();
+            request.setIp(secondValue);
+            expect(request.ip).toEqual(secondValue);
+        });
 
-      request.resetMocked();
+        test('ip should be ::1 after reset', () => {
+            request.setIp('1.1.1.1');
+            request.resetMocked();
 
-      expect(request.path).toEqual('');
+            expect(request.ip).toEqual('::1');
+        });
     });
-  });
 
-  describe('Test protocol', () => {
-    test('protocol should be http by default', () => {
-      expect(request.protocol).toEqual('http');
-    });
+    describe('Test ips', () => {
+        test('ips should be VALUE by default', () => {
+            expect(request.ips).toHaveLength(0);
+        });
 
-    test('protocol should allow you to update it', () => {
-      const firstValue = chance.string();
-      request.setProtocol(firstValue);
-      expect(request.protocol).toEqual(firstValue);
+        test('ips should allow you to update it', () => {
+            const firstValue = chance.ip();
+            request.setIps(firstValue);
 
-      const secondValue = chance.string();
-      request.setProtocol(secondValue);
-      expect(request.protocol).toEqual(secondValue);
-    });
+            expect(request.ips).toHaveLength(1);
+            expect(request.ips).toContain(firstValue);
 
-    test('protocol should be http after reset', () => {
-      const value = chance.string();
-      request.setProtocol(value);
+            const secondValue = chance.ip();
+            request.setIps(secondValue);
 
-      request.resetMocked();
+            expect(request.ips).toHaveLength(2);
+            expect(request.ips).toContain(firstValue);
+            expect(request.ips).toContain(secondValue);
+        });
 
-      expect(request.protocol).toEqual('http');
-    });
-  });
+        test('ips should be VALUE after reset', () => {
+            const firstValue = chance.ip();
+            request.setIps(firstValue);
+
+            request.resetMocked();
 
-  describe('Test query', () => {
-    test('query should be empty by default', () => {
-      expect(request.query).toEqual({});
+            expect(request.ips).toHaveLength(0);
+        });
     });
 
-    test('query should allow you to update it', () => {
-      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const firstValue = chance.string();
-      request.setQuery(firstKey, firstValue);
-      expect(request.query).toHaveProperty(firstKey, firstValue);
+    describe('Test method', () => {
+        test('method should be GET by default', () => {
+            expect(request.method).toEqual('GET');
+        });
 
-      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const secondValue = chance.string();
-      request.setQuery(secondKey, secondValue);
-      expect(request.query).toHaveProperty(firstKey, firstValue);
-      expect(request.query).toHaveProperty(secondKey, secondValue);
-    });
+        test('method should allow you to update it', () => {
+            const firstValue = chance.pickone(['GET', 'POST', 'PUT', 'DELETE']);
+            request.setMethod(firstValue);
+            expect(request.method).toEqual(firstValue);
 
-    test('query should be empty after reset', () => {
-      const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const value = chance.string();
-      request.setQuery(key, value);
+            const secondValue = chance.pickone(['GET', 'POST', 'PUT', 'DELETE']);
+            request.setMethod(secondValue);
+            expect(request.method).toEqual(secondValue);
+        });
 
-      request.resetMocked();
+        test('method should be GET after reset', () => {
+            const value = chance.pickone(['GET', 'POST', 'PUT', 'DELETE']);
+            request.setMethod(value);
 
-      expect(request.query).toEqual({});
-    });
+            request.resetMocked();
 
-    test('query should allow you to update it by passing object', () => {
-      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const firstValue = chance.string();
-      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const secondValue = chance.string();
-      request.setQuery({
-        [firstKey]: firstValue,
-        [secondKey]: secondValue,
-      });
-      expect(request.query).toHaveProperty(firstKey, firstValue);
-      expect(request.query).toHaveProperty(secondKey, secondValue);
+            expect(request.method).toEqual('GET');
+        });
     });
-  });
 
-  describe('Test route', () => {
-    test('route should be empty by default', () => {
-      expect(request.route).toEqual({});
-    });
+    describe('Test originalUrl', () => {
+        test('originalUrl should be empty by default', () => {
+            expect(request.originalUrl).toEqual('');
+        });
 
-    test('route should allow you to update it', () => {
-      const userValue = chance.string();
-      const authenticatedValue = chance.bool();
-      request.setRoute('user', userValue);
-      expect(request.route).toHaveProperty('user', userValue);
+        test('originalUrl should allow you to update it', () => {
+            const firstValue = chance.url();
+            request.setOriginalUrl(firstValue);
+            expect(request.originalUrl).toEqual(firstValue);
 
-      request.setRoute('authenticated', authenticatedValue);
-      expect(request.route).toHaveProperty('user', userValue);
-      expect(request.route).toHaveProperty('authenticated', authenticatedValue);
-    });
+            const secondValue = chance.url();
+            request.setOriginalUrl(secondValue);
+            expect(request.originalUrl).toEqual(secondValue);
+        });
 
-    test('route should allow you to update it with object', () => {
-      const userValue = chance.string();
-      const authenticatedValue = chance.bool();
+        test('originalUrl should be empty after reset', () => {
+            const value = chance.url();
+            request.setOriginalUrl(value);
 
-      request.setRoute({
-        user: userValue,
-        authenticated: authenticatedValue,
-      });
+            request.resetMocked();
 
-      expect(request.route).toHaveProperty('user', userValue);
-      expect(request.route).toHaveProperty('authenticated', authenticatedValue);
+            expect(request.originalUrl).toEqual('');
+        });
     });
 
-    test('route should be VALUE after reset', () => {
-      const userValue = chance.string();
-      request.setRoute('user', userValue);
-      request.resetMocked();
+    describe('Test params', () => {
+        test('params should be empty by default', () => {
+            expect(request.params).toEqual({});
+        });
 
-      expect(request.route).toEqual({});
-    });
-  });
+        test('params should allow you to update it', () => {
+            const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const firstValue = chance.string();
+            const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const secondValue = chance.string();
+            request.setParams(firstKey, firstValue);
+            expect(request.params).toHaveProperty(firstKey, firstValue);
 
-  describe('Test secure', () => {
+            request.setParams(secondKey, secondValue);
+            expect(request.params).toHaveProperty(firstKey, firstValue);
+            expect(request.params).toHaveProperty(secondKey, secondValue);
+        });
 
-  });
-  describe('Test secure', () => {
-    test('secure should be false by default', () => {
-      expect(request.secure).toEqual(false);
-    });
+        test('params should allow you to update it with object', () => {
+            const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const firstValue = chance.string();
+            const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const secondValue = chance.string();
 
-    test('secure should allow you to update it', () => {
-      const firstValue = chance.bool();
-      request.setSecure(firstValue);
-      expect(request.secure).toEqual(firstValue);
+            request.setParams({
+                [firstKey]: firstValue,
+                [secondKey]: secondValue,
+            });
 
-      const secondValue = chance.bool();
-      request.setSecure(secondValue);
-      expect(request.secure).toEqual(secondValue);
-    });
+            expect(request.params).toHaveProperty(firstKey, firstValue);
+            expect(request.params).toHaveProperty(secondKey, secondValue);
+        });
 
-    test('secure should be false after reset', () => {
-      const value = chance.bool();
-      request.setSecure(value);
+        test('params should be empty after reset', () => {
+            const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const value = chance.string();
+            request.setParams(key, value);
 
-      request.resetMocked();
+            request.resetMocked();
 
-      expect(request.secure).toEqual(false);
+            expect(request.params).toEqual({});
+        });
     });
-  });
 
-  describe('Test signedCookies', () => {
-    test('signedCookies should be empty by default', () => {
-      expect(request.signedCookies).toEqual({});
-    });
+    describe('Test path', () => {
+        test('path should be empty by default', () => {
+            expect(request.path).toEqual('');
+        });
+
+        test('path should allow you to update it', () => {
+            const firstValue = chance.string();
+            request.setPath(firstValue);
+            expect(request.path).toEqual(firstValue);
 
-    test('signedCookies should allow you to update it', () => {
-      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const firstValue = chance.string();
-      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const secondValue = chance.string();
+            const secondValue = chance.string();
+            request.setPath(secondValue);
+            expect(request.path).toEqual(secondValue);
+        });
 
-      request.setSignedCookies(firstKey, firstValue);
-      expect(request.signedCookies).toHaveProperty(firstKey, firstValue);
+        test('path should be empty after reset', () => {
+            const value = chance.string();
+            request.setPath(value);
 
-      request.setSignedCookies(secondKey, secondValue);
-      expect(request.signedCookies).toHaveProperty(firstKey, firstValue);
-      expect(request.signedCookies).toHaveProperty(secondKey, secondValue);
+            request.resetMocked();
+
+            expect(request.path).toEqual('');
+        });
     });
 
-    test('signedCookies should be empty after reset', () => {
-      const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const value = chance.string();
-      request.setSignedCookies(key, value);
+    describe('Test protocol', () => {
+        test('protocol should be http by default', () => {
+            expect(request.protocol).toEqual('http');
+        });
 
-      request.resetMocked();
+        test('protocol should allow you to update it', () => {
+            const firstValue = chance.string();
+            request.setProtocol(firstValue);
+            expect(request.protocol).toEqual(firstValue);
 
-      expect(request.signedCookies).toEqual({});
-    });
-  });
+            const secondValue = chance.string();
+            request.setProtocol(secondValue);
+            expect(request.protocol).toEqual(secondValue);
+        });
 
-  describe('Test stale', () => {
-    test('stale should be false by default', () => {
-      expect(request.stale).toEqual(false);
-    });
+        test('protocol should be http after reset', () => {
+            const value = chance.string();
+            request.setProtocol(value);
 
-    test('stale should allow you to update it', () => {
-      const fisrtValue = chance.bool();
-      request.setStale(fisrtValue);
-      expect(request.stale).toEqual(fisrtValue);
+            request.resetMocked();
 
-      const secondValue = chance.bool();
-      request.setStale(secondValue);
-      expect(request.stale).toEqual(secondValue);
+            expect(request.protocol).toEqual('http');
+        });
     });
 
-    test('stale should be false after reset', () => {
-      const value = chance.bool();
-      request.setStale(value);
+    describe('Test query', () => {
+        test('query should be empty by default', () => {
+            expect(request.query).toEqual({});
+        });
 
-      request.resetMocked();
+        test('query should allow you to update it', () => {
+            const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const firstValue = chance.string();
+            request.setQuery(firstKey, firstValue);
+            expect(request.query).toHaveProperty(firstKey, firstValue);
 
-      expect(request.stale).toEqual(false);
-    });
-  });
+            const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const secondValue = chance.string();
+            request.setQuery(secondKey, secondValue);
+            expect(request.query).toHaveProperty(firstKey, firstValue);
+            expect(request.query).toHaveProperty(secondKey, secondValue);
+        });
+
+        test('query should be empty after reset', () => {
+            const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const value = chance.string();
+            request.setQuery(key, value);
+
+            request.resetMocked();
 
-  describe('Test subdomains', () => {
-    test('subdomains should be empty by default', () => {
-      expect(request.subdomains).toHaveLength(0);
+            expect(request.query).toEqual({});
+        });
+
+        test('query should allow you to update it by passing object', () => {
+            const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const firstValue = chance.string();
+            const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const secondValue = chance.string();
+            request.setQuery({
+                [firstKey]: firstValue,
+                [secondKey]: secondValue,
+            });
+            expect(request.query).toHaveProperty(firstKey, firstValue);
+            expect(request.query).toHaveProperty(secondKey, secondValue);
+        });
     });
 
-    test('subdomains should allow you to update it', () => {
-      const firstValue = chance.string();
-      request.setSubdomains(firstValue);
+    describe('Test route', () => {
+        test('route should be empty by default', () => {
+            expect(request.route).toEqual({});
+        });
 
-      expect(request.subdomains).toHaveLength(1);
-      expect(request.subdomains).toContain(firstValue);
+        test('route should allow you to update it', () => {
+            const userValue = chance.string();
+            const authenticatedValue = chance.bool();
+            request.setRoute('user', userValue);
+            expect(request.route).toHaveProperty('user', userValue);
 
-      const secondValue = chance.string();
-      request.setSubdomains(secondValue);
+            request.setRoute('authenticated', authenticatedValue);
+            expect(request.route).toHaveProperty('user', userValue);
+            expect(request.route).toHaveProperty('authenticated', authenticatedValue);
+        });
 
-      expect(request.subdomains).toHaveLength(2);
-      expect(request.subdomains).toContain(firstValue);
-      expect(request.subdomains).toContain(secondValue);
-    });
+        test('route should allow you to update it with object', () => {
+            const userValue = chance.string();
+            const authenticatedValue = chance.bool();
 
-    test('subdomains should be VALUE after reset', () => {
-      const value = chance.string();
-      request.setSubdomains(value);
+            request.setRoute({
+                user: userValue,
+                authenticated: authenticatedValue,
+            });
 
-      request.resetMocked();
+            expect(request.route).toHaveProperty('user', userValue);
+            expect(request.route).toHaveProperty('authenticated', authenticatedValue);
+        });
 
-      expect(request.subdomains).toHaveLength(0);
-    });
-  });
+        test('route should be VALUE after reset', () => {
+            const userValue = chance.string();
+            request.setRoute('user', userValue);
+            request.resetMocked();
 
-  describe('Test xhr', () => {
-    test('xhr should be false by default', () => {
-      expect(request.xhr).toEqual(false);
+            expect(request.route).toEqual({});
+        });
     });
 
-    test('xhr should allow you to update it', () => {
-      const firstValue = chance.bool();
-      request.setXhr(firstValue);
-      expect(request.xhr).toEqual(firstValue);
+    describe('Test secure', () => {
 
-      const secondValue = chance.bool();
-      request.setXhr(secondValue);
-      expect(request.xhr).toEqual(secondValue);
     });
+    describe('Test secure', () => {
+        test('secure should be false by default', () => {
+            expect(request.secure).toEqual(false);
+        });
 
-    test('xhr should be false after reset', () => {
-      const value = chance.bool();
-      request.setXhr(value);
+        test('secure should allow you to update it', () => {
+            const firstValue = chance.bool();
+            request.setSecure(firstValue);
+            expect(request.secure).toEqual(firstValue);
 
-      request.resetMocked();
+            const secondValue = chance.bool();
+            request.setSecure(secondValue);
+            expect(request.secure).toEqual(secondValue);
+        });
 
-      expect(request.xhr).toEqual(false);
-    });
-  });
+        test('secure should be false after reset', () => {
+            const value = chance.bool();
+            request.setSecure(value);
 
-  describe('Test accepts', () => {
-    test('accepts should have no calls by default', () => {
-      expect(request.accepts).not.toHaveBeenCalled();
+            request.resetMocked();
+
+            expect(request.secure).toEqual(false);
+        });
     });
 
-    test('accepts should be called and match called with', () => {
-      const types = chance.string();
+    describe('Test signedCookies', () => {
+        test('signedCookies should be empty by default', () => {
+            expect(request.signedCookies).toEqual({});
+        });
 
-      request.accepts(types);
+        test('signedCookies should allow you to update it', () => {
+            const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const firstValue = chance.string();
+            const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const secondValue = chance.string();
 
-      expect(request.accepts).toHaveBeenCalled();
-      expect(request.accepts).toHaveBeenCalledWith(types);
-    });
+            request.setSignedCookies(firstKey, firstValue);
+            expect(request.signedCookies).toHaveProperty(firstKey, firstValue);
 
-    test('accepts should have no call after reset', () => {
-      const types = chance.string();
-      request.accepts(types);
+            request.setSignedCookies(secondKey, secondValue);
+            expect(request.signedCookies).toHaveProperty(firstKey, firstValue);
+            expect(request.signedCookies).toHaveProperty(secondKey, secondValue);
+        });
 
-      request.resetMocked();
+        test('signedCookies should be empty after reset', () => {
+            const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const value = chance.string();
+            request.setSignedCookies(key, value);
 
-      expect(request.accepts).not.toHaveBeenCalled();
-    });
-  });
+            request.resetMocked();
 
-  describe('Test acceptsCharsets', () => {
-    test('acceptsCharsets should have no calls by default', () => {
-      expect(request.acceptsCharsets).not.toHaveBeenCalled();
+            expect(request.signedCookies).toEqual({});
+        });
     });
 
-    test('acceptsCharsets should be called and match called with', () => {
-      const charset = chance.string();
+    describe('Test stale', () => {
+        test('stale should be false by default', () => {
+            expect(request.stale).toEqual(false);
+        });
 
-      request.acceptsCharsets(charset);
+        test('stale should allow you to update it', () => {
+            const fisrtValue = chance.bool();
+            request.setStale(fisrtValue);
+            expect(request.stale).toEqual(fisrtValue);
 
-      expect(request.acceptsCharsets).toHaveBeenCalled();
-      expect(request.acceptsCharsets).toHaveBeenCalledWith(charset);
-    });
+            const secondValue = chance.bool();
+            request.setStale(secondValue);
+            expect(request.stale).toEqual(secondValue);
+        });
 
-    test('acceptsCharsets should have no call after reset', () => {
-      const charset = chance.string();
-      request.acceptsCharsets(charset);
+        test('stale should be false after reset', () => {
+            const value = chance.bool();
+            request.setStale(value);
 
-      request.resetMocked();
+            request.resetMocked();
 
-      expect(request.acceptsCharsets).not.toHaveBeenCalled();
+            expect(request.stale).toEqual(false);
+        });
     });
-  });
 
-  describe('Test acceptsEncodings', () => {
-    test('acceptsEncodings should have no calls by default', () => {
-      expect(request.acceptsEncodings).not.toHaveBeenCalled();
-    });
+    describe('Test subdomains', () => {
+        test('subdomains should be empty by default', () => {
+            expect(request.subdomains).toHaveLength(0);
+        });
 
-    test('acceptsEncodings should be called and match called with', () => {
-      const encoding = chance.string();
+        test('subdomains should allow you to update it', () => {
+            const firstValue = chance.string();
+            request.setSubdomains(firstValue);
 
-      request.acceptsEncodings(encoding);
+            expect(request.subdomains).toHaveLength(1);
+            expect(request.subdomains).toContain(firstValue);
 
-      expect(request.acceptsEncodings).toHaveBeenCalled();
-      expect(request.acceptsEncodings).toHaveBeenCalledWith(encoding);
-    });
+            const secondValue = chance.string();
+            request.setSubdomains(secondValue);
 
-    test('acceptsEncodings should have no call after reset', () => {
-      const encoding = chance.string();
-      request.acceptsEncodings(encoding);
+            expect(request.subdomains).toHaveLength(2);
+            expect(request.subdomains).toContain(firstValue);
+            expect(request.subdomains).toContain(secondValue);
+        });
 
-      request.resetMocked();
+        test('subdomains should be VALUE after reset', () => {
+            const value = chance.string();
+            request.setSubdomains(value);
 
-      expect(request.acceptsEncodings).not.toHaveBeenCalled();
-    });
-  });
+            request.resetMocked();
 
-  describe('Test acceptsLanguages', () => {
-    test('acceptsLanguages should have no calls by default', () => {
-      expect(request.acceptsLanguages).not.toHaveBeenCalled();
+            expect(request.subdomains).toHaveLength(0);
+        });
     });
 
-    test('acceptsLanguages should be called and match called with', () => {
-      const lang = chance.string();
+    describe('Test xhr', () => {
+        test('xhr should be false by default', () => {
+            expect(request.xhr).toEqual(false);
+        });
 
-      request.acceptsLanguages(lang);
+        test('xhr should allow you to update it', () => {
+            const firstValue = chance.bool();
+            request.setXhr(firstValue);
+            expect(request.xhr).toEqual(firstValue);
 
-      expect(request.acceptsLanguages).toHaveBeenCalled();
-      expect(request.acceptsLanguages).toHaveBeenCalledWith(lang);
-    });
+            const secondValue = chance.bool();
+            request.setXhr(secondValue);
+            expect(request.xhr).toEqual(secondValue);
+        });
 
-    test('acceptsLanguages should have no call after reset', () => {
-      const lang = chance.string();
-      request.acceptsLanguages(lang);
+        test('xhr should be false after reset', () => {
+            const value = chance.bool();
+            request.setXhr(value);
 
-      request.resetMocked();
+            request.resetMocked();
 
-      expect(request.acceptsLanguages).not.toHaveBeenCalled();
+            expect(request.xhr).toEqual(false);
+        });
     });
-  });
 
-  describe('Test get', () => {
-    test('get should have no calls by default', () => {
-      expect(request.get).not.toHaveBeenCalled();
-    });
+    describe('Test accepts', () => {
+        test('accepts should have no calls by default', () => {
+            expect(request.accepts).not.toHaveBeenCalled();
+        });
 
-    test('get should be called and match called with', () => {
-      const field = chance.string();
+        test('accepts should be called and match called with', () => {
+            const types = chance.string();
 
-      request.get(field);
+            request.accepts(types);
 
-      expect(request.get).toHaveBeenCalled();
-      expect(request.get).toHaveBeenCalledWith(field);
-    });
+            expect(request.accepts).toHaveBeenCalled();
+            expect(request.accepts).toHaveBeenCalledWith(types);
+        });
 
-    test('get should have no call after reset', () => {
-      const field = chance.string();
-      request.get(field);
+        test('accepts should have no call after reset', () => {
+            const types = chance.string();
+            request.accepts(types);
 
-      request.resetMocked();
+            request.resetMocked();
 
-      expect(request.get).not.toHaveBeenCalled();
+            expect(request.accepts).not.toHaveBeenCalled();
+        });
     });
 
-    test('should return header value', () => {
+    describe('Test acceptsCharsets', () => {
+        test('acceptsCharsets should have no calls by default', () => {
+            expect(request.acceptsCharsets).not.toHaveBeenCalled();
+        });
 
-      const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const value = chance.string();
+        test('acceptsCharsets should be called and match called with', () => {
+            const charset = chance.string();
 
-      request.setHeaders(key, value);
+            request.acceptsCharsets(charset);
 
-      expect(request.get(key)).toEqual(value);
-    });
-  });
+            expect(request.acceptsCharsets).toHaveBeenCalled();
+            expect(request.acceptsCharsets).toHaveBeenCalledWith(charset);
+        });
 
-  describe('Test is', () => {
-    test('is should have no calls by default', () => {
-      expect(request.is).not.toHaveBeenCalled();
+        test('acceptsCharsets should have no call after reset', () => {
+            const charset = chance.string();
+            request.acceptsCharsets(charset);
+
+            request.resetMocked();
+
+            expect(request.acceptsCharsets).not.toHaveBeenCalled();
+        });
     });
 
-    test('is should be called and match called with', () => {
-      const type = chance.string();
+    describe('Test acceptsEncodings', () => {
+        test('acceptsEncodings should have no calls by default', () => {
+            expect(request.acceptsEncodings).not.toHaveBeenCalled();
+        });
 
-      request.is(type);
+        test('acceptsEncodings should be called and match called with', () => {
+            const encoding = chance.string();
 
-      expect(request.is).toHaveBeenCalled();
-      expect(request.is).toHaveBeenCalledWith(type);
-    });
+            request.acceptsEncodings(encoding);
 
-    test('is should have no call after reset', () => {
-      const type = chance.string();
-      request.is(type);
+            expect(request.acceptsEncodings).toHaveBeenCalled();
+            expect(request.acceptsEncodings).toHaveBeenCalledWith(encoding);
+        });
 
-      request.resetMocked();
+        test('acceptsEncodings should have no call after reset', () => {
+            const encoding = chance.string();
+            request.acceptsEncodings(encoding);
 
-      expect(request.is).not.toHaveBeenCalled();
-    });
-  });
+            request.resetMocked();
 
-  describe('Test range', () => {
-    test('range should have no calls by default', () => {
-      expect(request.range).not.toHaveBeenCalled();
+            expect(request.acceptsEncodings).not.toHaveBeenCalled();
+        });
     });
 
-    test('range should be called and match called with', () => {
-      const size = chance.natural();
-      const options = {};
+    describe('Test acceptsLanguages', () => {
+        test('acceptsLanguages should have no calls by default', () => {
+            expect(request.acceptsLanguages).not.toHaveBeenCalled();
+        });
 
-      request.range(size, options);
+        test('acceptsLanguages should be called and match called with', () => {
+            const lang = chance.string();
 
-      expect(request.range).toHaveBeenCalled();
-      expect(request.range).toHaveBeenCalledWith(size, options);
-    });
+            request.acceptsLanguages(lang);
+
+            expect(request.acceptsLanguages).toHaveBeenCalled();
+            expect(request.acceptsLanguages).toHaveBeenCalledWith(lang);
+        });
 
-    test('range should have no call after reset', () => {
-      const size = chance.natural();
-      const options = {};
-      request.range(size, options);
+        test('acceptsLanguages should have no call after reset', () => {
+            const lang = chance.string();
+            request.acceptsLanguages(lang);
 
-      request.resetMocked();
+            request.resetMocked();
 
-      expect(request.range).not.toHaveBeenCalled();
+            expect(request.acceptsLanguages).not.toHaveBeenCalled();
+        });
     });
-  });
 
-  describe('Test signedCookies', () => {
-    test('signedCookies should be empty by default', () => {
-      expect(request.signedCookies).toEqual({});
+    describe('Test get', () => {
+        test('get should have no calls by default', () => {
+            expect(request.get).not.toHaveBeenCalled();
+        });
+
+        test('get should be called and match called with', () => {
+            const field = chance.string();
+
+            request.get(field);
+
+            expect(request.get).toHaveBeenCalled();
+            expect(request.get).toHaveBeenCalledWith(field);
+        });
+
+        test('get should have no call after reset', () => {
+            const field = chance.string();
+            request.get(field);
+
+            request.resetMocked();
+
+            expect(request.get).not.toHaveBeenCalled();
+        });
+
+        test('should return header value', () => {
+
+            const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const value = chance.string();
+
+            request.setHeaders(key, value);
+
+            expect(request.get(key)).toEqual(value);
+        });
     });
+
+    describe('Test is', () => {
+        test('is should have no calls by default', () => {
+            expect(request.is).not.toHaveBeenCalled();
+        });
+
+        test('is should be called and match called with', () => {
+            const type = chance.string();
 
-    test('signedCookies should allow you to update it', () => {
-      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const firstValue = chance.string();
-      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const secondValue = chance.string();
-      request.setSignedCookies(firstKey, firstValue);
-      expect(request.signedCookies).toHaveProperty(firstKey, firstValue);
+            request.is(type);
 
-      request.setSignedCookies(secondKey, secondValue);
-      expect(request.signedCookies).toHaveProperty(firstKey, firstValue);
-      expect(request.signedCookies).toHaveProperty(secondKey, secondValue);
+            expect(request.is).toHaveBeenCalled();
+            expect(request.is).toHaveBeenCalledWith(type);
+        });
+
+        test('is should have no call after reset', () => {
+            const type = chance.string();
+            request.is(type);
+
+            request.resetMocked();
+
+            expect(request.is).not.toHaveBeenCalled();
+        });
     });
+
+    describe('Test range', () => {
+        test('range should have no calls by default', () => {
+            expect(request.range).not.toHaveBeenCalled();
+        });
+
+        test('range should be called and match called with', () => {
+            const size = chance.natural();
+            const options = {};
+
+            request.range(size, options);
 
-    test('signedCookies should allow you to update it with object', () => {
-      const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const firstValue = chance.string();
-      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
-      const secondValue = chance.string();
+            expect(request.range).toHaveBeenCalled();
+            expect(request.range).toHaveBeenCalledWith(size, options);
+        });
 
-      request.setSignedCookies({
-        [firstKey]: firstValue,
-        [secondKey]: secondValue,
-      });
+        test('range should have no call after reset', () => {
+            const size = chance.natural();
+            const options = {};
+            request.range(size, options);
 
-      expect(request.signedCookies).toHaveProperty(firstKey, firstValue);
-      expect(request.signedCookies).toHaveProperty(secondKey, secondValue);
+            request.resetMocked();
+
+            expect(request.range).not.toHaveBeenCalled();
+        });
     });
+
+    describe('Test signedCookies', () => {
+        test('signedCookies should be empty by default', () => {
+            expect(request.signedCookies).toEqual({});
+        });
+
+        test('signedCookies should allow you to update it', () => {
+            const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const firstValue = chance.string();
+            const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const secondValue = chance.string();
+            request.setSignedCookies(firstKey, firstValue);
+            expect(request.signedCookies).toHaveProperty(firstKey, firstValue);
+
+            request.setSignedCookies(secondKey, secondValue);
+            expect(request.signedCookies).toHaveProperty(firstKey, firstValue);
+            expect(request.signedCookies).toHaveProperty(secondKey, secondValue);
+        });
+
+        test('signedCookies should allow you to update it with object', () => {
+            const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const firstValue = chance.string();
+            const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+            const secondValue = chance.string();
+
+            request.setSignedCookies({
+                [firstKey]: firstValue,
+                [secondKey]: secondValue,
+            });
+
+            expect(request.signedCookies).toHaveProperty(firstKey, firstValue);
+            expect(request.signedCookies).toHaveProperty(secondKey, secondValue);
+        });
 
-    test('signedCookies should be empty after reset', () => {
-      const key = chance.string();
-      const value = chance.string();
-      request.setSignedCookies(key, value);
+        test('signedCookies should be empty after reset', () => {
+            const key = chance.string();
+            const value = chance.string();
+            request.setSignedCookies(key, value);
 
-      request.resetMocked();
+            request.resetMocked();
 
-      expect(request.signedCookies).toEqual({});
+            expect(request.signedCookies).toEqual({});
+        });
     });
-  });
 });
