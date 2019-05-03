@@ -96,5 +96,7 @@
       "@types/node"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "jest-node-http": "1.0.0"
+  }
 }
