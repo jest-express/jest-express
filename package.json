@@ -55,11 +55,11 @@
   "devDependencies": {
     "@commitlint/cli": "8.0.0",
     "@commitlint/config-conventional": "8.0.0",
-    "@types/chance": "1.0.4",
+    "@types/chance": "1.0.5",
     "@types/faker": "4.1.5",
     "@types/jest": "24.0.13",
-    "@types/node": "12.0.3",
-    "all-contributors-cli": "6.6.1",
+    "@types/node": "12.0.12",
+    "all-contributors-cli": "6.7.0",
     "babel-core": "6.26.3",
     "babel-jest": "24.8.0",
     "chance": "1.0.18",
@@ -69,14 +69,14 @@
     "faker": "4.1.0",
     "jest": "24.8.0",
     "jest-junit": "6.4.0",
-    "lint-staged": "8.1.7",
+    "lint-staged": "9.0.2",
     "opt-cli": "1.6.0",
     "rimraf": "2.6.3",
     "semantic-release": "15.13.18",
     "ts-jest": "24.0.2",
-    "tslint": "5.16.0",
+    "tslint": "5.18.0",
     "tslint-config-airbnb": "5.11.1",
-    "typescript": "3.5.1"
+    "typescript": "3.5.2"
   },
   "config": {
     "commitizen": {
