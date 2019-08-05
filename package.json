@@ -72,7 +72,7 @@
     "lint-staged": "9.2.1",
     "opt-cli": "1.6.0",
     "rimraf": "2.6.3",
-    "semantic-release": "15.13.18",
+    "semantic-release": "15.13.19",
     "ts-jest": "24.0.2",
     "tslint": "5.18.0",
     "tslint-config-airbnb": "5.11.1",
