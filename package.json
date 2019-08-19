@@ -61,7 +61,7 @@
     "@types/node": "12.7.1",
     "all-contributors-cli": "6.8.1",
     "babel-core": "6.26.3",
-    "babel-jest": "24.8.0",
+    "babel-jest": "24.9.0",
     "chance": "1.0.18",
     "codecov": "3.5.0",
     "commitizen": "4.0.3",
