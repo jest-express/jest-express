@@ -68,7 +68,7 @@
     "cz-conventional-changelog": "3.0.2",
     "faker": "4.1.0",
     "jest": "24.9.0",
-    "jest-junit": "7.0.0",
+    "jest-junit": "8.0.0",
     "lint-staged": "9.2.5",
     "opt-cli": "1.6.0",
     "rimraf": "2.6.3",
