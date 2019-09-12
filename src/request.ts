@@ -2,7 +2,15 @@ import { parse } from 'url';
 import { Express } from './express';
 
 interface IRequestOptions {
-  method?: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT' | 'HEAD' | 'OPTIONS' | 'CONNECT';
+  method?:
+    | 'GET'
+    | 'POST'
+    | 'DELETE'
+    | 'PATCH'
+    | 'PUT'
+    | 'HEAD'
+    | 'OPTIONS'
+    | 'CONNECT';
   headers?: any;
   app?: Express;
 }
@@ -72,11 +80,13 @@ export class Request {
     this.acceptsCharsets = jest.fn();
     this.acceptsEncodings = jest.fn();
     this.acceptsLanguages = jest.fn();
-    this.get = jest.fn().mockImplementation((header: string) => this.headers[header]);
+    this.get = jest
+      .fn()
+      .mockImplementation((header: string) => this.headers[header]);
     this.is = jest.fn();
     this.range = jest.fn();
     // Application
-    this.app = (options && options.app) ? options.app : new Express();
+    this.app = options && options.app ? options.app : new Express();
 
     if (typeof url === 'string') {
       this.defaultUrl = url;
@@ -94,9 +104,9 @@ export class Request {
     this.hostname = parsedUrl.hostname || '';
     this.originalUrl = this.path + (parsedUrl.search || '');
     this.query = parsedUrl.query;
-    this.protocol = parsedUrl.protocol ?
-      parsedUrl.protocol.slice(0, parsedUrl.protocol.length - 1) :
-      'http';
+    this.protocol = parsedUrl.protocol
+      ? parsedUrl.protocol.slice(0, parsedUrl.protocol.length - 1)
+      : 'http';
     this.secure = parsedUrl.protocol === 'https:';
 
     const hostnameParts = this.hostname.split('.');
@@ -106,7 +116,13 @@ export class Request {
 
     if (options) {
       if (options.headers) {
-        this.headers = Object.assign({}, options.headers);
+        const headers: any = {};
+        for (const k of Object.keys(options.headers)) {
+          const key = k.toLowerCase();
+          headers[key] = options.headers[k];
+        }
+
+        this.headers = Object.assign({}, headers);
       }
       if (options.method) {
         this.method = options.method;
@@ -175,10 +191,10 @@ export class Request {
 
   public setHeaders(key: string | { [key: string]: string }, value?: string) {
     if (typeof key === 'string') {
-      this.headers[key] = value;
+      this.headers[key.toLowerCase()] = value;
     } else {
       for (const k of Object.keys(key)) {
-        this.headers[k] = key[k];
+        this.headers[k.toLowerCase()] = key[k];
       }
     }
   }
@@ -245,7 +261,10 @@ export class Request {
     this.secure = value;
   }
 
-  public setSignedCookies(key: string | { [key: string]: string }, value?: string) {
+  public setSignedCookies(
+    key: string | { [key: string]: string },
+    value?: string,
+  ) {
     if (typeof key === 'string') {
       this.signedCookies[key] = value;
     } else {

@@ -53,7 +53,7 @@ describe('Express Request', () => {
                 },
             );
             expect(request.headers).toEqual({
-                Accept: 'text/html',
+              accept: 'text/html',
             });
         });
 
@@ -94,7 +94,7 @@ describe('Express Request', () => {
             expect(request.path).toEqual('/some/path');
             expect(request.baseUrl).toEqual('');
             expect(request.method).toEqual('POST');
-            expect(request.headers).toEqual({ Accept: 'text/html' });
+            expect(request.headers).toEqual({ accept: 'text/html' });
             expect(request.hostname).toEqual('www.example.com');
             expect(request.query).toEqual({ foo: 'bar' });
             expect(request.subdomains).toEqual(['www']);
