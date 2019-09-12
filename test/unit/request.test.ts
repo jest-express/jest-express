@@ -53,7 +53,7 @@ describe('Express Request', () => {
                 },
             );
             expect(request.headers).toEqual({
-                accept: 'text/html',
+              accept: 'text/html',
             });
         });
 
