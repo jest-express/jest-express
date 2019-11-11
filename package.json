@@ -58,7 +58,7 @@
     "@types/chance": "1.0.7",
     "@types/faker": "4.1.6",
     "@types/jest": "24.0.22",
-    "@types/node": "12.11.7",
+    "@types/node": "12.12.7",
     "all-contributors-cli": "6.10.0",
     "babel-core": "6.26.3",
     "babel-jest": "24.9.0",
