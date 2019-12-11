@@ -20,7 +20,7 @@ declare const jest: any;
 export class Request {
   // Properties
   public baseUrl: string;
-  public body: string;
+  public body: any;
   public cookies: any;
   public fresh: boolean;
   public headers: any;
@@ -171,7 +171,7 @@ export class Request {
     this.baseUrl = value;
   }
 
-  public setBody(value: string) {
+  public setBody(value: any) {
     this.body = value;
   }
 
