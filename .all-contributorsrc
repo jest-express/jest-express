@@ -111,7 +111,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "ttxndrx",
+      "name": "ttxndrx",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/6355781?v=4",
+      "profile": "https://github.com/ttxndrx",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "commitConvention": "none"
 }
