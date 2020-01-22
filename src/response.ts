@@ -29,6 +29,7 @@ export class Response {
   public status: any;
   public type: any;
   public vary: any;
+  public removeHeader: any;
 
   constructor() {
     // Properties
@@ -78,6 +79,8 @@ export class Response {
     this.status = jest.fn(() => this);
     this.type = jest.fn(() => this);
     this.vary = jest.fn(() => this);
+    this.removeHeader = jest.fn(() => this);
+
     return this;
   }
 
@@ -122,5 +125,6 @@ export class Response {
     this.status.mockReset();
     this.type.mockReset();
     this.vary.mockReset();
+    this.removeHeader.mockReset();
   }
 }

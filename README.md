@@ -125,6 +125,7 @@ Mock Express for testing with Jest
     * [type()](#responsetype)
     * [vary()](#responsevary)
     * [setHeader()](#responsesetheader)
+    * [removeHeader()](#responseremoveHeader)
     * [setHeadersSent()](#responsesetheaderssent)
     * [setLocals()](#responsesetlocals)
     * [resetMocked()](#resetmocked)
@@ -741,6 +742,19 @@ beforeEach(() => {
 });
 ```
 
+#### `response.removeHeader`
+
+Ways to use this API:
+
+Setup:
+```js
+beforeEach(() => {
+  response = new Response();
+  response.removeHeader(key);
+  expect(response.removeHeader).toBeCalledWith(key);
+});
+```
+
 #### `response.headersSent`
 
 Ways to use this API:
@@ -1073,6 +1087,7 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
     <td align="center"><a href="https://www.maxholman.com"><img src="https://avatars3.githubusercontent.com/u/250517?v=4" width="100px;" alt=""/><br /><sub><b>Max Holman</b></sub></a><br /><a href="https://github.com/jameswlane/jest-express/commits?author=maxholman" title="Code">💻</a> <a href="https://github.com/jameswlane/jest-express/commits?author=maxholman" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/mnalsup"><img src="https://avatars3.githubusercontent.com/u/5252756?v=4" width="100px;" alt=""/><br /><sub><b>Matthew Alsup</b></sub></a><br /><a href="https://github.com/jameswlane/jest-express/commits?author=mnalsup" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/ttxndrx"><img src="https://avatars3.githubusercontent.com/u/6355781?v=4" width="100px;" alt=""/><br /><sub><b>ttxndrx</b></sub></a><br /><a href="https://github.com/jameswlane/jest-express/commits?author=ttxndrx" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/benbakhar"><img src="https://avatars1.githubusercontent.com/u/7517258?v=4" width="100px;" alt=""/><br /><sub><b>Ben Bakhar</b></sub></a><br /><a href="https://github.com/jameswlane/jest-express/commits?author=benbakhar" title="Code">💻</a> <a href="https://github.com/jameswlane/jest-express/commits?author=benbakhar" title="Tests">⚠️</a> <a href="https://github.com/jameswlane/jest-express/commits?author=benbakhar" title="Documentation">📖</a></td>
   </tr>
 </table>
 

@@ -794,4 +794,31 @@ describe('Express Response', () => {
       expect(response.vary(value)).toBe(response);
     });
   });
+
+  describe('Test removeHeader', () => {
+    test('removeHeader should have no calls by default', () => {
+      expect(response.removeHeader).not.toHaveBeenCalled();
+    });
+
+    test('removeHeader should be called and match called with', () => {
+      const value = chance.string();
+      response.removeHeader(value);
+
+      expect(response.removeHeader).toHaveBeenCalled();
+      expect(response.removeHeader).toHaveBeenCalledWith(value);
+    });
+
+    test('removeHeader should have no call after reset', () => {
+      const value = chance.string();
+      response.removeHeader(value);
+
+      response.resetMocked();
+      expect(response.removeHeader).not.toHaveBeenCalled();
+    });
+
+    test('removeHeader returns response so is chainable', () => {
+      const value = chance.string();
+      expect(response.removeHeader(value)).toBe(response);
+    });
+  });
 });

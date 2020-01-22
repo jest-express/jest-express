@@ -120,6 +120,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "benbakhar",
+      "name": "Ben Bakhar",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/7517258?v=4",
+      "profile": "https://github.com/benbakhar",
+      "contributions": [
+        "code",
+        "test",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
