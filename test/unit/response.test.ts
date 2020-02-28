@@ -319,8 +319,8 @@ describe('Express Response', () => {
     });
 
     test('cookie returns response so is chainable', () => {
-        const value = chance.string();
-        expect(response.cookie(value)).toBe(response);
+      const value = chance.string();
+      expect(response.cookie(value)).toBe(response);
     });
   });
 

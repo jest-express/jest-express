@@ -559,7 +559,7 @@ describe('Express Application', () => {
       expect(app.get).toHaveBeenCalledWith('/', expect.anything(), expect.anything());
       expect(request).toBeInstanceOf(Request);
       expect(response).toBeInstanceOf(Response);
-    }
+    };
     app.get('/', testMiddleware, testMiddleware);
   });
 
@@ -569,7 +569,7 @@ describe('Express Application', () => {
       expect(app.get).toHaveBeenCalledWith('/', expect.anything());
       expect(request).toBeInstanceOf(Request);
       expect(response).toBeInstanceOf(Response);
-    }
+    };
     app.get('/', [testMiddleware, testMiddleware]);
   });
 
@@ -579,7 +579,7 @@ describe('Express Application', () => {
       expect(app.get).toHaveBeenCalledWith('/', expect.anything(), expect.anything());
       expect(request).toBeInstanceOf(Request);
       expect(response).toBeInstanceOf(Response);
-    }
+    };
     app.get('/', [testMiddleware, testMiddleware], testMiddleware);
   });
 
@@ -657,10 +657,10 @@ describe('Express Application', () => {
     });
 
     test('Use called with a callback with three argument', () => {
-      const callback = (req: Request, res: Response, next: NextFunction) => {
+      const callback = (req: Request, res: Response, nextFunc: NextFunction) => {
         expect(req).toBeInstanceOf(Request);
         expect(res).toBeInstanceOf(Response);
-        expect(next).toEqual(next);
+        expect(nextFunc).toEqual(next);
       };
       app.use(callback);
       expect(app.use).toHaveBeenCalled();
@@ -668,11 +668,11 @@ describe('Express Application', () => {
     });
 
     test('Use called with a callback with four argument', () => {
-      const callback = (err: any, req: Request, res: Response, next: NextFunction) => {
+      const callback = (err: any, req: Request, res: Response, nextFunc: NextFunction) => {
         expect(err).toBeInstanceOf(Object);
         expect(req).toBeInstanceOf(Request);
         expect(res).toBeInstanceOf(Response);
-        expect(next).toEqual(next);
+        expect(nextFunc).toEqual(next);
       };
 
       app.use(callback);
