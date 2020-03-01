@@ -2,7 +2,7 @@ version: 2
 
 docker_defaults: &docker_defaults
   docker:
-    - image: circleci/node:8
+    - image: circleci/node:10
   working_directory: ~/project/jest-express
 
 attach_workspace: &attach_workspace
@@ -80,26 +80,20 @@ jobs:
       - store_artifacts:
           path: reports/tslint
 
-  test-node-6:
-    working_directory: ~/jest-express
-    docker:
-      - image: circleci/node:6
-    <<: *test_steps
-
-  test-node-8:
+  test-node-10:
     <<: *docker_defaults
     <<: *test_steps
 
-  test-node-10:
+  test-node-12:
     working_directory: ~/jest-express
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:12
     <<: *test_steps
 
-  test-node-11:
+  test-node-13:
     working_directory: ~/jest-express
     docker:
-      - image: circleci/node:11
+      - image: circleci/node:13
     <<: *test_steps
 
   coverage:
@@ -160,24 +154,20 @@ workflows:
       - tslint:
           requires:
             - npmvet
-      - test-node-6:
-          requires:
-            - tslint
-      - test-node-8:
-          requires:
-            - tslint
       - test-node-10:
           requires:
             - tslint
-      - test-node-11:
+      - test-node-12:
+          requires:
+            - tslint
+      - test-node-13:
           requires:
             - tslint
       - coverage:
           requires:
-            - test-node-6
-            - test-node-8
             - test-node-10
-            - test-node-11
+            - test-node-12
+            - test-node-13
       - build-typescript:
           requires:
             - coverage
