@@ -701,6 +701,14 @@ describe('Express Response', () => {
       expect(response.end).toHaveBeenCalled();
     });
 
+    test('that when status is called it sets the statusCode property', () => {
+      const code = chance.natural({ min: 100, max: 999 });
+
+      response.status(code);
+
+      expect(response.statusCode).toEqual(code);
+    });
+
     test('status should be called and match called with, send should be callable', () => {
       const code = chance.natural({ min: 100, max: 999 });
       const value = chance.string();

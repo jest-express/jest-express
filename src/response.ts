@@ -5,6 +5,7 @@ export class Response {
   public headers: any;
   public headersSent: boolean;
   public locals: any;
+  public statusCode: number;
   // Methods
   public append: any;
   public attachment: any;
@@ -36,6 +37,7 @@ export class Response {
     this.headers = {};
     this.headersSent = false;
     this.locals = {};
+    this.statusCode = 200;
     // Methods
     this.append = jest.fn(() => this);
     this.attachment = jest.fn(() => this);
@@ -76,7 +78,10 @@ export class Response {
       this.headers[key] = value;
       return this;
     });
-    this.status = jest.fn(() => this);
+    this.status = jest.fn((statusCode: number): this => {
+      this.statusCode = statusCode;
+      return this;
+    });
     this.type = jest.fn(() => this);
     this.vary = jest.fn(() => this);
     this.removeHeader = jest.fn(() => this);
