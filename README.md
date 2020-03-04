@@ -122,6 +122,7 @@ Mock Express for testing with Jest
     * [sendStatus()](#responsesendstatus)
     * [set()](#responseset)
     * [status()](#responsestatus)
+    * [statusCode]($responsestatuscode)
     * [type()](#responsetype)
     * [vary()](#responsevary)
     * [setHeader()](#responsesetheader)
@@ -946,6 +947,13 @@ Ways to use this API:
 
 ```js
 expect(response.status).toBeCalledWith(code);
+```
+
+#### `response.statusCode`
+
+ways to use this API:
+```js
+expect(response.statusCode).toEqual(code);
 ```
 
 #### `response.type()`
