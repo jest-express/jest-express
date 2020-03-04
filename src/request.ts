@@ -82,7 +82,7 @@ export class Request {
     this.acceptsLanguages = jest.fn();
     this.get = jest
       .fn()
-      .mockImplementation((header: string) => this.headers[header]);
+      .mockImplementation((header: string) => this.headers[header.toLowerCase()]);
     this.is = jest.fn();
     this.range = jest.fn();
     // Application
