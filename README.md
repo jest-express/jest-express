@@ -8,9 +8,6 @@
 [![devDependencies Status](https://david-dm.org/jameswlane/jest-express/dev-status.svg)](https://david-dm.org/jameswlane/jest-express?type=dev)
 [![Downloads/week](https://img.shields.io/npm/dw/jest-express.svg)](https://npmjs.org/package/jest-express)
 
-
-[![Waffle.io - Columns and their card count](https://badge.waffle.io/jameswlane/jest-express.svg?columns=all)](https://waffle.io/jameswlane/jest-express)
-
 Mock Express for testing with Jest
 
 * [express()](#express)
