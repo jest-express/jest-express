@@ -9,6 +9,7 @@ export class Response {
   // Methods
   public append: any;
   public attachment: any;
+  public body: any;
   public cookie: any;
   public clearCookie: any;
   public download: any;
@@ -44,7 +45,7 @@ export class Response {
     this.cookie = jest.fn(() => this);
     this.clearCookie = jest.fn(() => this);
     this.download = jest.fn();
-    this.end = jest.fn();
+    this.end = jest.fn((data: any) => this.body = data);
     this.format = jest.fn(() => this);
     this.get = jest.fn();
     this.header = jest.fn((key: any, value: string | void) => {
@@ -61,7 +62,10 @@ export class Response {
     this.location = jest.fn(() => this);
     this.redirect = jest.fn();
     this.render = jest.fn();
-    this.send = jest.fn(() => this);
+    this.send = jest.fn((data: any) => {
+      this.body = data;
+      return this;
+    });
     this.sendFile = jest.fn();
     this.sendStatus = jest.fn();
     this.set = jest.fn((key: string | { [key: string]: string }, value: string | void) => {
