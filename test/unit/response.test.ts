@@ -703,7 +703,7 @@ describe('Express Response', () => {
       expect(response.status).toHaveBeenCalled();
       expect(response.status).toHaveBeenCalledWith(code);
       expect(response.end).toHaveBeenCalled();
-      expect(response.body).toBeNull();
+      expect(response.body).toBeUndefined();
     });
 
     test('that when status is called it sets the statusCode property', () => {
