@@ -100,6 +100,7 @@ Mock Express for testing with Jest
     * [locals](#responselocals)
     * [append()](#responseappend)
     * [attachment()](#responseattachment)
+    * [body](#reponsebody)
     * [cookie()](#responsecookie)
     * [clearCookie()](#responseclearcookie)
     * [download()](#responsedownload)
@@ -791,6 +792,14 @@ Ways to use this API:
 
 ```js
 expect(response.attachment).toBeCalledWith([filename]);
+```
+
+#### `reponse.body`
+
+Ways to use this API:
+
+```js
+expect(response.body).toEqual(value);
 ```
 
 #### `response.cookie()`

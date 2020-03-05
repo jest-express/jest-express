@@ -384,6 +384,7 @@ describe('Express Response', () => {
 
       expect(response.end).toHaveBeenCalled();
       expect(response.end).toHaveBeenCalledWith(value);
+      expect(response.body).toEqual(value);
     });
 
     test('end should have no call after reset', () => {
@@ -597,6 +598,7 @@ describe('Express Response', () => {
 
       expect(response.send).toHaveBeenCalled();
       expect(response.send).toHaveBeenCalledWith(value);
+      expect(response.body).toEqual(value);
     });
 
     test('send should have no call after reset', () => {
@@ -609,7 +611,9 @@ describe('Express Response', () => {
 
     test('send returns response so is chainable', () => {
       const value = chance.string();
-      expect(response.send(value)).toBe(response);
+      const res = response.send(value);
+      expect(res).toBe(response);
+      expect(res.body).toEqual(value);
     });
 
   });
@@ -699,6 +703,7 @@ describe('Express Response', () => {
       expect(response.status).toHaveBeenCalled();
       expect(response.status).toHaveBeenCalledWith(code);
       expect(response.end).toHaveBeenCalled();
+      expect(response.body).toBeNull();
     });
 
     test('that when status is called it sets the statusCode property', () => {
@@ -720,6 +725,7 @@ describe('Express Response', () => {
       expect(response.status).toHaveBeenCalledWith(code);
       expect(response.send).toHaveBeenCalled();
       expect(response.send).toHaveBeenCalledWith(value);
+      expect(response.body).toEqual(value);
     });
 
     test('status should be called and match called with, sendFile should be callable', () => {
