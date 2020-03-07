@@ -1105,7 +1105,6 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
     <td align="center"><a href="https://github.com/tamias"><img src="https://avatars1.githubusercontent.com/u/478001?v=4" width="100px;" alt=""/><br /><sub><b>Ronald J Kimball</b></sub></a><br /><a href="https://github.com/jameswlane/jest-express/commits?author=tamias" title="Code">💻</a> <a href="https://github.com/jameswlane/jest-express/commits?author=tamias" title="Tests">⚠️</a></td>
   </tr>
 </table>
-
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
