@@ -592,6 +592,7 @@ describe('Express Response', () => {
   describe('Test send', () => {
     test('send should have no calls by default', () => {
       expect(response.send).not.toHaveBeenCalled();
+      expect(response.body).toEqual({})
     });
 
     test('send should be called and match called with', () => {
@@ -609,6 +610,7 @@ describe('Express Response', () => {
 
       response.resetMocked();
       expect(response.send).not.toHaveBeenCalled();
+      expect(response.body).toEqual({})
     });
 
     test('send returns response so is chainable', () => {
@@ -661,6 +663,7 @@ describe('Express Response', () => {
 
       response.resetMocked();
       expect(response.sendStatus).not.toHaveBeenCalled();
+      expect(response.body).toEqual({})
     });
   });
 
@@ -783,6 +786,37 @@ describe('Express Response', () => {
       expect(response.type(value)).toBe(response);
     });
   });
+
+  describe('Test text', () => {
+    test('text should have no calls by default', () => {
+      expect(response.text).not.toHaveBeenCalled();
+    })
+
+    test('text should be called and match called with', () => {
+      const value = chance.string();
+      response.text(value);
+
+      expect(response.text).toHaveBeenCalled();
+      expect(response.text).toHaveBeenCalledWith(value);
+      expect(response.body).toEqual(value);
+    });
+
+    test('text should have no call after reset', () => {
+      const value = chance.string();
+      response.text(value);
+
+      response.resetMocked();
+      expect(response.text).not.toHaveBeenCalled();
+      expect(response.body).toEqual({});
+    });
+
+    test('text returns response so is chainable', () => {
+      const value = chance.string();
+      expect(response.text(value)).toBe(response);
+    });
+  });
+
+  
 
   describe('Test vary', () => {
     test('vary should have no calls by default', () => {

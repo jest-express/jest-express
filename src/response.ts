@@ -30,6 +30,7 @@ export class Response {
   public setHeader: any;
   public status: any;
   public type: any;
+  public text: any;
   public vary: any;
   public removeHeader: any;
 
@@ -38,6 +39,7 @@ export class Response {
     this.headers = {};
     this.headersSent = false;
     this.locals = {};
+    this.body = {};
     this.statusCode = 200;
     // Methods
     this.append = jest.fn(() => this);
@@ -93,6 +95,10 @@ export class Response {
       return this;
     });
     this.type = jest.fn(() => this);
+    this.text = jest.fn((data: any) => {
+      this.body = data;
+      return this;
+    });
     this.vary = jest.fn(() => this);
     this.removeHeader = jest.fn(() => this);
 
@@ -120,6 +126,7 @@ export class Response {
     this.append.mockReset();
     this.attachment.mockReset();
     this.cookie.mockReset();
+    this.body = {};
     this.clearCookie.mockReset();
     this.download.mockReset();
     this.end.mockReset();
@@ -138,6 +145,7 @@ export class Response {
     this.set.mockReset();
     this.setHeader.mockReset();
     this.status.mockReset();
+    this.text.mockReset();
     this.type.mockReset();
     this.vary.mockReset();
     this.removeHeader.mockReset();
