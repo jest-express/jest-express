@@ -456,6 +456,7 @@ describe('Express Response', () => {
 
       expect(response.json).toHaveBeenCalled();
       expect(response.json).toHaveBeenCalledWith(value);
+      expect(response.body).toEqual(value);
     });
 
     test('json should have no call after reset', () => {
@@ -478,6 +479,7 @@ describe('Express Response', () => {
 
       expect(response.jsonp).toHaveBeenCalled();
       expect(response.jsonp).toHaveBeenCalledWith(value);
+      expect(response.body).toEqual(value);
     });
 
     test('jsonp should have no call after reset', () => {

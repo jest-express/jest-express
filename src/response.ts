@@ -56,8 +56,14 @@ export class Response {
       }
       return this;
     });
-    this.json = jest.fn();
-    this.jsonp = jest.fn();
+    this.json = jest.fn((data : any) => {
+      this.body = data;
+      return this;
+    });
+    this.jsonp = jest.fn((data : any) => {
+      this.body = data;
+      return this;
+    });
     this.links = jest.fn(() => this);
     this.location = jest.fn(() => this);
     this.redirect = jest.fn();
