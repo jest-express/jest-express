@@ -922,6 +922,28 @@ describe('Express Request', () => {
 
       expect(request.get(key)).toEqual(value);
     });
+
+    test('should return header value when key is uppercase', () => {
+      const key = chance.string({ pool: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' });
+      const value = chance.string();
+
+      request.setHeaders(key, value);
+
+      expect(request.get(key)).toEqual(value);
+    });
+
+    test('should return header value when case differs', () => {
+      const key = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const value = chance.string();
+
+      request.setHeaders(key.slice(0, 1).toUpperCase() + key.slice(1), value);
+
+      expect(request.get(key.slice(0, 2).toUpperCase() + key.slice(2))).toEqual(value);
+    });
+
+    test('should be aliased as header', () => {
+      expect(request.get).toBe(request.header);
+    });
   });
 
   describe('Test is', () => {
