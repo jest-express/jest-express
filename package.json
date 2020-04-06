@@ -53,7 +53,7 @@
   "devDependencies": {
     "@commitlint/cli": "8.3.5",
     "@commitlint/config-conventional": "8.3.4",
-    "@types/chance": "1.0.9",
+    "@types/chance": "1.0.10",
     "@types/faker": "4.1.11",
     "@types/jest": "25.2.1",
     "@types/node": "13.9.5",
