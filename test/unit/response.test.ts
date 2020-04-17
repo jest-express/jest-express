@@ -556,6 +556,18 @@ describe('Express Response', () => {
 
       expect(response.redirect).toHaveBeenCalled();
       expect(response.redirect).toHaveBeenCalledWith(value);
+      expect(response.getHeader('Location')).toEqual(value);
+    });
+
+    test('redirect should be called and match called with status and url', () => {
+      const value = chance.string();
+      const statusCode = 307;
+      response.redirect(statusCode, value);
+
+      expect(response.redirect).toHaveBeenCalled();
+      expect(response.redirect).toHaveBeenCalledWith(statusCode, value);
+      expect(response.statusCode).toEqual(307);
+      expect(response.getHeader('Location')).toEqual(value);
     });
 
     test('redirect should have no call after reset', () => {
