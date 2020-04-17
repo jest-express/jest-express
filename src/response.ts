@@ -68,7 +68,15 @@ export class Response {
     });
     this.links = jest.fn(() => this);
     this.location = jest.fn(() => this);
-    this.redirect = jest.fn();
+    this.redirect = jest.fn((status : number, url : string) => {
+      if (url) {
+        this.statusCode = status;
+        this.setHeader('Location', url);
+      } else {
+        this.statusCode = 307;
+        this.setHeader('Location', status);
+      }
+    });
     this.render = jest.fn();
     this.send = jest.fn((data: any) => {
       this.body = data;
