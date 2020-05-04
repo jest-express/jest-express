@@ -62,7 +62,7 @@
     "babel-jest": "25.4.0",
     "chance": "1.1.4",
     "codecov": "3.6.5",
-    "commitizen": "4.0.4",
+    "commitizen": "4.0.5",
     "cz-conventional-changelog": "3.1.0",
     "faker": "4.1.0",
     "jest": "25.5.4",
