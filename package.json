@@ -63,7 +63,7 @@
     "chance": "1.1.4",
     "codecov": "3.6.5",
     "commitizen": "4.1.2",
-    "cz-conventional-changelog": "3.1.0",
+    "cz-conventional-changelog": "3.2.0",
     "faker": "4.1.0",
     "jest": "25.5.4",
     "jest-junit": "10.0.0",
