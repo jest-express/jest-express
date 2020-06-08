@@ -74,7 +74,7 @@
     "ts-jest": "25.5.1",
     "tslint": "6.1.2",
     "tslint-config-airbnb": "5.11.2",
-    "typescript": "3.9.3"
+    "typescript": "3.9.5"
   },
   "config": {
     "commitizen": {
