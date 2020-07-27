@@ -61,7 +61,7 @@
     "babel-core": "6.26.3",
     "babel-jest": "25.5.1",
     "chance": "1.1.6",
-    "codecov": "3.7.1",
+    "codecov": "3.7.2",
     "commitizen": "4.1.2",
     "cz-conventional-changelog": "3.2.0",
     "faker": "4.1.0",
