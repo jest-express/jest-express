@@ -1,8 +1,6 @@
 # Jest Express
 [![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors)
 ![Master Build](https://github.com/jameswlane/jest-express/actions/workflows/npm-publish.yml/badge.svg)
-[![dependencies Status](https://david-dm.org/jameswlane/jest-express/status.svg)](https://david-dm.org/jameswlane/jest-express)
-[![devDependencies Status](https://david-dm.org/jameswlane/jest-express/dev-status.svg)](https://david-dm.org/jameswlane/jest-express?type=dev)
 [![Downloads/week](https://img.shields.io/npm/dw/jest-express.svg)](https://npmjs.org/package/jest-express)
 
 Mock Express for testing with Jest
