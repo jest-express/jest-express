@@ -1,10 +1,7 @@
 # Jest Express
 [![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors)
-[![CircleCI](https://circleci.com/gh/jameswlane/jest-express.svg?style=svg)](https://circleci.com/gh/jameswlane/jest-express)
+![Master Build](https://github.com/jameswlane/jest-express/actions/workflows/npm-publish.yml/badge.svg)
 [![dependencies Status](https://david-dm.org/jameswlane/jest-express/status.svg)](https://david-dm.org/jameswlane/jest-express)
-[![Maintainability](https://api.codeclimate.com/v1/badges/9487b570f339c75e15f6/maintainability)](https://codeclimate.com/github/jameswlane/jest-express/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/9487b570f339c75e15f6/test_coverage)](https://codeclimate.com/github/jameswlane/jest-express/test_coverage)
-[![codecov](https://codecov.io/gh/jameswlane/jest-express/branch/master/graph/badge.svg)](https://codecov.io/gh/jameswlane/jest-express)
 [![devDependencies Status](https://david-dm.org/jameswlane/jest-express/dev-status.svg)](https://david-dm.org/jameswlane/jest-express?type=dev)
 [![Downloads/week](https://img.shields.io/npm/dw/jest-express.svg)](https://npmjs.org/package/jest-express)
 
