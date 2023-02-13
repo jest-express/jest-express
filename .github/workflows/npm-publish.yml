@@ -57,8 +57,8 @@ jobs:
           path: lib
       - run: npm ci
       - run: cat /home/runner/work/_temp/.npmrc
-      - run: npx semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+#      - run: npx semantic-release
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          NPM_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
       - run: npm whoami --registry https://registry.npmjs.org/
