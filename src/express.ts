@@ -8,35 +8,63 @@ declare const jest: any;
 export class Express {
   // Properties
   public error: any;
+
   public locals: any;
+
   public mountpath: string;
+
   // Methods
   public all: any;
+
   public delete: any;
+
   public disable: any;
+
   public disabled: any;
+
   public enable: any;
+
   public enabled: any;
+
   public engine: any;
+
   public get: any;
+
   public listen: any;
+
   public head: any;
+
   public post: any;
+
   public put: any;
+
   public connect: any;
+
   public options: any;
+
   public trace: any;
+
   public patch: any;
+
   public param: any;
+
   public path: any;
+
   public render: any;
+
   public route: any;
+
   public set: any;
+
   public use: any;
+
   // Class
   public request: Request;
+
   public response: Response;
+
   public next: NextFunction;
+
   // Private
   private setting: any;
 
@@ -55,15 +83,11 @@ export class Express {
     this.disable = jest.fn((key: any) => {
       this.setting[key] = false;
     });
-    this.disabled = jest.fn((key: any) => {
-      return this.setting[key] === false;
-    });
+    this.disabled = jest.fn((key: any) => this.setting[key] === false);
     this.enable = jest.fn((key: any) => {
       this.setting[key] = true;
     });
-    this.enabled = jest.fn((key: any) => {
-      return this.setting[key] === true;
-    });
+    this.enabled = jest.fn((key: any) => this.setting[key] === true);
     this.engine = jest.fn();
     // TODO app.listen(port, [hostname], [backlog], [callback])
     this.listen = jest.fn();
@@ -86,7 +110,6 @@ export class Express {
       if (typeof func === 'function' && func.length === 4) {
         return func(this.error, this.request, this.response, this.next);
       }
-      return;
     });
     this.get = jest.fn((path: any, ...callbacks: any) => {
       if (typeof path === 'string' && callbacks.length === 0) {
@@ -94,21 +117,19 @@ export class Express {
       }
       const flattened = [].concat(...callbacks) as any[]; // flatten array
       if (typeof path === 'string' && flattened.every((cb: any) => typeof cb === 'function')) {
-        return flattened.length === 1 ?
-          flattened[0](this.request, this.response)
+        return flattened.length === 1
+          ? flattened[0](this.request, this.response)
           : flattened.map((cb: any) => cb(this.request, this.response));
       }
       return path(this.request, this.response);
     });
     // TODO app.route(path)
-    this.route = jest.fn(() => {
-      return {
-        delete: this.delete,
-        get: this.get,
-        post: this.post,
-        put: this.put,
-      };
-    });
+    this.route = jest.fn(() => ({
+      delete: this.delete,
+      get: this.get,
+      post: this.post,
+      put: this.put,
+    }));
 
     this.set = jest.fn((key: any, value: any) => {
       this.setting[key] = value;

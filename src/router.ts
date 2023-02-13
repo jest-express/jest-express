@@ -7,16 +7,27 @@ declare const jest: any;
 // https://expressjs.com/en/4x/api.html#router
 export class Router {
   public request: Request;
+
   public response: Response;
+
   public next: NextFunction;
+
   public all: any;
+
   public get: any;
+
   public param: any;
+
   public route: any;
+
   public use: any;
+
   public post: any;
+
   public put: any;
+
   public patch: any;
+
   public delete: any;
 
   constructor() {
@@ -56,11 +67,11 @@ export class Router {
      * we have to be crafty with what 'this/that' means, in order to avoid
      * referring to myself, and triggering an inifinite recursion.
      */
-    this.route = jest.fn((path: string) => {
+    this.route = jest.fn((path: string) =>
 
       // return an object that proxies the other functions,
       // and returns a copy of me, not the Router
-      return {
+      ({
         delete(cb: any) {
           del(path, cb);
           return this;
@@ -81,8 +92,7 @@ export class Router {
           put(path, cb);
           return this;
         },
-      };
-    });
+      }));
     return this;
   }
 

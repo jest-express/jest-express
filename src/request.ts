@@ -3,14 +3,14 @@ import { Express } from './express';
 
 interface IRequestOptions {
   method?:
-    | 'GET'
-    | 'POST'
-    | 'DELETE'
-    | 'PATCH'
-    | 'PUT'
-    | 'HEAD'
-    | 'OPTIONS'
-    | 'CONNECT';
+  | 'GET'
+  | 'POST'
+  | 'DELETE'
+  | 'PATCH'
+  | 'PUT'
+  | 'HEAD'
+  | 'OPTIONS'
+  | 'CONNECT';
   headers?: any;
   app?: Express;
 }
@@ -20,38 +20,67 @@ declare const jest: any;
 export class Request {
   // Properties
   public baseUrl: string;
+
   public body: any;
+
   public cookies: any;
+
   public fresh: boolean;
+
   public headers: any;
+
   public hostname: string;
+
   public ip: string;
+
   public ips: string[];
+
   public method: string;
+
   public originalUrl: string;
+
   public params: any;
+
   public path: string;
+
   public protocol: string;
+
   public query: any;
+
   public route: any;
+
   public secure: boolean;
+
   public signedCookies: any;
+
   public stale: boolean;
+
   public subdomains: string[];
+
   public xhr: boolean;
+
   // Methods
   public accepts: any;
+
   public acceptsCharsets: any;
+
   public acceptsEncodings: any;
+
   public acceptsLanguages: any;
+
   public get: any;
+
   public header: any;
+
   public is: any;
+
   public range: any;
+
   // Application
   public app: Express;
 
   private defaultUrl: string | undefined;
+
   private defaultOptions: IRequestOptions | undefined;
 
   constructor(url?: string | null, options?: IRequestOptions) {
@@ -123,7 +152,7 @@ export class Request {
           headers[key] = options.headers[k];
         }
 
-        this.headers = Object.assign({}, headers);
+        this.headers = { ...headers };
       }
       if (options.method) {
         this.method = options.method;

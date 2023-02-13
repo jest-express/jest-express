@@ -3,35 +3,64 @@ declare const jest: any;
 export class Response {
   // Properties
   public headers: any;
+
   public headersSent: boolean;
+
   public locals: any;
+
   public statusCode: number;
+
   // Methods
   public append: any;
+
   public attachment: any;
+
   public body: any;
+
   public cookie: any;
+
   public clearCookie: any;
+
   public download: any;
+
   public end: any;
+
   public format: any;
+
   public get: any;
+
   public header: any;
+
   public json: any;
+
   public jsonp: any;
+
   public links: any;
+
   public location: any;
+
   public redirect: any;
+
   public render: any;
+
   public send: any;
+
   public sendFile: any;
+
   public sendStatus: any;
+
   public set: any;
+
   public setHeader: any;
+
   public status: any;
+
   public type: any;
+
   public text: any;
+
   public vary: any;
+
   public removeHeader: any;
 
   constructor() {

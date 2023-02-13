@@ -2,8 +2,11 @@ declare const jest: any;
 
 export class Application {
   public json: any;
+
   public staticLoad: any;
+
   public query: any;
+
   public urlencoded: any;
 
   constructor() {
