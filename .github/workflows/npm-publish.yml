@@ -45,19 +45,19 @@ jobs:
   publish-npm:
     needs: build
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 18
           registry-url: https://registry.npmjs.org/
-      - run: npm ci
-      - run: npm whoami --registry https://registry.npmjs.org/
       - uses: actions/download-artifact@v3
         with:
           name: build-artifact-${{github.sha}}
           path: lib
+      - run: npm ci
       - run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm whoami --registry https://registry.npmjs.org/
