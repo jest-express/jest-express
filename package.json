@@ -66,7 +66,7 @@
     "rimraf": "^4.1.2",
     "semantic-release": "^20.1.0",
     "ts-jest": "^29.0.5",
-    "typescript": "^4.9.5"
+    "typescript": "^5.0.2"
   },
   "config": {
     "commitizen": {
