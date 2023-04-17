@@ -60,7 +60,7 @@
     "eslint-plugin-import": "^2.27.5",
     "faker": "^6.6.6",
     "jest": "^29.4.2",
-    "jest-junit": "^15.0.0",
+    "jest-junit": "^16.0.0",
     "lint-staged": "^13.1.1",
     "opt-cli": "1.6.0",
     "rimraf": "^4.1.2",
