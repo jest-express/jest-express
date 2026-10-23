@@ -1,4 +1,5 @@
-import * as Chance from 'chance';
+import Chance from 'chance';
+import { afterEach, beforeEach, describe, expect, it, test } from 'vitest';
 
 import { Response } from '../../src/response';
 

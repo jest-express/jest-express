@@ -1,4 +1,6 @@
-import * as express from '../../src';
+import { describe, expect, test } from 'vitest';
+
+import express from '../../src';
 import { Application } from '../../src/application';
 import { Express as RealExpress } from '../../src/express';
 import { next as RealNext } from '../../src/next';

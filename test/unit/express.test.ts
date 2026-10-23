@@ -1,4 +1,5 @@
-import * as Chance from 'chance';
+import Chance from 'chance';
+import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
 
 import { Express } from '../../src/express';
 import { next, NextFunction } from '../../src/next';
@@ -211,7 +212,7 @@ describe('Express Application', () => {
 
     test('all should be called and match called with', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       app.all(path, callback);
 
@@ -221,7 +222,7 @@ describe('Express Application', () => {
 
     test('all should have no call after reset', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
       app.all(path, callback);
 
       app.resetMocked();
@@ -237,7 +238,7 @@ describe('Express Application', () => {
 
     test('delete should be called and match called with', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       app.delete(path, callback);
 
@@ -247,7 +248,7 @@ describe('Express Application', () => {
 
     test('delete should have no call after reset', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
       app.delete(path, callback);
 
       app.resetMocked();
@@ -263,7 +264,7 @@ describe('Express Application', () => {
 
     test('engine should be called and match called with', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       app.engine(path, callback);
 
@@ -273,7 +274,7 @@ describe('Express Application', () => {
 
     test('engine should have no call after reset', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
       app.engine(path, callback);
 
       app.resetMocked();
@@ -289,7 +290,7 @@ describe('Express Application', () => {
 
     test('listen should be called and match called with', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       app.listen(path, callback);
 
@@ -299,7 +300,7 @@ describe('Express Application', () => {
 
     test('listen should have no call after reset', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
       app.listen(path, callback);
 
       app.resetMocked();
@@ -315,7 +316,7 @@ describe('Express Application', () => {
 
     test('get should be called and match called with', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       app.get(path, callback);
 
@@ -327,7 +328,7 @@ describe('Express Application', () => {
 
     test('get should have no call after reset', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
       app.get(path, callback);
 
       app.resetMocked();
@@ -343,7 +344,7 @@ describe('Express Application', () => {
 
     test('post should be called and match called with', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       app.post(path, callback);
 
@@ -353,7 +354,7 @@ describe('Express Application', () => {
 
     test('post should have no call after reset', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
       app.post(path, callback);
 
       app.resetMocked();
@@ -369,7 +370,7 @@ describe('Express Application', () => {
 
     test('put should be called and match called with', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       app.put(path, callback);
 
@@ -379,7 +380,7 @@ describe('Express Application', () => {
 
     test('put should have no call after reset', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
       app.put(path, callback);
 
       app.resetMocked();
@@ -395,7 +396,7 @@ describe('Express Application', () => {
 
     test('delete should be called and match called with', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       app.delete(path, callback);
 
@@ -405,7 +406,7 @@ describe('Express Application', () => {
 
     test('put should have no call after reset', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
       app.delete(path, callback);
 
       app.resetMocked();
@@ -421,7 +422,7 @@ describe('Express Application', () => {
 
     test('connect should be called and match called with', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       app.connect(path, callback);
 
@@ -431,7 +432,7 @@ describe('Express Application', () => {
 
     test('connect should have no call after reset', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
       app.put(path, callback);
 
       app.resetMocked();
@@ -447,7 +448,7 @@ describe('Express Application', () => {
 
     test('options should be called and match called with', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       app.options(path, callback);
 
@@ -457,7 +458,7 @@ describe('Express Application', () => {
 
     test('options should have no call after reset', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
       app.put(path, callback);
 
       app.resetMocked();
@@ -473,7 +474,7 @@ describe('Express Application', () => {
 
     test('trace should be called and match called with', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       app.trace(path, callback);
 
@@ -483,7 +484,7 @@ describe('Express Application', () => {
 
     test('trace should have no call after reset', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
       app.trace(path, callback);
 
       app.resetMocked();
@@ -499,7 +500,7 @@ describe('Express Application', () => {
 
     test('patch should be called and match called with', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       app.patch(path, callback);
 
@@ -509,7 +510,7 @@ describe('Express Application', () => {
 
     test('patch should have no call after reset', () => {
       const path = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
       app.patch(path, callback);
 
       app.resetMocked();
@@ -525,7 +526,7 @@ describe('Express Application', () => {
 
     test('param should be called and match called with', () => {
       const name = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       app.param(name, callback);
 
@@ -535,7 +536,7 @@ describe('Express Application', () => {
 
     test('param should have no call after reset', () => {
       const name = chance.string();
-      const callback = jest.fn();
+      const callback = vi.fn();
       app.param(name, callback);
 
       app.resetMocked();

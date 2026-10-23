@@ -1,4 +1,4 @@
-import { next, NextFunction } from './next';
+import { next, type NextFunction } from './next';
 import { Request } from './request';
 import { Response } from './response';
 

@@ -68,3 +68,6 @@ lib
 .opt-in
 
 yarn.lock
+
+# tsdown build output
+dist

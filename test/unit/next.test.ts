@@ -1,4 +1,6 @@
-import * as Chance from 'chance';
+import Chance from 'chance';
+import { afterEach, describe, expect, test } from 'vitest';
+
 import { next } from '../../src/next';
 
 const chance = new Chance();
