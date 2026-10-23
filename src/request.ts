@@ -2,15 +2,7 @@ import { parse } from 'url';
 import { Express } from './express';
 
 interface IRequestOptions {
-  method?:
-  | 'GET'
-  | 'POST'
-  | 'DELETE'
-  | 'PATCH'
-  | 'PUT'
-  | 'HEAD'
-  | 'OPTIONS'
-  | 'CONNECT';
+  method?: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT' | 'HEAD' | 'OPTIONS' | 'CONNECT';
   headers?: any;
   app?: Express;
 }
@@ -291,10 +283,7 @@ export class Request {
     this.secure = value;
   }
 
-  public setSignedCookies(
-    key: string | { [key: string]: string },
-    value?: string,
-  ) {
+  public setSignedCookies(key: string | { [key: string]: string }, value?: string) {
     if (typeof key === 'string') {
       this.signedCookies[key] = value;
     } else {

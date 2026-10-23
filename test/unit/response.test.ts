@@ -632,7 +632,6 @@ describe('Express Response', () => {
       expect(res).toBe(response);
       expect(res.body).toEqual(value);
     });
-
   });
 
   describe('Test sendFile', () => {
@@ -736,8 +735,7 @@ describe('Express Response', () => {
       const code = chance.natural({ min: 100, max: 999 });
       const value = chance.string();
 
-      response.status(code)
-        .send(value);
+      response.status(code).send(value);
 
       expect(response.status).toHaveBeenCalled();
       expect(response.status).toHaveBeenCalledWith(code);
@@ -750,8 +748,7 @@ describe('Express Response', () => {
       const code = chance.natural({ min: 100, max: 999 });
       const value = chance.string();
 
-      response.status(code)
-        .sendFile(value);
+      response.status(code).sendFile(value);
 
       expect(response.status).toHaveBeenCalled();
       expect(response.status).toHaveBeenCalledWith(code);

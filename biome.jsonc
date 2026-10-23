@@ -1,0 +1,67 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.15/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": ["**", "!**/docs/**", "!**/*.md", "!pnpm-lock.yaml", "!.github/**"]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "always",
+      "trailingCommas": "all"
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "complexity": {
+        // re-enable after Phase 3
+        "useOptionalChain": "off"
+      },
+      "correctness": {
+        // Legacy mock constructors return values; re-enable after Phase 3
+        "noConstructorReturn": "off",
+        // Unused imports in the ported tests; re-enable after Phase 3
+        "noUnusedImports": "off"
+      },
+      "style": {
+        // B13, T4.3: replace `url.parse` with `new URL()` / node: imports
+        "useNodejsImportProtocol": "off",
+        // re-enable after Phase 3
+        "useImportType": "off"
+      },
+      "suspicious": {
+        // B2, T3.2: `any` fields are replaced by Express-assignable types
+        "noExplicitAny": "off",
+        // B1, T3.2: `exports = module.exports` is replaced by proper ESM/CJS exports
+        "noGlobalAssign": "off",
+        // `void` in union types in the legacy Response mock; re-enable after Phase 3
+        "noConfusingVoidType": "off",
+        // forEach callbacks returning values in src/router.ts; re-enable after Phase 3
+        "useIterableCallbackReturn": "off",
+        // We intentionally exclude docs/markdown/lockfile/.github via negated includes
+        "useBiomeIgnoreFolder": "off"
+      }
+    }
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        // Import reordering is not formatting; re-enable in a later task.
+        "organizeImports": "off"
+      }
+    }
+  }
+}

@@ -68,7 +68,6 @@ export class Router {
      * referring to myself, and triggering an inifinite recursion.
      */
     this.route = jest.fn((path: string) =>
-
       // return an object that proxies the other functions,
       // and returns a copy of me, not the Router
       ({
@@ -92,7 +91,8 @@ export class Router {
           put(path, cb);
           return this;
         },
-      }));
+      }),
+    );
     return this;
   }
 
