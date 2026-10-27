@@ -1,6 +1,6 @@
 {
   "name": "jest-express",
-  "version": "1.12.0",
+  "version": "2.0.0",
   "description": "Mock Express 5 app, Router, req, res and next for Jest. Configures jest.fn on import.",
   "type": "commonjs",
   "main": "./dist/index.cjs",

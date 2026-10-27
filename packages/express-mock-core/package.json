@@ -1,6 +1,6 @@
 {
   "name": "express-mock-core",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "description": "Runner-agnostic mock Express 5 app, Router, req, res and next for unit tests. Bring your own fn()-style mock factory.",
   "type": "commonjs",
   "main": "./dist/index.cjs",
