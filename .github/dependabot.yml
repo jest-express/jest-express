@@ -1,12 +1,12 @@
 # Dependabot version updates: https://docs.github.com/code-security/dependabot/working-with-dependabot/dependabot-options-reference
 version: 2
 updates:
-  # One config covers the pnpm workspace: the root, every package and every example.
+  # pnpm workspace: run once from the root, where pnpm-workspace.yaml and the single
+  # pnpm-lock.yaml live. Dependabot updates the packages' and examples' manifests from
+  # there; listing them as separate directories made it write lockfiles that drop the
+  # other workspace importers.
   - package-ecosystem: npm
-    directories:
-      - "/"
-      - "/packages/*"
-      - "/examples/*"
+    directory: "/"
     schedule:
       interval: weekly
       day: monday
