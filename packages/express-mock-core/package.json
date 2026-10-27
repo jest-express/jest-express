@@ -1,0 +1,74 @@
+{
+  "name": "express-mock-core",
+  "version": "0.0.0",
+  "description": "Runner-agnostic mock Express 5 app, Router, req, res and next for unit tests. Bring your own fn()-style mock factory.",
+  "type": "commonjs",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsdown",
+    "build:watch": "tsdown --watch",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "test:types": "vitest run --typecheck.only",
+    "typecheck": "tsc --noEmit",
+    "lint:pkg": "publint && attw --pack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jest-express/jest-express.git",
+    "directory": "packages/express-mock-core"
+  },
+  "keywords": [
+    "express",
+    "express5",
+    "mock",
+    "testing",
+    "unit-test",
+    "typescript"
+  ],
+  "author": "James W. Lane <james.w.lane@mac.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jest-express/jest-express/issues"
+  },
+  "homepage": "https://github.com/jest-express/jest-express/tree/master/packages/express-mock-core#readme",
+  "devDependencies": {
+    "@types/chance": "^1.1.3",
+    "chance": "^1.1.9"
+  },
+  "peerDependencies": {
+    "@types/express": "^5"
+  },
+  "peerDependenciesMeta": {
+    "@types/express": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

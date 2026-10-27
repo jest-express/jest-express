@@ -1,16 +1,13 @@
 import Chance from 'chance';
-import { afterEach, describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
-import { next } from '../../src/next';
+import { createNext } from '../../src/next';
 
 const chance = new Chance();
 
 describe('Express Next', () => {
-  afterEach(() => {
-    next.mockReset();
-  });
-
   test('should be able to assert calls to Next', () => {
+    const next = createNext();
     const firstValue = chance.string();
     next(firstValue);
     expect(next).toHaveBeenCalledWith(firstValue);
@@ -20,12 +17,13 @@ describe('Express Next', () => {
     expect(next).toHaveBeenCalledWith(secondValue);
   });
 
-  test('should be able to reset call count', () => {
-    const value = chance.string();
-    next(value);
+  test('createNext() returns a new mock each time', () => {
+    const first = createNext();
+    const second = createNext();
 
-    next.mockReset();
+    first();
 
-    expect(next).not.toHaveBeenCalled();
+    expect(first).not.toBe(second);
+    expect(second).not.toHaveBeenCalled();
   });
 });

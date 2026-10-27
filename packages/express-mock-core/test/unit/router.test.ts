@@ -1,11 +1,11 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, test } from 'vitest';
 
-import { next, NextFunction } from '../../src/next';
+import type { NextFunction } from '../../src/next';
 import { Request } from '../../src/request';
 import { Response } from '../../src/response';
 import { Router } from '../../src/router';
 
-let router: any;
+let router: Router;
 
 describe('Express Router', () => {
   beforeEach(() => {
@@ -29,7 +29,7 @@ describe('Express Router', () => {
       expect(request).toBeInstanceOf(Request);
       expect(response).toBeInstanceOf(Response);
       expect(response).toBeInstanceOf(Response);
-      expect(nextFunc).toEqual(next);
+      expect(nextFunc).toEqual(expect.any(Function));
     });
   });
 
@@ -40,7 +40,7 @@ describe('Express Router', () => {
       expect(request).toBeInstanceOf(Request);
       expect(response).toBeInstanceOf(Response);
       expect(response).toBeInstanceOf(Response);
-      expect(nextFunc).toEqual(next);
+      expect(nextFunc).toEqual(expect.any(Function));
     };
     router.get('/', testMiddleware, testMiddleware);
   });
@@ -52,7 +52,7 @@ describe('Express Router', () => {
       expect(request).toBeInstanceOf(Request);
       expect(response).toBeInstanceOf(Response);
       expect(response).toBeInstanceOf(Response);
-      expect(nextFunc).toEqual(next);
+      expect(nextFunc).toEqual(expect.any(Function));
     };
     router.get('/', [testMiddleware, testMiddleware]);
   });
@@ -64,7 +64,7 @@ describe('Express Router', () => {
       expect(request).toBeInstanceOf(Request);
       expect(response).toBeInstanceOf(Response);
       expect(response).toBeInstanceOf(Response);
-      expect(nextFunc).toEqual(next);
+      expect(nextFunc).toEqual(expect.any(Function));
     };
     router.get('/', [testMiddleware, testMiddleware], testMiddleware);
   });
@@ -76,7 +76,7 @@ describe('Express Router', () => {
       expect(request).toBeInstanceOf(Request);
       expect(response).toBeInstanceOf(Response);
       expect(response).toBeInstanceOf(Response);
-      expect(nextFunc).toEqual(next);
+      expect(nextFunc).toEqual(expect.any(Function));
     });
   });
 
@@ -93,9 +93,9 @@ describe('Express Router', () => {
       path = '/events';
     });
 
-    ['get', 'post', 'put', 'patch', 'delete'].forEach((verb: string) => {
+    (['get', 'post', 'put', 'patch', 'delete'] as const).forEach((verb) => {
       test(verb, () => {
-        router.route(path)[verb]((request: any, response: any) => {
+        router.route(path)[verb]((request: Request, response: Response) => {
           expect(router.route).toHaveBeenCalled();
           expect(router.route).toHaveBeenCalledWith(path);
           expect(router[verb]).toHaveBeenCalled();
