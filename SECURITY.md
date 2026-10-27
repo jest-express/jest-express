@@ -14,9 +14,10 @@ If you are on 1.x, upgrade to 2.x before reporting issues with the old line.
 ## Reporting a Vulnerability
 
 **Do not open a public issue for a security vulnerability.** Use GitHub's
-private vulnerability reporting instead: go to the repository's **Security**
-tab and click **Report a vulnerability**. This opens a private advisory that
-only the maintainer can see.
+private vulnerability reporting instead: go to the repository's **Security and
+quality** tab and click **Report a vulnerability**. This opens a private
+advisory that is not visible to the public; only the maintainer and you, the
+reporter, can see it.
 
 jest-express is a single-maintainer, spare-time project. Realistic
 expectations:

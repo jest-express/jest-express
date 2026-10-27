@@ -53,12 +53,12 @@ body:
     id: mock-setup
     attributes:
       label: How is the mock factory configured?
-      description: How do you wire jest-express to your test runner?
+      description: How do you wire the mocks to your test runner?
       options:
-        - "configure({ fn }) in a setup file"
-        - "jest-express/vitest setup entry"
-        - "jest-express/jest setup entry"
-        - "Not configured"
+        - "jest-express in Jest setupFiles"
+        - "vitest-express in Vitest setupFiles"
+        - "configure({ fn }) from express-mock-core"
+        - "Not configured (global vi/jest fallback)"
         - "Other (explain in reproduction)"
     validations:
       required: true
