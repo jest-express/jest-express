@@ -5,3 +5,4 @@ packages:
 allowBuilds:
   core-js: false
   unrs-resolver: false
+  "@parcel/watcher": false
