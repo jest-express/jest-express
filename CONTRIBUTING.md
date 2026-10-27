@@ -1,64 +1,93 @@
 # Contributing
 
-Thanks for being willing to contribute!
+Use **Node 24** for development (see `.nvmrc`) and the pnpm version pinned in the root
+`package.json`. Enable Corepack, then install dependencies from the repository root:
 
-**Working on your first Pull Request?** You can learn how from this *free* series
-[How to Contribute to an Open Source Project on GitHub][egghead]
-
-## Project setup
-
-1. Fork and clone the repo
-2. `$ npm install` to install dependencies
-3. `$ npm start verify` to validate you've got it working
-4. Create a branch for your PR
-
-## Add yourself as a contributor
-
-This project follows the [all contributors][all-contributors] specification. To add yourself to the table of
-contributors on the README.md, please use the automated script as part of your PR:
-
-```console
-npm start "contrib.add <YOUR_GITHUB_USERNAME>"
+```sh
+nvm use
+corepack enable
+pnpm install
 ```
 
-Follow the prompt. If you've already added yourself to the list and are making a new type of contribution, you can run
-it again and select the added contribution type.
+Open an issue to discuss larger changes, then send a pull request against `master`.
+Keep each pull request focused on one change, and avoid unrelated formatting or dependency
+updates.
 
-## Committing and Pushing changes
+## Monorepo layout
 
-This project uses [`semantic-release`][semantic-release] to do automatic releases and generate a changelog based on the
-commit history. So we follow [a convention][convention] for commit messages. Please follow this convention for your
-commit messages.
+This is a pnpm workspace managed with Turborepo:
 
-You can use `commitizen` to help you to follow [the convention][convention]
+| Path | Package or purpose |
+| --- | --- |
+| `packages/express-mock-core/` | Runner-agnostic core. All Express mock implementations live here. |
+| `packages/jest-express/` | Jest wrapper: configures `jest.fn` and re-exports the core. |
+| `packages/vitest-express/` | Vitest wrapper: configures `vi.fn` and re-exports the core. ESM-only. |
+| `examples/*/` | Private example apps, included as workspace members. |
+| Root `package.json`, `turbo.json` | Shared development tools and cross-package tasks. |
 
-Once you are ready to commit the changes, please use the below commands
+The core has no
+runtime dependencies and must not access Jest or Vitest directly. Only the wrappers' setup
+modules touch a runner. The wrappers depend only on the core.
 
-1. `git add <files to be comitted>`
-2. `$ npm start commit`
+## Checks
 
-... and follow the instruction of the interactive prompt.
+Run these commands from the repository root. Except for `check` and `check:fix`, they run
+through Turborepo and build dependencies when needed:
 
-### opt into git hooks
+| Command | Purpose |
+| --- | --- |
+| `pnpm check` | Biome lint and format checks for the whole repository |
+| `pnpm check:fix` | Apply Biome's safe lint and format fixes; review the diff |
+| `pnpm typecheck` | TypeScript strict checking in every package and example |
+| `pnpm test` | Core and wrapper tests, plus example tests |
+| `pnpm test:types` | Vitest type tests for Express assignability and runner mock types |
+| `pnpm build` | Build all packages with tsdown, including declarations |
+| `pnpm lint:pkg` | Check built packages with publint and Are the Types Wrong (`attw --pack`) |
+| `pnpm turbo run test --filter=express-mock-core` | Run only the core package tests |
 
-There are git hooks set up with this project that are automatically installed when you install dependencies. They're
-really handy, but are turned off by default (so as to not hinder new contributors). You can opt into these by creating
-a file called `.opt-in` at the root of the project and putting this inside:
+Every behavior change needs a test that fails before the change and passes afterwards. For
+documentation, verify runnable examples against the built package. Run the applicable checks
+before handing off; build before `lint:pkg`. Report any check you cannot run.
 
-```
-commit-msg
-pre-commit
-```
+Use Biome for lint and formatting. Create mocks lazily, keep instances independent, and
+preserve chaining after `resetMocked()`. Match Express 5 behavior and keep public mocks
+assignable to `@types/express` v5.
 
-## Help needed
+## Tests by package
 
-Please checkout the [ROADMAP.md][ROADMAP] and raise an issue to discuss
-any of the items in the want to do or might do list.
+- Core unit tests: `packages/express-mock-core/test/unit/`.
+- Core type tests: `packages/express-mock-core/test/types/`.
+- Jest wrapper and CommonJS compatibility tests: `packages/jest-express/test/`.
+- Vitest wrapper setup tests: `packages/vitest-express/test/`.
+- Example application tests: `examples/*/`, using the workspace packages.
 
-Also, please watch the repo and respond to questions/bug reports/feature requests! Thanks!
+Put behavior tests beside the package that owns the behavior. Most mock changes belong in
+the core; wrapper tests should cover runner configuration, exports and runner-specific
+typing. Do not add test-runner imports to `packages/express-mock-core/src/`.
 
-[egghead]: https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github
-[semantic-release]: https://npmjs.com/package/semantic-release
-[convention]: https://github.com/conventional-changelog/conventional-changelog-angular/blob/ed32559941719a130bb0327f886d6a32a8cbc2ba/convention.md
-[all-contributors]: https://github.com/kentcdodds/all-contributors
-[ROADMAP]: ./other/ROADMAP.md
+## Changesets
+
+For each user-facing change, run `pnpm changeset` from the root and follow the prompts.
+Include the generated Markdown file from `.changeset/` with your pull request, and describe
+the change from a user's point of view.
+
+The three packages are a [Changesets fixed group](.changeset/config.json): `express-mock-core`,
+`jest-express` and `vitest-express` always release together with the same version. A change
+to one package therefore advances the whole group at release time. Documentation-only
+changes do not need a changeset unless they accompany a user-facing package change.
+
+## Releasing
+
+The maintainer handles releases. The release bot collects changesets into a release PR
+against `master`; merging that PR builds and publishes all three packages to npm using
+trusted publishing (OIDC) with provenance.
+
+One-time maintainer setup (before merging the first release PR):
+
+- [ ] In each package's npm settings, configure a GitHub Actions trusted publisher for owner
+  `jest-express`, repository `jest-express`, workflow `release.yml`, with direct publishing
+  allowed. See [npm's trusted publishing guide](https://docs.npmjs.com/trusted-publishers/).
+- [ ] In GitHub repository settings under Actions > General, allow GitHub Actions to create
+  and approve pull requests so the release bot can open its PR.
+- [ ] Delete the old `NODE_AUTH_TOKEN` repository secret after configuring trusted
+  publishing. The release workflow needs only the built-in `GITHUB_TOKEN` for its release PR.
