@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { Application } from '../../src/application';
 
 const chance = new Chance();
-let app: any;
+let app: Application;
 
 describe('Application', () => {
   beforeEach(() => {
@@ -13,6 +13,12 @@ describe('Application', () => {
 
   afterEach(() => {
     app.resetMocked();
+  });
+
+  test('Application does not expose the removed express.query middleware', () => {
+    expect('query' in app).toBe(false);
+    app.resetMocked();
+    expect('query' in app).toBe(false);
   });
 
   describe('Test json', () => {
@@ -40,6 +46,31 @@ describe('Application', () => {
     });
   });
 
+  describe('Test raw', () => {
+    test('raw should have no calls by default', () => {
+      expect(app.raw).not.toHaveBeenCalled();
+    });
+
+    test('raw should be called and match called with', () => {
+      const options = {};
+
+      app.raw(options);
+
+      expect(app.raw).toHaveBeenCalled();
+      expect(app.raw).toHaveBeenCalledWith(options);
+    });
+
+    test('raw should have no call after reset', () => {
+      const options = {};
+
+      app.raw(options);
+
+      app.resetMocked();
+
+      expect(app.raw).not.toHaveBeenCalled();
+    });
+  });
+
   describe('Test staticLoad', () => {
     test('staticLoad should have no calls by default', () => {
       expect(app.staticLoad).not.toHaveBeenCalled();
@@ -64,6 +95,31 @@ describe('Application', () => {
       app.resetMocked();
 
       expect(app.staticLoad).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Test text', () => {
+    test('text should have no calls by default', () => {
+      expect(app.text).not.toHaveBeenCalled();
+    });
+
+    test('text should be called and match called with', () => {
+      const options = {};
+
+      app.text(options);
+
+      expect(app.text).toHaveBeenCalled();
+      expect(app.text).toHaveBeenCalledWith(options);
+    });
+
+    test('text should have no call after reset', () => {
+      const options = {};
+
+      app.text(options);
+
+      app.resetMocked();
+
+      expect(app.text).not.toHaveBeenCalled();
     });
   });
 

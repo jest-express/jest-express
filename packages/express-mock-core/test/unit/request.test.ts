@@ -5,7 +5,7 @@ import { Express } from '../../src/express';
 import { Request } from '../../src/request';
 
 const chance = new Chance();
-let request: any;
+let request: Request;
 
 describe('Express Request', () => {
   beforeEach(() => {
@@ -14,6 +14,370 @@ describe('Express Request', () => {
 
   afterEach(() => {
     request.resetMocked();
+  });
+
+  test('removed request methods stay absent in Express 5', () => {
+    for (const key of ['param', 'acceptsCharset', 'acceptsEncoding', 'acceptsLanguage']) {
+      expect(key in request).toBe(false);
+    }
+  });
+
+  test('req.query is a getter-only snapshot with setQuery and setUrl helpers after reset', () => {
+    for (const reset of [false, true]) {
+      if (reset) request.resetMocked();
+      request.setUrl('/?id=1');
+      const descriptor = Object.getOwnPropertyDescriptor(Request.prototype, 'query');
+      expect(descriptor?.get).toBeTypeOf('function');
+      expect(descriptor?.set).toBeUndefined();
+      expect(() => {
+        request.query = { replaced: 'yes' };
+      }).toThrow(TypeError);
+      expect(Reflect.set(request, 'query', {})).toBe(false);
+      request.query.id = 'changed';
+      expect(request.query).toEqual({ id: '1' });
+      request.setQuery('extra', 'yes');
+      request.setQuery({ other: 'value' });
+      expect(request.query).toEqual({ id: '1', extra: 'yes', other: 'value' });
+      expect(Object.getPrototypeOf(request.query)).toBeNull();
+      request.setUrl('/?new=2');
+      expect(request.query).toEqual({ new: '2' });
+    }
+    request.resetMocked();
+    expect(request.query).toEqual({});
+  });
+
+  test('req.query returns fresh arrays and reset restores the constructor URL', () => {
+    const req = new Request('/?id=1&id=2');
+    req.query.id.push('3');
+    expect(req.query).toEqual({ id: ['1', '2'] });
+    req.setQuery('extra', 'value');
+    req.setUrl('/?changed=yes');
+    req.resetMocked();
+    expect(req.query).toEqual({ id: ['1', '2'] });
+  });
+
+  test('req.params has a null prototype in the constructor, setParams and reset like Express 5', () => {
+    for (const reset of [false, true]) {
+      if (reset) request.resetMocked();
+      expect(Object.getPrototypeOf(request.params)).toBeNull();
+      request.setParams('__proto__', 'literal');
+      request.setParams({ constructor: 'literal', id: '1' });
+      expect(Object.getPrototypeOf(request.params)).toBeNull();
+      expect(Object.getOwnPropertyDescriptor(request.params, '__proto__')?.value).toBe('literal');
+      expect(request.params.constructor).toBe('literal');
+      expect(request.params.id).toBe('1');
+    }
+  });
+
+  describe('Accept header negotiation', () => {
+    test.each([
+      ['accepts', 'Accept', 'text/html;bad', ['html'], 'html'],
+      ['accepts', 'Accept', 'text/html;q', ['html'], 'html'],
+      ['accepts', 'Accept', ';;;', ['html'], false],
+      ['acceptsCharsets', 'Accept-Charset', 'utf-8;bad', ['utf-8'], 'utf-8'],
+      [
+        'acceptsEncodings',
+        'Accept-Encoding',
+        'gzip, deflate;bad',
+        [],
+        ['gzip', 'deflate', 'identity'],
+      ],
+      ['acceptsLanguages', 'Accept-Language', 'en-US;bad', ['en'], 'en'],
+    ])(
+      'req.%s ignores a malformed %s parameter (%j) like negotiator',
+      (method, header, value, args, expected) => {
+        request.setHeaders(header, value);
+        expect(request[method](...args)).toEqual(expected);
+      },
+    );
+
+    test("req.accepts('json') matches application/json in the Accept header", () => {
+      request.setHeaders('Accept', 'application/json');
+      expect(request.accepts('json')).toEqual('json');
+    });
+
+    test('req.accepts returns false when no media type matches', () => {
+      request.setHeaders('Accept', 'text/html');
+      expect(request.accepts('application/json')).toEqual(false);
+    });
+
+    test('req.accepts chooses the highest quality from several arguments', () => {
+      request.setHeaders('Accept', 'text/*;q=.5, application/json');
+      expect(request.accepts('html', 'json')).toEqual('json');
+    });
+
+    test('req.accepts chooses the highest quality from an array', () => {
+      request.setHeaders('Accept', 'text/*;q=.5, application/json');
+      expect(request.accepts(['html', 'json'])).toEqual('json');
+    });
+
+    test('req.accepts uses caller order for equally specific wildcard matches', () => {
+      request.setHeaders('Accept', '*/*');
+      expect(request.accepts(['text', 'json'])).toEqual('text');
+    });
+
+    test('req.accepts matches a media type wildcard', () => {
+      request.setHeaders('Accept', 'text/*');
+      expect(request.accepts('html', 'text')).toEqual('html');
+    });
+
+    test('req.accepts excludes q=0 even when a wildcard allows the type', () => {
+      request.setHeaders('Accept', '*/*;q=1, application/json;q=0');
+      expect(request.accepts('json', 'html')).toEqual('html');
+    });
+
+    test('req.accepts applies a specific quality before a wildcard quality', () => {
+      request.setHeaders('Accept', 'text/*;q=1, text/html;q=.1, application/json;q=.5');
+      expect(request.accepts('html', 'json')).toEqual('json');
+    });
+
+    test('req.accepts uses header order for equally ranked explicit matches', () => {
+      request.setHeaders('Accept', 'text/html, application/json');
+      expect(request.accepts('json', 'html')).toEqual('html');
+    });
+
+    test('req.accepts returns the first supplied type without an Accept header', () => {
+      expect(request.accepts('unknown', 'json')).toEqual('unknown');
+    });
+
+    test('req.accepts lists the wildcard without an Accept header', () => {
+      expect(request.accepts()).toEqual(['*/*']);
+    });
+
+    test('req.accepts returns the first supplied type with an empty Accept header', () => {
+      request.setHeaders('Accept', '');
+      expect(request.accepts('json')).toEqual('json');
+    });
+
+    test('req.accepts lists media types in preference order without q=0 entries', () => {
+      request.setHeaders('Accept', 'application/json;q=.8, text/html, image/png;q=0');
+      expect(request.accepts()).toEqual(['text/html', 'application/json']);
+    });
+
+    test('req.accepts matches media type parameters', () => {
+      request.setHeaders('Accept', 'text/html;level=1;q=.8, text/html;q=.5');
+      expect(request.accepts('text/html;level=1', 'text/html')).toEqual('text/html;level=1');
+    });
+
+    test('req.accepts keeps quoted commas and semicolons inside parameters', () => {
+      request.setHeaders('Accept', 'text/html;profile="a,b;c"');
+      expect(request.accepts('text/html;profile="a,b;c"')).toEqual('text/html;profile="a,b;c"');
+    });
+
+    test("req.accepts matches case-insensitively and preserves the caller's spelling", () => {
+      request.setHeaders('Accept', 'APPLICATION/JSON');
+      expect(request.accepts('JSON')).toEqual('JSON');
+    });
+
+    test('req.accepts skips unknown extensions and matches dotted extensions', () => {
+      request.setHeaders('Accept', 'image/png');
+      expect(request.accepts('unknown', '.png')).toEqual('.png');
+    });
+
+    test('req.acceptsCharsets lists the wildcard without a header', () => {
+      expect(request.acceptsCharsets()).toEqual(['*']);
+    });
+
+    test('req.acceptsCharsets returns the first supplied charset without a header', () => {
+      expect(request.acceptsCharsets('utf-8', 'ascii')).toEqual('utf-8');
+    });
+
+    test('req.acceptsCharsets chooses the highest quality from an array', () => {
+      request.setHeaders('Accept-Charset', 'utf-8;q=.8, iso-8859-1');
+      expect(request.acceptsCharsets(['utf-8', 'iso-8859-1'])).toEqual('iso-8859-1');
+    });
+
+    test('req.acceptsCharsets excludes q=0 even when a wildcard allows the charset', () => {
+      request.setHeaders('Accept-Charset', '*;q=.5, utf-8;q=0');
+      expect(request.acceptsCharsets('utf-8', 'ascii')).toEqual('ascii');
+    });
+
+    test('req.acceptsCharsets matches case-insensitively', () => {
+      request.setHeaders('Accept-Charset', 'UTF-8');
+      expect(request.acceptsCharsets('utf-8')).toEqual('utf-8');
+    });
+
+    test('req.acceptsCharsets returns false when nothing matches', () => {
+      request.setHeaders('Accept-Charset', 'utf-8');
+      expect(request.acceptsCharsets('ascii')).toEqual(false);
+    });
+
+    test('req.acceptsCharsets lists charsets in preference order without q=0 entries', () => {
+      request.setHeaders('Accept-Charset', 'utf-8;q=0, ascii;q=.5, iso-8859-1');
+      expect(request.acceptsCharsets()).toEqual(['iso-8859-1', 'ascii']);
+    });
+
+    test('req.acceptsEncodings lists identity without a header', () => {
+      expect(request.acceptsEncodings()).toEqual(['identity']);
+    });
+
+    test('req.acceptsEncodings rejects compression without a header', () => {
+      expect(request.acceptsEncodings('gzip')).toEqual(false);
+    });
+
+    test('req.acceptsEncodings accepts identity without a header', () => {
+      expect(request.acceptsEncodings('gzip', 'identity')).toEqual('identity');
+    });
+
+    test('req.acceptsEncodings adds identity at the lowest positive quality', () => {
+      request.setHeaders('Accept-Encoding', 'gzip;q=.5, br');
+      expect(request.acceptsEncodings()).toEqual(['br', 'gzip', 'identity']);
+    });
+
+    test('req.acceptsEncodings allows identity when compression has q=0', () => {
+      request.setHeaders('Accept-Encoding', 'gzip;q=0');
+      expect(request.acceptsEncodings()).toEqual(['identity']);
+    });
+
+    test('req.acceptsEncodings excludes identity with a zero-quality wildcard', () => {
+      request.setHeaders('Accept-Encoding', '*;q=0');
+      expect(request.acceptsEncodings(['gzip', 'identity'])).toEqual(false);
+    });
+
+    test('req.acceptsEncodings respects an explicit identity exclusion', () => {
+      request.setHeaders('Accept-Encoding', 'gzip, identity;q=0');
+      expect(request.acceptsEncodings('identity', 'gzip')).toEqual('gzip');
+    });
+
+    test('req.acceptsEncodings applies explicit exclusions before wildcards', () => {
+      request.setHeaders('Accept-Encoding', '*;q=.5, gzip;q=0');
+      expect(request.acceptsEncodings('gzip', 'br')).toEqual('br');
+    });
+
+    test('req.acceptsEncodings matches case-insensitively', () => {
+      request.setHeaders('Accept-Encoding', 'GZIP');
+      expect(request.acceptsEncodings('gzip')).toEqual('gzip');
+    });
+
+    test('req.acceptsEncodings uses header order for equally ranked matches', () => {
+      request.setHeaders('Accept-Encoding', 'gzip, br');
+      expect(request.acceptsEncodings('br', 'gzip')).toEqual('gzip');
+    });
+
+    test('req.acceptsLanguages lists the wildcard without a header', () => {
+      expect(request.acceptsLanguages()).toEqual(['*']);
+    });
+
+    test('req.acceptsLanguages returns the first supplied language without a header', () => {
+      expect(request.acceptsLanguages('en', 'fr')).toEqual('en');
+    });
+
+    test('req.acceptsLanguages matches a general language against a regional header', () => {
+      request.setHeaders('Accept-Language', 'en-US');
+      expect(request.acceptsLanguages('en')).toEqual('en');
+    });
+
+    test('req.acceptsLanguages matches a regional language against a general header', () => {
+      request.setHeaders('Accept-Language', 'en');
+      expect(request.acceptsLanguages('en-US')).toEqual('en-US');
+    });
+
+    test('req.acceptsLanguages rejects different regions without a general range', () => {
+      request.setHeaders('Accept-Language', 'en-US');
+      expect(request.acceptsLanguages('en-GB')).toEqual(false);
+    });
+
+    test('req.acceptsLanguages chooses the highest quality from an array', () => {
+      request.setHeaders('Accept-Language', 'en-US;q=.5, en;q=.8, fr');
+      expect(request.acceptsLanguages(['en', 'fr'])).toEqual('fr');
+    });
+
+    test('req.acceptsLanguages applies explicit exclusions before wildcards', () => {
+      request.setHeaders('Accept-Language', '*;q=.5, en;q=0');
+      expect(request.acceptsLanguages('en', 'fr')).toEqual('fr');
+    });
+
+    test('req.acceptsLanguages lists languages in preference order without q=0 entries', () => {
+      request.setHeaders('Accept-Language', 'en;q=.8, es, pt;q=0');
+      expect(request.acceptsLanguages()).toEqual(['es', 'en']);
+    });
+
+    test('req.acceptsLanguages matches case-insensitively and preserves caller casing', () => {
+      request.setHeaders('Accept-Language', 'EN-us');
+      expect(request.acceptsLanguages('en-US')).toEqual('en-US');
+    });
+
+    test('req.acceptsLanguages prefers an exact match over a prefix match', () => {
+      request.setHeaders('Accept-Language', 'en-US, en');
+      expect(request.acceptsLanguages('en', 'en-US')).toEqual('en-US');
+    });
+
+    test('req.accepts* restores negotiation defaults and initial headers after resetMocked()', () => {
+      request = new Request('/users?id=1&id=2', {
+        headers: {
+          Accept: 'application/json',
+          'Accept-Charset': 'utf-8',
+          'Accept-Encoding': 'gzip',
+          'Accept-Language': 'en-US',
+        },
+      });
+      for (const method of ['accepts', 'acceptsCharsets', 'acceptsEncodings', 'acceptsLanguages']) {
+        request[method].mockReturnValue(false);
+        request[method]('anything');
+      }
+      request.setHeaders('Accept', 'text/html');
+      request.resetMocked();
+      for (const method of ['accepts', 'acceptsCharsets', 'acceptsEncodings', 'acceptsLanguages']) {
+        expect(request[method]).not.toHaveBeenCalled();
+      }
+      expect(request.accepts('json')).toBe('json');
+      expect(request.acceptsCharsets('utf-8')).toBe('utf-8');
+      expect(request.acceptsEncodings('gzip')).toBe('gzip');
+      expect(request.acceptsLanguages('en')).toBe('en');
+      expect(request.query).toEqual({ id: ['1', '2'] });
+    });
+  });
+
+  describe('URL parsing', () => {
+    test('setUrl keeps relative dot segments like Express and uses simple query parser semantics', () => {
+      request.setUrl('/users/../search?id=1&id=2&name=a+b&literal=%2B&empty=&flag&bad=%ZZ#top');
+      expect(request.path).toBe('/users/../search');
+      expect(request.originalUrl).toBe(
+        '/users/../search?id=1&id=2&name=a+b&literal=%2B&empty=&flag&bad=%ZZ',
+      );
+      expect(request.hostname).toBeUndefined();
+      expect(request.protocol).toBe('http');
+      expect(request.secure).toBe(false);
+      expect(request.query).toEqual({
+        id: ['1', '2'],
+        name: 'a b',
+        literal: '+',
+        empty: '',
+        flag: '',
+        bad: '%ZZ',
+      });
+      expect(Object.getPrototypeOf(request.query)).toBeNull();
+    });
+
+    test('setUrl keeps the raw path of absolute URLs and sets hostname, protocol, secure and subdomains', () => {
+      request.setUrl('https://www.example.com:3000/a/../café?q=1&q=2');
+      expect(request.path).toBe('/a/../café');
+      expect(request.originalUrl).toBe('/a/../café?q=1&q=2');
+      expect(request.hostname).toBe('www.example.com');
+      expect(request.protocol).toBe('https');
+      expect(request.secure).toBe(true);
+      expect(request.subdomains).toEqual(['www']);
+      expect(request.query).toEqual({ q: ['1', '2'] });
+    });
+
+    // Expected values come from Express 5.3.0's parseurl.
+    test.each([
+      ['/a/./b', '/a/./b', ''],
+      ['/%2e%2e/x', '/%2e%2e/x', ''],
+      ['/caf\u00e9?x=1', '/caf\u00e9', '?x=1'],
+      ['users', 'users', ''],
+      ['/a b?c d', '/a%20b', '?c%20d'],
+      ['/a"b', '/a"b', ''],
+      ['/a"b c', '/a%22b%20c', ''],
+      ['\\x', '/x', ''],
+      ['/x#frag', '/x', ''],
+      ['/a@b c', '/a@b%20c', ''],
+      ['http://h.example.com/a\\b?c\\d', '/a/b', '?c%5Cd'],
+    ])('setUrl(%j) gives path %j and search %j like Express', (url, path, search) => {
+      request.setUrl(url);
+      expect(request.path).toBe(path);
+      expect(request.originalUrl).toBe(path + search);
+    });
   });
 
   describe('Test constructor', () => {
@@ -36,7 +400,7 @@ describe('Express Request', () => {
       expect(request.path).toEqual('/some/path');
       expect(request.baseUrl).toEqual('');
       expect(request.method).toEqual('GET');
-      expect(request.hostname).toEqual('');
+      expect(request.hostname).toBeUndefined();
       expect(request.query).toEqual({ fiz: 'fuz', foo: 'bar' });
       expect(request.subdomains).toEqual([]);
       expect(request.protocol).toEqual('http');
@@ -85,7 +449,7 @@ describe('Express Request', () => {
       expect(request.path).toEqual('/some/path');
       expect(request.baseUrl).toEqual('');
       expect(request.method).toEqual('POST');
-      expect(request.headers).toEqual({ accept: 'text/html' });
+      expect(request.headers).toEqual({ accept: 'text/html', host: 'www.example.com:3000' });
       expect(request.hostname).toEqual('www.example.com');
       expect(request.query).toEqual({ foo: 'bar' });
       expect(request.subdomains).toEqual(['www']);
@@ -129,12 +493,12 @@ describe('Express Request', () => {
       expect(request.hostname).toEqual(actualDomain);
     });
 
-    it('should set the hostname property with a empty string', () => {
+    it('should leave hostname undefined for a bare http:// URL', () => {
       const actualUrl = 'http://';
 
       request.setUrl(actualUrl);
 
-      expect(request.hostname).toEqual('');
+      expect(request.hostname).toBeUndefined();
     });
 
     it('should set the originalUrl property with pathName and search query', () => {
@@ -208,7 +572,8 @@ describe('Express Request', () => {
         headers: actualHeaders,
       });
 
-      expect(request.headers).toEqual(actualHeaders);
+      // An absolute URL also derives the Host header, like a real client.
+      expect(request.headers).toEqual({ ...actualHeaders, host: actualDomain });
     });
 
     it('should set the method property to the passed method', () => {
@@ -249,8 +614,8 @@ describe('Express Request', () => {
   });
 
   describe('Test body', () => {
-    test('body should be empty by default', () => {
-      expect(request.body).toEqual('');
+    test('req.body defaults to undefined like Express 5', () => {
+      expect(request.body).toBeUndefined();
     });
 
     test('body should allow you to update it', () => {
@@ -263,13 +628,13 @@ describe('Express Request', () => {
       expect(request.body).toEqual(body2);
     });
 
-    test('body should be empty after reset', () => {
+    test('req.body resets to undefined like Express 5', () => {
       const body = chance.string();
       request.setBody(body);
 
       request.resetMocked();
 
-      expect(request.body).toEqual('');
+      expect(request.body).toBeUndefined();
     });
   });
 
@@ -340,8 +705,8 @@ describe('Express Request', () => {
   });
 
   describe('Test hostname', () => {
-    test('hostname should be empty by default', () => {
-      expect(request.hostname).toEqual('');
+    test('hostname is undefined by default, as in Express 5 without a Host header', () => {
+      expect(request.hostname).toBeUndefined();
     });
 
     test('hostname should allow you to update it', () => {
@@ -352,12 +717,152 @@ describe('Express Request', () => {
       expect(request.hostname).toEqual('fizfuz');
     });
 
-    test('hostname should be empty after reset', () => {
+    test('hostname is undefined after reset', () => {
       request.setHostname('foobar');
 
       request.resetMocked();
 
-      expect(request.hostname).toEqual('');
+      expect(request.hostname).toBeUndefined();
+    });
+  });
+
+  describe('Test host (Express 5)', () => {
+    test('req.host returns undefined when there is no Host header', () => {
+      expect(request.host).toBeUndefined();
+    });
+
+    test('req.host returns the bare Host header', () => {
+      request.setHeaders('Host', 'example.com');
+
+      expect(request.host).toBe('example.com');
+    });
+
+    test('req.host includes the port from the Host header', () => {
+      request.setHeaders('Host', 'example.com:3000');
+
+      expect(request.host).toBe('example.com:3000');
+    });
+
+    test('req.host keeps the brackets and port of an IPv6 Host header', () => {
+      request.setHeaders('Host', '[::1]:3000');
+
+      expect(request.host).toBe('[::1]:3000');
+    });
+
+    test('req.host ignores X-Forwarded-Host while trust proxy is off', () => {
+      request.setHeaders({ host: 'example.com', 'x-forwarded-host': 'proxy.example:8080' });
+
+      expect(request.host).toBe('example.com');
+    });
+
+    test('req.host uses X-Forwarded-Host when trust proxy is enabled', () => {
+      const app = new Express();
+      app.set('trust proxy', true);
+      const req = new Request(null, { app });
+      req.setHeaders({ host: 'example.com', 'x-forwarded-host': 'proxy.example:8080' });
+
+      expect(req.host).toBe('proxy.example:8080');
+    });
+
+    test('req.host takes the first value of a comma-separated X-Forwarded-Host', () => {
+      const app = new Express();
+      app.enable('trust proxy');
+      const req = new Request(null, { app });
+      req.setHeaders({
+        host: 'example.com',
+        'x-forwarded-host': 'proxy1.example:8080, proxy2.example:9090 ',
+      });
+
+      expect(req.host).toBe('proxy1.example:8080');
+    });
+
+    test('req.host falls back to the Host header after resetMocked clears trust proxy', () => {
+      const app = new Express();
+      app.set('trust proxy', true);
+      const req = new Request(null, { app });
+      req.setHeaders({ host: 'example.com', 'x-forwarded-host': 'proxy.example:8080' });
+
+      app.resetMocked();
+
+      expect(req.host).toBe('example.com');
+    });
+
+    test('createRequest derives the Host header from an absolute URL like a real client', () => {
+      request.setUrl('http://example.com:3000/x');
+
+      expect(request.headers.host).toBe('example.com:3000');
+      expect(request.host).toBe('example.com:3000');
+      expect(request.hostname).toBe('example.com');
+    });
+
+    test('createRequest keeps an IPv6 host and port in the derived Host header', () => {
+      request.setUrl('http://[::1]:3000/x');
+
+      expect(request.headers.host).toBe('[::1]:3000');
+      expect(request.host).toBe('[::1]:3000');
+    });
+
+    test('explicit headers win over the URL-derived Host header', () => {
+      request = new Request('http://example.com:3000/x', {
+        headers: { Host: 'custom.example:1', Accept: 'text/html' },
+      });
+
+      expect(request.host).toBe('custom.example:1');
+      expect(request.headers).toEqual({ host: 'custom.example:1', accept: 'text/html' });
+    });
+
+    test('req.host follows setUrl and resetMocked restores the constructor URL host', () => {
+      const req = new Request('http://example.com:3000/x');
+      expect(req.host).toBe('example.com:3000');
+
+      req.setUrl('http://other.example:8080/y');
+      expect(req.host).toBe('other.example:8080');
+
+      req.setHeaders('Host', 'override.example');
+      expect(req.host).toBe('override.example');
+
+      req.resetMocked();
+      expect(req.host).toBe('example.com:3000');
+    });
+  });
+
+  describe('hostname follows the Host header (Express 5)', () => {
+    test.each([
+      ['example.com', 'example.com'],
+      ['example.com:3000', 'example.com'],
+      ['[::1]:3000', '[::1]'],
+      ['[::1]', '[::1]'],
+    ])('Host %j gives hostname %j', (host, hostname) => {
+      request.setHeaders('Host', host);
+      expect(request.hostname).toBe(hostname);
+    });
+
+    test('hostname uses X-Forwarded-Host when the app trusts the proxy', () => {
+      const app = new Express();
+      const req = app.request;
+      req.setHeaders({ Host: 'internal:8080', 'X-Forwarded-Host': 'public.example:443' });
+      expect(req.hostname).toBe('internal');
+
+      app.enable('trust proxy');
+      expect(req.hostname).toBe('public.example');
+    });
+
+    test('setHostname() overrides the derived hostname until resetMocked()', () => {
+      request.setHeaders('Host', 'example.com:3000');
+      request.setHostname('override.example');
+      expect(request.hostname).toBe('override.example');
+
+      request.resetMocked();
+      expect(request.hostname).toBeUndefined();
+    });
+
+    test('setUrl(url, { headers }) replaces the headers and still adds the URL host', () => {
+      const req = new Request('/a', { headers: { 'X-Old': '1' } });
+
+      req.setUrl('http://example.com:3000/b', { headers: { 'X-New': '2' } });
+
+      expect(req.headers).toEqual({ 'x-new': '2', host: 'example.com:3000' });
+      expect(req.hostname).toBe('example.com');
     });
   });
 
@@ -939,6 +1444,95 @@ describe('Express Request', () => {
   });
 
   describe('Test is', () => {
+    test.each([
+      ['application/json', ['APPLICATION/JSON'], false],
+      ['application/json', ['*/*'], 'application/json'],
+      ['application/json', ['*/json'], 'application/json'],
+      ['text/html', ['text/*'], 'text/html'],
+      ['multipart/form-data; boundary=x', ['multipart'], 'multipart'],
+      ['application/vnd.api+json', ['json'], false],
+      ['application/vnd.api+json', ['+json'], 'application/vnd.api+json'],
+      ['application/vnd.api+json', ['*/*+json'], 'application/vnd.api+json'],
+      ['application/vnd.api+json', ['application/*+json'], 'application/vnd.api+json'],
+      ['application/json', ['+json'], false],
+      ['text/html', ['htm'], 'htm'],
+      ['application/octet-stream', ['bin'], 'bin'],
+      ['text/javascript', ['mjs'], 'mjs'],
+      ['application/json; charset=utf-8', ['json'], 'json'],
+      ['APPLICATION/JSON', ['json'], 'json'],
+      ['application/json;bad', ['json'], 'json'],
+      ['application/json', ['html', 'json'], 'json'],
+      ['application/json', [['html', 'json']], 'json'],
+      ['application/json', ['unknown', 'application/json'], 'application/json'],
+      ['text/html', ['html', 'text/html'], 'html'],
+      ['text/plain', ['text'], 'text'],
+      ['text/plain', ['txt'], 'txt'],
+      ['application/x-www-form-urlencoded', ['urlencoded'], 'urlencoded'],
+      ['application/json', ['.json'], '.json'],
+      ['application/json', ['JSON'], 'JSON'],
+      ['application/json', ['html'], false],
+      ['application/json', ['unknown'], false],
+      ['application/json', ['application/json; charset=utf-8'], false],
+      ['application/json', [], 'application/json'],
+      ['application/json; charset=utf-8', [[]], 'application/json'],
+      ['', ['json'], false],
+      ['invalid', ['json'], false],
+      ['text/*', ['text/*'], false],
+      ['application/json/extra', [], false],
+      ['application/json\n', [], false],
+    ])('req.is with Content-Type %j and arguments %j returns %j', (header, args, expected) => {
+      request.setHeaders({ 'Content-Type': header, 'Content-Length': '1' });
+      expect(request.is(...args)).toBe(expected);
+    });
+
+    test.each([
+      [{}, null],
+      [{ 'Content-Length': '0' }, 'json'],
+      [{ 'Content-Length': '10' }, 'json'],
+      [{ 'Content-Length': '' }, 'json'],
+      [{ 'Content-Length': '  ' }, 'json'],
+      [{ 'Content-Length': '1.5' }, 'json'],
+      [{ 'Content-Length': 'invalid' }, null],
+      [{ 'Transfer-Encoding': 'chunked' }, 'json'],
+      [{ 'Transfer-Encoding': '' }, 'json'],
+    ])('req.is detects a body from headers %j and returns %j', (headers, expected) => {
+      request.setHeaders({ 'Content-Type': 'application/json', ...headers });
+      expect(request.is('json')).toBe(expected);
+    });
+
+    test('req.is returns false when a body has no Content-Type', () => {
+      request.setHeaders('Content-Length', '0');
+      expect(request.is('json')).toBe(false);
+    });
+
+    test.each([null, false, 0, '', {}, []])(
+      'req.is treats a directly assigned body %j as present without framing headers',
+      (body) => {
+        request.setHeaders('Content-Type', 'application/json');
+        request.body = body;
+        expect(request.is('json')).toBe('json');
+      },
+    );
+
+    test('req.is treats setBody as present and undefined as absent', () => {
+      request.setHeaders('Content-Type', 'application/json');
+      request.setBody({ id: 1 });
+      expect(request.is('json')).toBe('json');
+      request.setBody(undefined);
+      expect(request.is('json')).toBeNull();
+    });
+
+    test('req.is restores matching and clears body and call history after resetMocked', () => {
+      request.setBody({});
+      request.is.mockReturnValue('overridden');
+      request.is('json');
+      request.resetMocked();
+      expect(request.is).not.toHaveBeenCalled();
+      expect(request.is('json')).toBeNull();
+      request.setHeaders({ 'Content-Type': 'application/json', 'Content-Length': '0' });
+      expect(request.is('json')).toBe('json');
+    });
+
     test('is should have no calls by default', () => {
       expect(request.is).not.toHaveBeenCalled();
     });

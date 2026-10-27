@@ -1,13 +1,14 @@
 import Chance from 'chance';
-import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { Express } from '../../src/express';
-import { next, NextFunction } from '../../src/next';
+import type { NextFunction } from '../../src/next';
 import { Request } from '../../src/request';
 import { Response } from '../../src/response';
+import { Router } from '../../src/router';
 
 const chance = new Chance();
-let app: any;
+let app: Express;
 
 describe('Express Application', () => {
   beforeEach(() => {
@@ -323,7 +324,7 @@ describe('Express Application', () => {
       expect(app.get).toHaveBeenCalled();
       expect(app.get).toHaveBeenCalledWith(path, callback);
       expect(callback).toHaveBeenCalled();
-      expect(callback).toHaveBeenCalledWith(app.request, app.response);
+      expect(callback).toHaveBeenCalledWith(app.request, app.response, expect.any(Function));
     });
 
     test('get should have no call after reset', () => {
@@ -546,7 +547,7 @@ describe('Express Application', () => {
   });
 
   test('Get', () => {
-    app.get('/', (request: any, response: any) => {
+    app.get('/', (request: Request, response: Response) => {
       expect(app.get).toHaveBeenCalled();
       expect(app.get).toHaveBeenCalledWith('/', expect.anything());
       expect(request).toBeInstanceOf(Request);
@@ -555,7 +556,7 @@ describe('Express Application', () => {
   });
 
   test('Get with multiple middlewares', () => {
-    const testMiddleware = (request: any, response: any) => {
+    const testMiddleware = (request: Request, response: Response) => {
       expect(app.get).toHaveBeenCalled();
       expect(app.get).toHaveBeenCalledWith('/', expect.anything(), expect.anything());
       expect(request).toBeInstanceOf(Request);
@@ -565,7 +566,7 @@ describe('Express Application', () => {
   });
 
   test('Get with an array middlewares', () => {
-    const testMiddleware = (request: any, response: any) => {
+    const testMiddleware = (request: Request, response: Response) => {
       expect(app.get).toHaveBeenCalled();
       expect(app.get).toHaveBeenCalledWith('/', expect.anything());
       expect(request).toBeInstanceOf(Request);
@@ -575,7 +576,7 @@ describe('Express Application', () => {
   });
 
   test('Get with mix of arrays and single middlewares', () => {
-    const testMiddleware = (request: any, response: any) => {
+    const testMiddleware = (request: Request, response: Response) => {
       expect(app.get).toHaveBeenCalled();
       expect(app.get).toHaveBeenCalledWith('/', expect.anything(), expect.anything());
       expect(request).toBeInstanceOf(Request);
@@ -585,6 +586,16 @@ describe('Express Application', () => {
   });
 
   describe('Test set', () => {
+    test('app.set(name) with one argument reads the setting, as in Express 5', () => {
+      app.set('title', 'My Site');
+      expect(app.set('title')).toBe('My Site');
+    });
+
+    test('app.set, app.enable and app.disable return the app so calls chain', () => {
+      expect(app.set('a', 1).enable('b').disable('c')).toBe(app);
+      expect([app.get('a'), app.enabled('b'), app.disabled('c')]).toEqual([1, true, true]);
+    });
+
     test('should set and get settings', () => {
       app.set('title', 'My Site');
       const title = app.get('title');
@@ -599,7 +610,7 @@ describe('Express Application', () => {
 
   describe('Route', () => {
     test('get', () => {
-      app.route('/events').get((request: any, response: any) => {
+      app.route('/events').get((request: Request, response: Response) => {
         expect(app.route).toHaveBeenCalled();
         expect(app.route).toHaveBeenCalledWith('/events');
         expect(app.get).toHaveBeenCalled();
@@ -609,7 +620,7 @@ describe('Express Application', () => {
       });
     });
     test('put', () => {
-      app.route('/events').put((request: any, response: any) => {
+      app.route('/events').put((request: Request, response: Response) => {
         expect(app.route).toHaveBeenCalled();
         expect(app.route).toHaveBeenCalledWith('/events');
         expect(app.put).toHaveBeenCalled();
@@ -619,7 +630,7 @@ describe('Express Application', () => {
       });
     });
     test('post', () => {
-      app.route('/events').post((request: any, response: any) => {
+      app.route('/events').post((request: Request, response: Response) => {
         expect(app.route).toHaveBeenCalled();
         expect(app.route).toHaveBeenCalledWith('/events');
         expect(app.post).toHaveBeenCalled();
@@ -629,7 +640,7 @@ describe('Express Application', () => {
       });
     });
     test('delete', () => {
-      app.route('/events').delete((request: any, response: any) => {
+      app.route('/events').delete((request: Request, response: Response) => {
         expect(app.route).toHaveBeenCalled();
         expect(app.route).toHaveBeenCalledWith('/events');
         expect(app.delete).toHaveBeenCalled();
@@ -657,24 +668,59 @@ describe('Express Application', () => {
       const callback = (req: Request, res: Response, nextFunc: NextFunction) => {
         expect(req).toBeInstanceOf(Request);
         expect(res).toBeInstanceOf(Response);
-        expect(nextFunc).toEqual(next);
+        expect(nextFunc).toEqual(expect.any(Function));
       };
       app.use(callback);
       expect(app.use).toHaveBeenCalled();
       expect(app.use).toHaveBeenCalledWith(callback);
     });
 
-    test('Use called with a callback with four argument', () => {
-      const callback = (err: any, req: Request, res: Response, nextFunc: NextFunction) => {
-        expect(err).toBeInstanceOf(Object);
-        expect(req).toBeInstanceOf(Request);
-        expect(res).toBeInstanceOf(Response);
-        expect(nextFunc).toEqual(next);
-      };
+    test('Use called with an error handler skips it when no error has occurred', () => {
+      const callback = vi.fn(
+        (_err: unknown, _req: Request, _res: Response, _next: NextFunction) => {},
+      );
 
       app.use(callback);
-      expect(app.use).toHaveBeenCalled();
       expect(app.use).toHaveBeenCalledWith(callback);
+      expect(callback).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Test router (Express 5)', () => {
+    test('app.router is a lazily created MockRouter that is the same object on every read', () => {
+      const router = app.router;
+
+      expect(router).toBeInstanceOf(Router);
+      expect(app.router).toBe(router);
+      expect(app.router).toBe(router);
+    });
+
+    test('app.resetMocked() before app.router is read leaves a working lazy router', () => {
+      app.resetMocked();
+
+      expect(app.router).toBeInstanceOf(Router);
+      expect(app.router).toBe(app.router);
+    });
+
+    test('app.resetMocked() resets the router mocks but keeps the same router', () => {
+      const router = app.router;
+      router.get('/events', vi.fn());
+      router.use(vi.fn());
+
+      expect(router.get).toHaveBeenCalled();
+      expect(router.use).toHaveBeenCalled();
+
+      app.resetMocked();
+
+      expect(router.get).not.toHaveBeenCalled();
+      expect(router.use).not.toHaveBeenCalled();
+      expect(app.router).toBe(router);
+    });
+
+    test('each app gets its own router', () => {
+      const other = new Express();
+
+      expect(app.router).not.toBe(other.router);
     });
   });
 });
