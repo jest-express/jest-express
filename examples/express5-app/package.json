@@ -16,7 +16,7 @@
     "@types/supertest": "^6.0.2",
     "vitest-express": "workspace:*",
     "supertest": "^7.0.0",
-    "typescript": "~5.9.3",
+    "typescript": "~7.0.2",
     "vitest": "^5.0.5"
   }
 }
