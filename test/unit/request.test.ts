@@ -1,4 +1,5 @@
-import * as Chance from 'chance';
+import Chance from 'chance';
+import { afterEach, beforeEach, describe, expect, it, test } from 'vitest';
 
 import { Express } from '../../src/express';
 import { Request } from '../../src/request';
@@ -43,26 +44,20 @@ describe('Express Request', () => {
     });
 
     test('request should allow to set headers', () => {
-      request = new Request(
-        '/',
-        {
-          headers: {
-            Accept: 'text/html',
-          },
+      request = new Request('/', {
+        headers: {
+          Accept: 'text/html',
         },
-      );
+      });
       expect(request.headers).toEqual({
         accept: 'text/html',
       });
     });
 
     test('request should allow to set method', () => {
-      request = new Request(
-        '/',
-        {
-          method: 'POST',
-        },
-      );
+      request = new Request('/', {
+        method: 'POST',
+      });
       expect(request.method).toEqual('POST');
     });
 
@@ -73,13 +68,10 @@ describe('Express Request', () => {
     });
 
     test('request should reset to initial values upon resetMocked', () => {
-      request = new Request(
-        'https://www.example.com:3000/some/path?foo=bar',
-        {
-          headers: { Accept: 'text/html' },
-          method: 'POST',
-        },
-      );
+      request = new Request('https://www.example.com:3000/some/path?foo=bar', {
+        headers: { Accept: 'text/html' },
+        method: 'POST',
+      });
       request.setMethod('GET');
       request.setProtocol('http');
       request.setHeaders({ Accept: 'text/xml', 'Accept-Language': 'pl' });
@@ -641,7 +633,7 @@ describe('Express Request', () => {
     test('query should allow you to update it by passing object', () => {
       const firstKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
       const firstValue = chance.string();
-      const secondKey = chance.string({  pool: 'abcdefghijklmnopqrstuvwxyz' });
+      const secondKey = chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz' });
       const secondValue = chance.string();
       request.setQuery({
         [firstKey]: firstValue,

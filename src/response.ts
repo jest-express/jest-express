@@ -76,7 +76,7 @@ export class Response {
     this.cookie = jest.fn(() => this);
     this.clearCookie = jest.fn(() => this);
     this.download = jest.fn();
-    this.end = jest.fn((data: any) => this.body = data);
+    this.end = jest.fn((data: any) => (this.body = data));
     this.format = jest.fn(() => this);
     this.get = jest.fn();
     this.header = jest.fn((key: any, value: string | void) => {
@@ -87,17 +87,17 @@ export class Response {
       }
       return this;
     });
-    this.json = jest.fn((data : any) => {
+    this.json = jest.fn((data: any) => {
       this.body = data;
       return this;
     });
-    this.jsonp = jest.fn((data : any) => {
+    this.jsonp = jest.fn((data: any) => {
       this.body = data;
       return this;
     });
     this.links = jest.fn(() => this);
     this.location = jest.fn(() => this);
-    this.redirect = jest.fn((status : number, url : string) => {
+    this.redirect = jest.fn((status: number, url: string) => {
       if (url) {
         this.statusCode = status;
         this.setHeader('Location', url);

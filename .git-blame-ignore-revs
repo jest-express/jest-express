@@ -1,0 +1,4 @@
+# Revisions to ignore in `git blame` (large mechanical/no-op changes).
+# Enable with: git config blame.ignoreRevsFile .git-blame-ignore-revs
+#
+70181c66b48668b88a058fa93858a39358a4cfde  # Biome format pass

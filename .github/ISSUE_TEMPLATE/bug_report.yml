@@ -1,0 +1,93 @@
+name: Bug report
+description: Report incorrect mock behavior in jest-express
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please fill in the environment details so we can reproduce the problem quickly.
+  - type: input
+    id: jest-express-version
+    attributes:
+      label: jest-express version
+      description: The version of jest-express you are using.
+      placeholder: "e.g. 2.0.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: test-runner
+    attributes:
+      label: Test runner
+      description: Which test runner are you using?
+      options:
+        - Vitest
+        - Jest
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: test-runner-version
+    attributes:
+      label: Test runner version
+      description: The version of your test runner.
+      placeholder: "e.g. 5.0.5"
+    validations:
+      required: true
+  - type: input
+    id: express-versions
+    attributes:
+      label: express and @types/express versions
+      description: The versions of express and @types/express installed in your project, if any.
+      placeholder: "e.g. express 5.1.0, @types/express 5.0.0"
+    validations:
+      required: false
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js version
+      description: The version of Node.js you are running.
+      placeholder: "e.g. 22.12.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: mock-setup
+    attributes:
+      label: How is the mock factory configured?
+      description: How do you wire the mocks to your test runner?
+      options:
+        - "jest-express in Jest setupFiles"
+        - "vitest-express in Vitest setupFiles"
+        - "configure({ fn }) from express-mock-core"
+        - "Not configured (global vi/jest fallback)"
+        - "Other (explain in reproduction)"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: The smallest test that shows the problem. Include the setup code and the failing assertions. Linking a small reproduction repository also works.
+      placeholder: "Paste the code or a repository link here"
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should the mock have done?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What did the mock actually do? Include the full error message or failing assertion output.
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Anything else that might help, such as related issues or workarounds you have tried.
+    validations:
+      required: false
