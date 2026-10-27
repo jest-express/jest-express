@@ -1,0 +1,12 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@4.0.1/schema.json",
+  "baseBranch": "master",
+  "access": "public",
+  "format": "auto",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "ignore": ["example-express5-app"],
+  "fixed": [["express-mock-core", "jest-express", "vitest-express"]],
+  "linked": [],
+  "updateInternalDependencies": "patch"
+}
