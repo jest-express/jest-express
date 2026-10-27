@@ -451,10 +451,9 @@ export class Request implements RequestHelpers {
       this.headers.host = parsedUrl.host;
     }
 
+    // Recomputed on every call, so an earlier URL's subdomains don't linger.
     const hostnameParts = (this.hostname ?? '').split('.');
-    if (hostnameParts.length > 2) {
-      this.subdomains = hostnameParts.slice(0, hostnameParts.length - 2);
-    }
+    this.subdomains = hostnameParts.length > 2 ? hostnameParts.slice(0, -2) : [];
   }
 
   public resetMocked() {

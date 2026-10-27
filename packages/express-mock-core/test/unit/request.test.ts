@@ -360,6 +360,18 @@ describe('Express Request', () => {
       expect(request.query).toEqual({ q: ['1', '2'] });
     });
 
+    test('setUrl recomputes subdomains from the new hostname on every call', () => {
+      request.setUrl('https://www.example.com/');
+      expect(request.subdomains).toEqual(['www']);
+
+      request.setUrl('https://example.com/');
+      expect(request.subdomains).toEqual([]);
+
+      request.setUrl('https://www.example.com/');
+      request.setUrl('/relative');
+      expect(request.subdomains).toEqual(['www']);
+    });
+
     // Expected values come from Express 5.3.0's parseurl.
     test.each([
       ['/a/./b', '/a/./b', ''],
