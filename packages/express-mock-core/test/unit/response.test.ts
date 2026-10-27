@@ -284,7 +284,6 @@ describe('Express Response', () => {
       ['send', Buffer.from('hello')],
       ['send', { ok: true }],
       ['send', ['hello']],
-      ['sendStatus', 404],
     ])('res.%s(%j) preserves an explicit Content-Type', (method, body) => {
       response.set('CoNtEnT-TyPe', 'text/custom');
       response[method](body);
@@ -1081,6 +1080,13 @@ describe('Express Response', () => {
       expect(response.statusCode).toEqual(code);
       expect(response.body).toEqual(body);
       expect(result).toBe(response);
+    });
+
+    test('res.sendStatus(code) replaces an explicit Content-Type with text/plain like Express 5', () => {
+      response.type('application/custom');
+      response.sendStatus(404);
+
+      expect(response.get('Content-Type')).toEqual('text/plain; charset=utf-8');
     });
 
     test('res.sendStatus(code) restores its default implementation after resetMocked()', () => {

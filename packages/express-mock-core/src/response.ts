@@ -176,7 +176,8 @@ export class Response implements ResponseHelpers {
     this.sendFile = createMock();
     this.sendStatus = createMock((code: number) => {
       this.status(code);
-      setDefaultContentType('text/plain; charset=utf-8');
+      // Express 5 always sets text/plain here, replacing any Content-Type set earlier.
+      this.type('txt');
       this.body = STATUS_CODES[code] || String(code);
       return this;
     });
