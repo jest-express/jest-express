@@ -1,2 +1,7 @@
+packages:
+  - packages/*
+  - examples/*
+
 allowBuilds:
   core-js: false
+  unrs-resolver: false
