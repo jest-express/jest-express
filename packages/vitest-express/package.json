@@ -1,0 +1,65 @@
+{
+  "name": "vitest-express",
+  "version": "0.0.0",
+  "description": "Mock Express 5 app, Router, req, res and next for Vitest. Configures vi.fn on import.",
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "build:watch": "tsdown --watch",
+    "test": "vitest run",
+    "test:types": "vitest run --typecheck.only",
+    "typecheck": "tsc --noEmit",
+    "lint:pkg": "publint && attw --pack --profile esm-only"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jest-express/jest-express.git",
+    "directory": "packages/vitest-express"
+  },
+  "keywords": [
+    "express",
+    "express5",
+    "mock",
+    "testing",
+    "unit-test",
+    "vitest",
+    "typescript"
+  ],
+  "author": "James W. Lane <james.w.lane@mac.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jest-express/jest-express/issues"
+  },
+  "homepage": "https://github.com/jest-express/jest-express/tree/master/packages/vitest-express#readme",
+  "dependencies": {
+    "express-mock-core": "workspace:^"
+  },
+  "peerDependencies": {
+    "@types/express": "^5",
+    "vitest": ">=3"
+  },
+  "peerDependenciesMeta": {
+    "@types/express": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
